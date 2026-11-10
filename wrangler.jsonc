@@ -1,0 +1,16 @@
+{
+  "name": "hexstore",
+  "main": "worker.js",
+  "compatibility_date": "2025-01-01",
+  "keep_vars": true,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hexstore-db",
+      "database_id": "c097bf9b-6645-4c65-9afd-71c68977a966"
+    }
+  ],
+  "assets": {
+    "directory": "./public"
+  }
+}
