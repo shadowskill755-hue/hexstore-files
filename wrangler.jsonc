@@ -9,5 +9,8 @@
       "database_name": "hexstore-db",
       "database_id": "c097bf9b-6645-4c65-9afd-71c68977a966"
     }
-  ]
+  ],
+  "assets": {
+    "directory": "./public"
+  }
 }
