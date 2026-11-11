@@ -141,9 +141,10 @@ return J({token:await mint(env,u.id),user:pub(u,base)});
 }
 if(path==='/api/me'&&m==='GET'){
 need();
-const s=await q(env,'select (select count(*) from apps where owner_id=?1) apps,(select coalesce(sum(downloads),0) from apps where owner_id=?1) downloads,(select count(*) from favorites where user_id=?1) favorites,(select count(*) from notifications where user_id=?1 and is_read=0) unread,(select count(*) from dev_follows where dev_id=?1) followers',me.id).first();
+const s=await q(env,'select (select count(*) from apps where owner_id=?1) apps,(select coalesce(sum(downloads),0) from apps where owner_id=?1) downloads,(select count(*) from favorites where user_id=?1) favorites,(select count(*) from notifications where user_id=?1 and is_read=0) unread,(select count(*) from dev_follows where dev_id=?1) followers,(select count(*) from dev_follows where user_id=?1) following_devs',me.id).first();
 const c=await q(env,'select created_at from users where id=?',me.id).first();
-return J({user:{...pub(me,base),created_at:c.created_at},stats:s});
+const fols=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,f.created_at from dev_follows f join users u on u.id=f.user_id where f.dev_id=? order by f.created_at desc limit 50',me.id).all()).results.map(x=>({id:x.id,username:x.username,bio:x.bio,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null,created_at:x.created_at}));
+return J({user:{...pub(me,base),created_at:c.created_at},stats:s,followers_list:fols});
 }
 if(path==='/api/me'&&m==='PATCH'){
 need();const f={};
@@ -174,6 +175,10 @@ await q(env,'delete from dev_follows where user_id=? and dev_id=?',me.id,devId).
 }
 return J({ok:true});
 }
+if((r=path.match(/^\/api\/users\/([\w-]+)\/followers$/))&&m==='GET'){
+const fols=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,f.created_at from dev_follows f join users u on u.id=f.user_id where f.dev_id=? order by f.created_at desc limit 100',r[1]).all()).results.map(x=>({id:x.id,username:x.username,bio:x.bio,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null,created_at:x.created_at}));
+return J({followers:fols});
+}
 if((r=path.match(/^\/api\/users\/([\w-]+)$/))&&m==='GET'){
 const u=await q(env,'select id,username,bio,avatar_key,created_at from users where id=?',r[1]).first();
 if(!u)throw new E(404,'User not found');
@@ -182,7 +187,8 @@ const fol=(await q(env,'select count(*) n from dev_follows where dev_id=?',r[1])
 let isFol=false;
 if(me){isFol=!!(await q(env,'select 1 from dev_follows where user_id=? and dev_id=?',me.id,r[1]).first())}
 const devApps=(await q(env,SEL+" where a.owner_id=? and a.status='published' order by a.updated_at desc",r[1]).all()).results;
-return J({user:{id:u.id,username:u.username,bio:u.bio,created_at:u.created_at,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null},stats:{...s,followers:fol},following:isFol,apps:devApps.map(a=>shape(a,base))});
+const fols=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,f.created_at from dev_follows f join users u on u.id=f.user_id where f.dev_id=? order by f.created_at desc limit 50',r[1]).all()).results.map(x=>({id:x.id,username:x.username,bio:x.bio,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null,created_at:x.created_at}));
+return J({user:{id:u.id,username:u.username,bio:u.bio,created_at:u.created_at,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null},stats:{...s,followers:fol},following:isFol,apps:devApps.map(a=>shape(a,base)),followers_list:fols});
 }
 if(path==='/api/upload'&&m==='POST'){
 need();
