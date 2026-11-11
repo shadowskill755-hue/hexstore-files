@@ -40,9 +40,6 @@ const clip=(s,n)=>String(s==null?'':s).trim().slice(0,n);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pub=(u,base)=>({id:u.id,email:u.email,username:u.username,bio:u.bio||'',is_admin:u.is_admin,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null,tos:!!u.tos_at,email_alerts:u.email_alerts===0?0:1});
 const fsize=b=>b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
-async function initTables(env){
-try{await env.DB.prepare('CREATE TABLE IF NOT EXISTS dev_follows (user_id TEXT, dev_id TEXT, created_at INTEGER, PRIMARY KEY (user_id, dev_id))').run()}catch(e){}
-}
 async function delFile(env,key){
 const f=await q(env,'select asset_id from files where key=?',key).first();
 if(f){try{await gh(env,'DELETE','/releases/assets/'+f.asset_id)}catch(e){}await q(env,'delete from files where key=?',key).run()}
@@ -81,8 +78,7 @@ const url=new URL(req.url),path=url.pathname;
 try{
 const miss=['DB','JWT_SECRET','GITHUB_TOKEN','GITHUB_OWNER','GITHUB_REPO'].filter(k=>!env[k]);
 if(miss.length)throw new E(500,'Setup incomplete. Missing: '+miss.join(', ')+'. Add exactly these names to the Worker, then press Deploy.');
-await initTables(env);
-if(path.startsWith('/files/'))return await file(req,env,decodeURIComponent(path.slice(7)));
+if(path.startsWith('/files/'))return await file(req,env,decodeURIComponent(path.slice(7)),url);
 if(path.startsWith('/a/'))return await sharePage(env,url,decodeURIComponent(path.slice(3)));
 if(!path.startsWith('/api/'))return J({name:'HEXSTORE API',ok:true});
 return await api(req,env,url,path,ctx);
@@ -110,10 +106,15 @@ const j=await r.json().catch(()=>({}));
 if(!r.ok)throw new E(502,'GitHub upload failed: '+(j.message||r.status));
 return j;
 }
-async function file(req,env,key){
-const f=await q(env,'select tag,asset from files where key=?',key).first();
+async function file(req,env,key,url){
+const f=await q(env,'select tag,asset,orig_name,size from files where key=?',key).first();
 if(!f)throw new E(404,'File not found');
-return new Response(null,{status:302,headers:{...CORS,'Location':'https://github.com/'+env.GITHUB_OWNER+'/'+env.GITHUB_REPO+'/releases/download/'+f.tag+'/'+encodeURIComponent(f.asset),'Cache-Control':'public, max-age=3600'}});
+const target='https://github.com/'+env.GITHUB_OWNER+'/'+env.GITHUB_REPO+'/releases/download/'+f.tag+'/'+encodeURIComponent(f.asset);
+if(url.searchParams.get('dl')!=='1')return new Response(null,{status:302,headers:{...CORS,'Location':target,'Cache-Control':'public, max-age=3600'}});
+const r=await fetch(target,{redirect:'follow'});
+if(!r.ok||!r.body)throw new E(502,'Download is not available right now. Try again.');
+const name=String(f.orig_name||f.asset).replace(/[^\w.\- ]+/g,'_');
+return new Response(r.body,{status:200,headers:{...CORS,'Content-Type':/\.apk$/i.test(f.asset)?'application/vnd.android.package-archive':(r.headers.get('Content-Type')||'application/octet-stream'),'Content-Length':r.headers.get('Content-Length')||String(f.size||''),'Content-Disposition':'attachment; filename="'+name+'"','Cache-Control':'public, max-age=3600'}});
 }
 async function api(req,env,url,path,ctx){
 const m=req.method,base=url.origin,me=await who(env,req),now=Date.now();
@@ -141,10 +142,9 @@ return J({token:await mint(env,u.id),user:pub(u,base)});
 }
 if(path==='/api/me'&&m==='GET'){
 need();
-const s=await q(env,'select (select count(*) from apps where owner_id=?1) apps,(select coalesce(sum(downloads),0) from apps where owner_id=?1) downloads,(select count(*) from favorites where user_id=?1) favorites,(select count(*) from notifications where user_id=?1 and is_read=0) unread,(select count(*) from dev_follows where dev_id=?1) followers,(select count(*) from dev_follows where user_id=?1) following_devs',me.id).first();
+const s=await q(env,'select (select count(*) from apps where owner_id=?1) apps,(select coalesce(sum(downloads),0) from apps where owner_id=?1) downloads,(select count(*) from favorites where user_id=?1) favorites,(select count(*) from notifications where user_id=?1 and is_read=0) unread,(select count(*) from dev_follows where dev_id=?1) followers,(select count(*) from dev_follows where follower_id=?1) following',me.id).first();
 const c=await q(env,'select created_at from users where id=?',me.id).first();
-const fols=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,f.created_at from dev_follows f join users u on u.id=f.user_id where f.dev_id=? order by f.created_at desc limit 50',me.id).all()).results.map(x=>({id:x.id,username:x.username,bio:x.bio,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null,created_at:x.created_at}));
-return J({user:{...pub(me,base),created_at:c.created_at},stats:s,followers_list:fols});
+return J({user:{...pub(me,base),created_at:c.created_at},stats:s});
 }
 if(path==='/api/me'&&m==='PATCH'){
 need();const f={};
@@ -163,32 +163,34 @@ return J({ok:true});
 if(path==='/api/me/terms'&&m==='POST'){
 need();await q(env,'update users set tos_at=? where id=?',now,me.id).run();return J({ok:true});
 }
-if((r=path.match(/^\/api\/users\/([\w-]+)\/follow$/))&&m==='POST'){
-need();
-const devId=r[1];
-if(devId===me.id)throw new E(400,'You cannot follow yourself.');
-if(body.on){
-await q(env,'insert or ignore into dev_follows(user_id,dev_id,created_at) values(?,?,?)',me.id,devId,now).run();
-await tell(env,devId,null,null,'New Follower 🎉',me.username+' started following your developer profile.');
-}else{
-await q(env,'delete from dev_follows where user_id=? and dev_id=?',me.id,devId).run();
-}
-return J({ok:true});
-}
-if((r=path.match(/^\/api\/users\/([\w-]+)\/followers$/))&&m==='GET'){
-const fols=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,f.created_at from dev_follows f join users u on u.id=f.user_id where f.dev_id=? order by f.created_at desc limit 100',r[1]).all()).results.map(x=>({id:x.id,username:x.username,bio:x.bio,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null,created_at:x.created_at}));
-return J({followers:fols});
-}
 if((r=path.match(/^\/api\/users\/([\w-]+)$/))&&m==='GET'){
 const u=await q(env,'select id,username,bio,avatar_key,created_at from users where id=?',r[1]).first();
 if(!u)throw new E(404,'User not found');
-const s=await q(env,"select count(*) apps,coalesce(sum(downloads),0) downloads from apps where owner_id=? and status='published'",r[1]).first();
-const fol=(await q(env,'select count(*) n from dev_follows where dev_id=?',r[1]).first()).n;
-let isFol=false;
-if(me){isFol=!!(await q(env,'select 1 from dev_follows where user_id=? and dev_id=?',me.id,r[1]).first())}
-const devApps=(await q(env,SEL+" where a.owner_id=? and a.status='published' order by a.updated_at desc",r[1]).all()).results;
-const fols=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,f.created_at from dev_follows f join users u on u.id=f.user_id where f.dev_id=? order by f.created_at desc limit 50',r[1]).all()).results.map(x=>({id:x.id,username:x.username,bio:x.bio,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null,created_at:x.created_at}));
-return J({user:{id:u.id,username:u.username,bio:u.bio,created_at:u.created_at,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null},stats:{...s,followers:fol},following:isFol,apps:devApps.map(a=>shape(a,base)),followers_list:fols});
+const s=await q(env,"select (select count(*) from apps where owner_id=?1 and status='published') apps,(select coalesce(sum(downloads),0) from apps where owner_id=?1 and status='published') downloads,(select count(*) from dev_follows where dev_id=?1) followers,(select count(*) from dev_follows where follower_id=?1) following",r[1]).first();
+const rows=(await q(env,SEL+" where a.status='published' and a.owner_id=? order by a.updated_at desc limit 100",r[1]).all()).results;
+let is_following=false;
+if(me)is_following=!!await q(env,'select 1 x from dev_follows where follower_id=? and dev_id=?',me.id,r[1]).first();
+return J({user:{id:u.id,username:u.username,bio:u.bio||'',created_at:u.created_at,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null},stats:s,is_following,apps:rows.map(a=>shape(a,base))});
+}
+if((r=path.match(/^\/api\/users\/([\w-]+)\/(followers|following)$/))&&m==='GET'){
+const fol=r[2]==='followers';
+const rows=(await q(env,'select u.id,u.username,u.bio,u.avatar_key from dev_follows f join users u on u.id='+(fol?'f.follower_id':'f.dev_id')+' where '+(fol?'f.dev_id':'f.follower_id')+'=? order by f.created_at desc limit 200',r[1]).all()).results;
+return J({users:rows.map(x=>({id:x.id,username:x.username,bio:x.bio||'',avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}))});
+}
+if((r=path.match(/^\/api\/users\/([\w-]+)\/follow$/))&&m==='POST'){
+need();
+if(r[1]===me.id)throw new E(400,"You can't follow yourself.");
+const t=await q(env,'select id from users where id=?',r[1]).first();
+if(!t)throw new E(404,'User not found');
+if(body.on){
+const ins=await q(env,'insert or ignore into dev_follows(follower_id,dev_id,created_at) values(?,?,?)',me.id,r[1],now).run();
+if(ins.meta&&ins.meta.changes>0){
+const recent=await q(env,'select 1 x from notifications where user_id=? and from_user=? and created_at>?',r[1],me.id,now-864e5).first();
+if(!recent)await q(env,'insert into notifications(id,user_id,from_user,title,body,created_at) values(?,?,?,?,?,?)',uid(),r[1],me.id,me.username+' started following you','Tap to view their profile.',now).run();
+}
+}else await q(env,'delete from dev_follows where follower_id=? and dev_id=?',me.id,r[1]).run();
+const c=(await q(env,'select count(*) n from dev_follows where dev_id=?',r[1]).first()).n;
+return J({ok:true,followers:c});
 }
 if(path==='/api/upload'&&m==='POST'){
 need();
@@ -249,15 +251,13 @@ if(!(a.status==='published'||owner||admin))throw new E(404,'App not found');
 const vs=(await q(env,(owner||admin)?'select * from versions where app_id=? order by version_code desc':"select * from versions where app_id=? and status='approved' order by version_code desc",id).all()).results.map(v=>({...v,apk_url:base+'/files/'+v.apk_key}));
 const rv=(await q(env,'select r.rating,r.comment,r.created_at,u.username,u.avatar_key from reviews r join users u on u.id=r.user_id where r.app_id=? order by r.created_at desc limit 30',id).all()).results.map(x=>({rating:x.rating,comment:x.comment,created_at:x.created_at,username:x.username,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}));
 const dist=(await q(env,'select rating,count(*) n from reviews where app_id=? group by rating',id).all()).results;
-let following=false,favorited=false,my_review=null,dev_following=false;
-const dev_followers=(await q(env,'select count(*) n from dev_follows where dev_id=?',a.owner_id).first()).n;
+let following=false,favorited=false,my_review=null;
 if(me){
 following=!!await q(env,'select 1 x from follows where user_id=? and app_id=?',me.id,id).first();
 favorited=!!await q(env,'select 1 x from favorites where user_id=? and app_id=?',me.id,id).first();
 my_review=await q(env,'select rating,comment from reviews where user_id=? and app_id=?',me.id,id).first();
-dev_following=!!await q(env,'select 1 from dev_follows where user_id=? and dev_id=?',me.id,a.owner_id).first();
 }
-return J({app:shape(a,base),versions:vs,reviews:rv,dist,following,favorited,my_review,is_owner:owner,dev_following,dev_followers});
+return J({app:shape(a,base),versions:vs,reviews:rv,dist,following,favorited,my_review,is_owner:owner});
 }
 if(!(owner||admin))throw new E(403,'Only the developer can change this app.');
 if(m==='PATCH'){
