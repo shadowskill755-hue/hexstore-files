@@ -8,6 +8,10 @@ const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(
 const unhex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
 const q=(env,sql,...b)=>env.DB.prepare(sql).bind(...b);
 const uid=()=>crypto.randomUUID();
+
+// Replace this with your compiled Android app package name (for example: com.hexstore.app)
+const PACKAGE_NAME='com.hexstore.app';
+
 async function hashPw(pw,saltHex){
 const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']);
 return hex(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:unhex(saltHex),iterations:100000},k,256));
@@ -39,7 +43,7 @@ const mine=(key,id)=>!key||String(key).startsWith(id+'/');
 const clip=(s,n)=>String(s==null?'':s).trim().slice(0,n);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pub=(u,base)=>({id:u.id,email:u.email,username:u.username,bio:u.bio||'',is_admin:u.is_admin,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null,tos:!!u.tos_at,email_alerts:u.email_alerts===0?0:1});
-const fsize=b=>b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
+
 async function delFile(env,key){
 const f=await q(env,'select asset_id from files where key=?',key).first();
 if(f){try{await gh(env,'DELETE','/releases/assets/'+f.asset_id)}catch(e){}await q(env,'delete from files where key=?',key).run()}
@@ -71,6 +75,7 @@ const html='<div style="font-family:system-ui,Arial,sans-serif;max-width:480px;m
 const job=Promise.all(rs.map(r=>mail(env,r.email,title,html)));
 if(ctx&&ctx.waitUntil)ctx.waitUntil(job);else await job;
 }
+
 export default{
 async fetch(req,env,ctx){
 if(req.method==='OPTIONS')return new Response(null,{status:204,headers:CORS});
@@ -80,11 +85,12 @@ const miss=['DB','JWT_SECRET','GITHUB_TOKEN','GITHUB_OWNER','GITHUB_REPO'].filte
 if(miss.length)throw new E(500,'Setup incomplete. Missing: '+miss.join(', ')+'. Add exactly these names to the Worker, then press Deploy.');
 if(path.startsWith('/files/'))return await file(req,env,decodeURIComponent(path.slice(7)),url);
 if(path.startsWith('/a/'))return await sharePage(env,url,decodeURIComponent(path.slice(3)));
-if(!path.startsWith('/api/'))return J({name:'HEXSTORE API',ok:true});
+if(!path.startsWith('/api/'))return env.ASSETS?env.ASSETS.fetch(req):J({name:'HEXSTORE API',ok:true});
 return await api(req,env,url,path,ctx);
 }catch(e){return J({error:e.s?e.message:'Server error: '+(e.message||'')},e.s||500)}
 }
 };
+
 const GH=env=>({Authorization:'Bearer '+env.GITHUB_TOKEN,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'hexstore'});
 const gh=(env,method,path,body)=>fetch('https://api.github.com/repos/'+env.GITHUB_OWNER+'/'+env.GITHUB_REPO+path,{method,headers:GH(env),body:body?JSON.stringify(body):undefined});
 async function release(env){
@@ -116,6 +122,7 @@ if(!r.ok||!r.body)throw new E(502,'Download is not available right now. Try agai
 const name=String(f.orig_name||f.asset).replace(/[^\w.\- ]+/g,'_');
 return new Response(r.body,{status:200,headers:{...CORS,'Content-Type':/\.apk$/i.test(f.asset)?'application/vnd.android.package-archive':(r.headers.get('Content-Type')||'application/octet-stream'),'Content-Length':r.headers.get('Content-Length')||String(f.size||''),'Content-Disposition':'attachment; filename="'+name+'"','Cache-Control':'public, max-age=3600'}});
 }
+
 async function api(req,env,url,path,ctx){
 const m=req.method,base=url.origin,me=await who(env,req),now=Date.now();
 const body=(m==='POST'||m==='PATCH'||m==='PUT')&&path!=='/api/upload'?await req.json().catch(()=>({})):{};
@@ -392,6 +399,7 @@ return J({ok:true});
 }
 throw new E(404,'Not found');
 }
+
 async function sharePage(env,url,id){
 const a=await q(env,SEL+' where a.id=?',id).first();
 if(!a||a.status!=='published')return new Response('App not found',{status:404,headers:{'Content-Type':'text/plain'}});
@@ -399,6 +407,11 @@ const base=url.origin;
 const v=await q(env,"select * from versions where app_id=? and status='approved' order by version_code desc limit 1",id).first();
 const icon=a.icon_key?base+'/files/'+a.icon_key:'';
 const desc=esc(a.summary||String(a.description).slice(0,160));
-const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(a.name)+' — HEXSTORE</title><meta name="description" content="'+desc+'"><meta property="og:title" content="'+esc(a.name)+' — free APK on HEXSTORE"><meta property="og:description" content="'+desc+'">'+(icon?'<meta property="og:image" content="'+esc(icon)+'">':'')+'<meta name="theme-color" content="#0a0a0c"><style>*{box-sizing:border-box}body{margin:0;background:#0a0a0c;color:#f4f4f5;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}main{max-width:560px;margin:auto;padding:28px 18px 60px}.top{display:flex;align-items:center;gap:10px;color:#9a9aa4;font-weight:700;letter-spacing:.08em;font-size:13px;margin-bottom:26px}.top i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#43c25c,#27913f);display:inline-block}.card{background:#17171b;border:1px solid #2b2b31;border-radius:24px;padding:24px}.ic{width:112px;height:112px;border-radius:26px;object-fit:cover;background:#222227;display:block}h1{font-size:30px;margin:18px 0 4px;letter-spacing:-.02em}.mu{color:#9a9aa4}.btn{display:block;text-align:center;background:#e4e4e7;color:#111;text-decoration:none;font-weight:700;border-radius:14px;padding:16px;margin-top:20px}.st{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #2b2b31;margin:22px -24px 0;padding-top:16px;text-align:center;font-size:12px;color:#9a9aa4;text-transform:uppercase}.st b{display:block;font-size:20px;color:#f4f4f5;text-transform:none}h2{font-size:20px;margin:28px 0 8px}p{margin:0 0 10px;white-space:pre-wrap}</style></head><body><main><div class="top"><i></i>HEXSTORE</div><div class="card">'+(icon?'<img class="ic" src="'+esc(icon)+'" alt="">':'<div class="ic"></div>')+'<h1>'+esc(a.name)+'</h1>'+(a.summary?'<p class="mu">'+esc(a.summary)+'</p>':'')+'<p class="mu">by '+esc(a.owner_name)+' · '+esc(a.category)+'</p>'+(v?'<a class="btn" href="'+base+'/files/'+esc(v.apk_key)+'">Download APK</a>':'<div class="btn" style="opacity:.5">No download available</div>')+'<div class="st"><div><b>'+(a.rating||'–')+'</b>Rating</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fsize(v.size):'–')+'</b>Size</div></div></div>'+(v?'<h2>What’s new in v'+esc(v.version_name)+'</h2><p>'+esc(v.changelog||'Initial release')+'</p>':'')+'<h2>About this app</h2><p>'+esc(a.description)+'</p></main></body></html>';
+const hexApkUrl=env.HEXSTORE_APK_URL||(base+'/?app='+encodeURIComponent(id));
+const webFallback=base+'/?app='+encodeURIComponent(id);
+const intentUrl='intent://hexstore/app/'+encodeURIComponent(id)+'#Intent;scheme=hexstore;package='+PACKAGE_NAME+';S.browser_fallback_url='+encodeURIComponent(webFallback)+';end';
+
+const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>'+esc(a.name)+' — HEXSTORE</title><meta name="description" content="'+desc+'"><meta property="og:title" content="'+esc(a.name)+' — free APK on HEXSTORE"><meta property="og:description" content="'+desc+'">'+(icon?'<meta property="og:image" content="'+esc(icon)+'">':'')+'<meta property="og:url" content="'+base+'/a/'+esc(id)+'"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#0a0a0c"><style>*{box-sizing:border-box}body{margin:0;background:#0a0a0c;color:#f4f4f5;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}main{max-width:560px;margin:auto;padding:32px 18px 60px}.top{display:flex;align-items:center;gap:10px;color:#9a9aa4;font-weight:700;letter-spacing:.08em;font-size:13px;margin-bottom:26px}.top i{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#43c25c,#27913f);display:inline-block}.card{background:#17171b;border:1px solid #2b2b31;border-radius:24px;padding:26px}.ic{width:112px;height:112px;border-radius:26px;object-fit:cover;background:#222227;display:block}h1{font-size:32px;margin:20px 0 4px;letter-spacing:-.02em}.mu{color:#9a9aa4}.btn{display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;text-decoration:none;font-weight:700;border-radius:14px;padding:16px 20px;font-size:17px;box-shadow:0 6px 20px #43c25c33}.btn.o{background:transparent;color:#f4f4f5;border:1px solid #2b2b31;box-shadow:none;margin-top:12px;font-weight:600}.st{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #2b2b31;margin:24px -26px 0;padding-top:16px;text-align:center;font-size:12px;color:#9a9aa4;text-transform:uppercase}.st b{display:block;font-size:20px;color:#f4f4f5;text-transform:none}h2{font-size:20px;margin:30px 0 8px}p{margin:0 0 10px;white-space:pre-wrap}</style></head><body><main><div class="top"><i></i>HEXSTORE</div><div class="card">'+(icon?'<img class="ic" src="'+esc(icon)+'" alt="">':'<div class="ic"></div>')+'<h1>'+esc(a.name)+'</h1>'+(a.summary?'<p style="font-size:17px;margin:0 0 8px">'+esc(a.summary)+'</p>':'')+'<p class="mu">by '+esc(a.owner_name)+' · '+esc(a.category)+'</p><div style="margin-top:22px"><a class="btn" href="'+esc(hexApkUrl)+'">'+(env.HEXSTORE_APK_URL?'Install HEXSTORE to view this app':'Open HEXSTORE')+'</a><a class="btn o" href="'+esc(intentUrl)+'">Already installed? Open in HEXSTORE</a></div><div class="st"><div><b>'+(a.rating||'–')+'</b>Rating</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fsize(v.size):'–')+'</b>Size</div></div></div>'+(v?'<h2>What’s new in v'+esc(v.version_name)+'</h2><p>'+esc(v.changelog||'Initial release')+'</p>':'')+'<h2>About this app</h2><p>'+esc(a.description)+'</p></main></body></html>';
 return new Response(html,{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'public, max-age=300'}});
 }
+function fsize(b){b=+b||0;return b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB'}
