@@ -286,7 +286,25 @@ function paintNv(){var b=$('#nvbox');if(!b)return;b.innerHTML=S.napk?'<div class
 function nvSubmit(){if(S.busy||!S.napk)return;var a=S.det.app;if(!S.nver.trim())return toast('Enter the new version, for example 1.1');S.busy=1;var m=$('#nvm');m.textContent='Uploading APK… 0%';
  up(S.napk.file,'apk',function(p){m.textContent='Uploading APK… '+p+'%'}).then(function(r){m.textContent='Publishing update…';return api('/api/apps/'+a.id+'/versions',{method:'POST',body:{version_name:S.nver.trim(),changelog:S.nlog.trim(),apk_key:r.key,size:r.size}})}).then(function(){S.busy=0;S.napk=null;S.nver='';S.nlog='';toast(a.status=='published'?'Update published. Followers notified!':'New version saved');go('detail',a.id)},function(e){S.busy=0;m.textContent=e.message;toast(e.message)})}
 
-function poll(){if(!S.user||!store.get('hx'))return;api('/api/notifications').then(function(j){var n=j.unread;if(n>S.unread&&j.notifications&&j.notifications[0]){var t=j.notifications[0];if(t.from_user){openNewFollowerSheet(t)}else{toast('🔔 '+t.title)}try{if(window.Notification&&Notification.permission=='granted')new Notification(t.title,{body:t.body})}catch(e){}}S.unread=n;var b=$('#bdg');if(b){b.textContent=n;b.style.display=n?'':'none'}},function(){})}
+var polling=0,pollInit=0;
+function poll(){
+ if(polling||!S.user||!store.get('hx'))return;
+ polling=1;
+ api('/api/notifications').then(function(j){
+  polling=0;
+  var n=j.unread,t=j.notifications&&j.notifications[0],seen=store.get('hx_lastn');
+  if(t&&t.id!==seen){
+   store.set('hx_lastn',t.id);
+   if(pollInit&&!t.is_read){
+    if(t.from_user&&!$('#sheet').classList.contains('on'))openNewFollowerSheet(t);
+    else toast('🔔 '+t.title);
+    try{if(window.Notification&&Notification.permission=='granted')new Notification(t.title,{body:t.body})}catch(e){}
+   }
+  }
+  pollInit=1;S.unread=n;
+  var b=$('#bdg');if(b){b.textContent=n;b.style.display=n?'':'none'}
+ },function(){polling=0});
+}
 
 var TERMS=[
 ['1. Your uploads','Only upload apps you made or that you have permission to share. You are responsible for everything you publish.'],
@@ -370,7 +388,7 @@ function startDl(a,v){
   if(!r.body||!r.body.getReader)return r.blob().then(function(b){d.loaded=b.size;return b});
   var rd=r.body.getReader(),parts=[];
   var pump=function(){return rd.read().then(function(x){
-   if(x.done)return new Blob(parts,{type:'application/vnd.android.package-archive'});
+   if(x.done){var bl=new Blob(parts,{type:'application/vnd.android.package-archive'});parts=[];return bl}
    parts.push(x.value);d.loaded+=x.value.length;
    var n=Date.now();if(n-d.tl>250){d.speed=(d.loaded-d.ll)/((n-d.tl)/1000);d.tl=n;d.ll=d.loaded;paintDl(id)}
    return pump()})};
@@ -383,7 +401,7 @@ function openInstallSheet(id){
  var a=(S.det&&S.det.app.id==id)?S.det.app:{name:d.name};
  d.st='ask';paintDl(id);
  var apkFileName=(d.name||'app').replace(/[^\w.-]+/g,'_')+'-v'+d.vn+'.apk';
- if(d.blob&&!d.saved){
+ if(d.blob){
   d.saved=true;
   var u=URL.createObjectURL(d.blob),el=document.createElement('a');
   el.href=u;el.download=apkFileName;el.style.display='none';document.body.appendChild(el);el.click();
@@ -404,6 +422,7 @@ function openInstallSheet(id){
  '<button class="btn o f" data-sheetclose style="margin-top:4px">Close</button>'+
  '</div>';
  showSheet(html);
+ var bi=$('#btn-intent');if(bi)bi.onclick=function(){setTimeout(function(){if(!document.hidden)toast('Open your Files app, then Downloads')},900)};
 }
 
 function markInstalled(id){var d=DL[id];if(!d)return;INST[id]={c:d.vc,n:d.vn};saveInst();DL[id]=null;hideSheet();toast('Installed ✅');if(S.page=='detail'&&S.det&&S.det.app.id==id)keep(draw)}
@@ -603,7 +622,7 @@ $('#yt-q').addEventListener('input',function(e){
 });
 $('#yt-q').addEventListener('keydown',function(e){
   if(e.key=='Enter'){
-    var val=e.target.value.trim();if(!val)return;
+    var val=e.target.value.trim();if(!val){closeYtSearch();S.q='';go('home');return}
     var m=val.match(/\/a\/([a-zA-Z0-9_-]+)/);
     if(m&&m[1]){closeYtSearch();go('detail',m[1]);return}
     saveRecentSearch(val);closeYtSearch();S.q=val;go('home');
@@ -632,7 +651,7 @@ document.addEventListener('click',function(e){
   if(!t){if(S.pop){S.pop=0;draw()}return}var d=t.dataset;
   if('pop' in d){S.pop=S.pop?0:1;draw();return}
   if('theme' in d){toggleTheme();return}
-  if('go' in d){if(d.go=='notif'){try{Notification.requestPermission()}catch(e){}}go(d.go);return}
+  if('go' in d){if(d.go=='home'&&t.classList.contains('logo'))S.q='';if(d.go=='notif'){try{Notification.requestPermission()}catch(e){}}go(d.go);return}
   if('open' in d){go('detail',d.open);return}
   if('openapp' in d){closeYtSearch();go('detail',d.openapp);return}
   if('yts' in d){closeYtSearch();S.q=d.yts;saveRecentSearch(d.yts);go('home');return}
@@ -678,7 +697,7 @@ document.addEventListener('click',function(e){
     api('/api/users/'+puid+'/follow',{method:'POST',body:{on:nst}}).then(function(j){
       d.st=nst?'1':'0';t.textContent=nst?'Following ✓':'Follow';t.className='btn o f'+(nst?' on':'');
       toast(nst?'Following user':'Unfollowed');
-      if(S.page=='dev'&&S.dev&&S.dev.user.id==puid){S.dev.is_following=nst;S.dev.stats.followers=j.followers;var b=$('#btn-dev-fol');if(b){b.textContent=nst?'Following ✓':'Follow';b.className='btn f'+(nst?' o':'')}var sf=$('#st-followers');if(sf)sf.textContent=j.followers}
+      if(S.page=='dev'&&S.dev&&S.dev.user.id==puid){S.dev.is_following=nst;S.dev.stats.followers=j.followers;var b=$('#btn-dev-fol');if(b){b.textContent=nst?'Following ✓':'Follow';b.className='btn f'+(nst?' o':'')}var sf=$('#st-followers');if(sf)sf.textContent=getFollowersCount(S.dev.user,j.followers)}
       if(S.page=='dev'&&S.dtab=='followers')loadDfol();
     },function(e){toast(e.message)});
     return;
@@ -775,7 +794,7 @@ try{var cu=store.get('hxu');if(cu&&store.get('hx'))S.user=JSON.parse(cu)}catch(e
 if(S.user)api('/api/me').then(function(j){S.user=j.user;store.set('hxu',JSON.stringify(j.user));draw();poll()},function(e){if(/sign in/i.test(e.message)){store.del('hx');store.del('hxu');S.user=null;draw()}});
 
 var urlP=new URLSearchParams(window.location.search),targetApp=urlP.get('app');
-if(targetApp){go('detail',targetApp)}else{go('home')}
+if(targetApp&&/^[\w-]+$/.test(targetApp)){go('detail',targetApp)}else{go('home')}
 
 startSplashAndGuide(false);
 setInterval(poll,30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()});
