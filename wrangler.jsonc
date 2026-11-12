@@ -11,6 +11,7 @@
     }
   ],
   "assets": {
-    "directory": "./public"
+    "directory": "./public",
+    "binding": "ASSETS"
   }
 }
