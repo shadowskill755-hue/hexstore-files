@@ -9,7 +9,7 @@ const unhex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
 const q=(env,sql,...b)=>env.DB.prepare(sql).bind(...b);
 const uid=()=>crypto.randomUUID();
 
-// Replace this with your compiled Android app package name (for example: com.hexstore.app)
+// Replace with your Android app package name (e.g. com.hexstore.app)
 const PACKAGE_NAME='com.hexstore.app';
 
 async function hashPw(pw,saltHex){
@@ -31,14 +31,15 @@ if(d.e<Date.now())return null;
 return await q(env,'select id,email,username,bio,is_admin,avatar_key,tos_at,email_alerts from users where id=?',d.u).first();
 }catch(e){return null}
 }
-const SEL=`select a.*,u.username owner_name,u.avatar_key owner_avatar_key,
+
+const SEL=`select a.*,u.username owner_name,u.avatar_key owner_avatar_key,u.is_admin owner_is_admin,
 (select version_name from versions v where v.app_id=a.id and v.status='approved' order by version_code desc limit 1) version_name,
 (select version_code from versions v where v.app_id=a.id and v.status='approved' order by version_code desc limit 1) version_code,
 (select size from versions v where v.app_id=a.id and v.status='approved' order by version_code desc limit 1) size,
 (select round(avg(rating),1) from reviews r where r.app_id=a.id) rating,
 (select count(*) from reviews r where r.app_id=a.id) rating_count
 from apps a join users u on u.id=a.owner_id`;
-const shape=(a,base)=>({...a,owner_avatar:a.owner_avatar_key?base+'/files/'+a.owner_avatar_key:null,tags:JSON.parse(a.tags||'[]'),shot_keys:JSON.parse(a.shots||'[]'),shots:JSON.parse(a.shots||'[]').map(k=>base+'/files/'+k),icon_url:a.icon_key?base+'/files/'+a.icon_key:null,is_exclusive:!!a.is_exclusive});
+const shape=(a,base)=>({...a,owner_avatar:a.owner_avatar_key?base+'/files/'+a.owner_avatar_key:null,tags:JSON.parse(a.tags||'[]'),shot_keys:JSON.parse(a.shots||'[]'),shots:JSON.parse(a.shots||'[]').map(k=>base+'/files/'+k),icon_url:a.icon_key?base+'/files/'+a.icon_key:null,is_exclusive:!!a.is_exclusive,owner_is_admin:!!a.owner_is_admin});
 const mine=(key,id)=>!key||String(key).startsWith(id+'/');
 const clip=(s,n)=>String(s==null?'':s).trim().slice(0,n);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -170,19 +171,40 @@ return J({ok:true});
 if(path==='/api/me/terms'&&m==='POST'){
 need();await q(env,'update users set tos_at=? where id=?',now,me.id).run();return J({ok:true});
 }
+
+// Support & Help Center Tickets
+if(path==='/api/support'&&m==='POST'){
+const subject=clip(body.subject,100),message=clip(body.message,2000),email=clip(body.email,120).toLowerCase(),name=clip(body.name,60);
+if(!subject||!message)throw new E(400,'Subject and message are required.');
+const id=uid(),userId=me?me.id:null;
+await q(env,'insert into support_tickets(id,user_id,name,email,subject,message,created_at) values(?,?,?,?,?,?,?)',id,userId,name,email,subject,message,now).run();
+return J({ok:true});
+}
+if(path==='/api/admin/support'&&m==='GET'){
+need();if(!me.is_admin)throw new E(403,'Admins only.');
+const rows=(await q(env,"select * from support_tickets where status='open' order by created_at desc limit 50").all()).results;
+return J({tickets:rows});
+}
+if((r=path.match(/^\/api\/admin\/support\/([\w-]+)\/resolve$/))&&m==='POST'){
+need();if(!me.is_admin)throw new E(403,'Admins only.');
+await q(env,"update support_tickets set status='resolved' where id=?",r[1]).run();
+return J({ok:true});
+}
+
+// User Profile & Follows
 if((r=path.match(/^\/api\/users\/([\w-]+)$/))&&m==='GET'){
-const u=await q(env,'select id,username,bio,avatar_key,created_at from users where id=?',r[1]).first();
+const u=await q(env,'select id,username,bio,avatar_key,created_at,is_admin from users where id=?',r[1]).first();
 if(!u)throw new E(404,'User not found');
-const s=await q(env,"select (select count(*) from apps where owner_id=?1 and status='published') apps,(select coalesce(sum(downloads),0) from apps where owner_id=?1 and status='published') downloads,(select count(*) from dev_follows where dev_id=?1) followers,(select count(*) from dev_follows where follower_id=?1) following",r[1]).first();
+const s=await q(env,"select (select count(*) from apps where owner_id=?1 and status='published') apps,(select coalesce(sum(downloads),0) from apps where owner_id=?1 and status='published') downloads,(select count(*) from dev_follows where dev_id=?1) followers,(select count(*) from dev_follows where follower_id=?1) following,(select count(*) from community_posts where user_id=?1) posts",r[1]).first();
 const rows=(await q(env,SEL+" where a.status='published' and a.owner_id=? order by a.updated_at desc limit 100",r[1]).all()).results;
 let is_following=false;
 if(me)is_following=!!await q(env,'select 1 x from dev_follows where follower_id=? and dev_id=?',me.id,r[1]).first();
-return J({user:{id:u.id,username:u.username,bio:u.bio||'',created_at:u.created_at,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null},stats:s,is_following,apps:rows.map(a=>shape(a,base))});
+return J({user:{id:u.id,username:u.username,bio:u.bio||'',is_admin:!!u.is_admin,created_at:u.created_at,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null},stats:s,is_following,can_post:s.apps>0||u.is_admin,apps:rows.map(a=>shape(a,base))});
 }
 if((r=path.match(/^\/api\/users\/([\w-]+)\/(followers|following)$/))&&m==='GET'){
 const fol=r[2]==='followers';
-const rows=(await q(env,'select u.id,u.username,u.bio,u.avatar_key from dev_follows f join users u on u.id='+(fol?'f.follower_id':'f.dev_id')+' where '+(fol?'f.dev_id':'f.follower_id')+'=? order by f.created_at desc limit 200',r[1]).all()).results;
-return J({users:rows.map(x=>({id:x.id,username:x.username,bio:x.bio||'',avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}))});
+const rows=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,u.is_admin from dev_follows f join users u on u.id='+(fol?'f.follower_id':'f.dev_id')+' where '+(fol?'f.dev_id':'f.follower_id')+'=? order by f.created_at desc limit 200',r[1]).all()).results;
+return J({users:rows.map(x=>({id:x.id,username:x.username,bio:x.bio||'',is_admin:!!x.is_admin,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}))});
 }
 if((r=path.match(/^\/api\/users\/([\w-]+)\/follow$/))&&m==='POST'){
 need();
@@ -199,6 +221,51 @@ if(!recent)await q(env,'insert into notifications(id,user_id,from_user,title,bod
 const c=(await q(env,'select count(*) n from dev_follows where dev_id=?',r[1]).first()).n;
 return J({ok:true,followers:c});
 }
+
+// Community Feeds & Likes
+if((r=path.match(/^\/api\/users\/([\w-]+)\/posts$/))&&m==='GET'){
+const devId=r[1];
+const published=(await q(env,"select count(*) n from apps where owner_id=? and status='published'",devId).first()).n;
+const u=await q(env,'select is_admin from users where id=?',devId).first();
+const can_post=published>0||(u&&u.is_admin);
+const rows=(await q(env,'select p.*,(select count(*) from community_likes l where l.post_id=p.id) likes_count from community_posts p where p.user_id=? order by p.created_at desc limit 50',devId).all()).results;
+let likedSet=new Set();
+if(me&&rows.length){
+const lks=(await q(env,'select post_id from community_likes where user_id=?',me.id).all()).results;
+lks.forEach(x=>likedSet.add(x.post_id));
+}
+return J({can_post:!!can_post,posts:rows.map(x=>({id:x.id,content:x.content,image_url:x.image_key?base+'/files/'+x.image_key:null,created_at:x.created_at,likes_count:x.likes_count,is_liked:likedSet.has(x.id)}))});
+}
+if(path==='/api/community/posts'&&m==='POST'){
+need();
+const pubCount=(await q(env,"select count(*) n from apps where owner_id=? and status='published'",me.id).first()).n;
+if(!me.is_admin&&pubCount===0)throw new E(403,'Only publishers with at least 1 approved app can open and post to a community.');
+const content=clip(body.content,2000),img=body.image_key||null;
+if(!content)throw new E(400,'Content cannot be empty.');
+if(img&&!mine(img,me.id))throw new E(400,'Invalid image.');
+const id=uid();
+await q(env,'insert into community_posts(id,user_id,content,image_key,created_at) values(?,?,?,?,?)',id,me.id,content,img,now).run();
+return J({id,ok:true});
+}
+if((r=path.match(/^\/api\/community/posts\/([\w-]+)$/))&&m==='DELETE'){
+need();
+const p=await q(env,'select * from community_posts where id=?',r[1]).first();
+if(!p)throw new E(404,'Post not found');
+if(p.user_id!==me.id&&!me.is_admin)throw new E(403,'Not allowed.');
+await q(env,'delete from community_posts where id=?',p.id).run();
+await q(env,'delete from community_likes where post_id=?',p.id).run();
+if(p.image_key)await delFile(env,p.image_key);
+return J({ok:true});
+}
+if((r=path.match(/^\/api\/community\/posts\/([\w-]+)\/like$/))&&m==='POST'){
+need();
+if(body.on)await q(env,'insert or ignore into community_likes(post_id,user_id) values(?,?)',r[1],me.id).run();
+else await q(env,'delete from community_likes where post_id=? and user_id=?',r[1],me.id).run();
+const c=(await q(env,'select count(*) n from community_likes where post_id=?',r[1]).first()).n;
+return J({ok:true,likes:c});
+}
+
+// Uploads
 if(path==='/api/upload'&&m==='POST'){
 need();
 const kind=url.searchParams.get('kind'),len=+req.headers.get('Content-Length');
@@ -223,12 +290,14 @@ const up=await ghUpload(env,rel.id,asset,type,req.body,len);
 await q(env,'insert into files(key,owner_id,tag,asset,asset_id,orig_name,size,created_at) values(?,?,?,?,?,?,?,?)',key,me.id,rel.tag,asset,up.id,name,len,now).run();
 return J({key,size:len,url:base+'/files/'+key});
 }
+
+// Apps
 if(path==='/api/apps'&&m==='GET'){
 const p=url.searchParams,text=clip(p.get('q'),60);let where,b=[];
 if(p.get('mine')){need();where='a.owner_id=?';b=[me.id]}
 else if(p.get('status')==='pending'){need();if(!me.is_admin)throw new E(403,'Admins only.');where="a.status='pending'"}
 else where="a.status='published'";
-if(text){where+=' and (a.name like ? or a.category like ?)';b.push('%'+text+'%','%'+text+'%')}
+if(text){where+=' and (a.name like ? or a.category like ? or a.summary like ?)';b.push('%'+text+'%','%'+text+'%','%'+text+'%')}
 const rows=(await q(env,SEL+' where '+where+' order by a.updated_at desc limit 100',...b).all()).results;
 return J({apps:rows.map(a=>shape(a,base))});
 }
@@ -256,7 +325,7 @@ const owner=!!me&&me.id===a.owner_id,admin=!!me&&!!me.is_admin;
 if(m==='GET'){
 if(!(a.status==='published'||owner||admin))throw new E(404,'App not found');
 const vs=(await q(env,(owner||admin)?'select * from versions where app_id=? order by version_code desc':"select * from versions where app_id=? and status='approved' order by version_code desc",id).all()).results.map(v=>({...v,apk_url:base+'/files/'+v.apk_key}));
-const rv=(await q(env,'select r.rating,r.comment,r.created_at,u.username,u.avatar_key from reviews r join users u on u.id=r.user_id where r.app_id=? order by r.created_at desc limit 30',id).all()).results.map(x=>({rating:x.rating,comment:x.comment,created_at:x.created_at,username:x.username,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}));
+const rv=(await q(env,'select r.rating,r.comment,r.created_at,u.username,u.avatar_key,u.is_admin from reviews r join users u on u.id=r.user_id where r.app_id=? order by r.created_at desc limit 30',id).all()).results.map(x=>({rating:x.rating,comment:x.comment,created_at:x.created_at,username:x.username,is_admin:!!x.is_admin,avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}));
 const dist=(await q(env,'select rating,count(*) n from reviews where app_id=? group by rating',id).all()).results;
 let following=false,favorited=false,my_review=null;
 if(me){
@@ -411,7 +480,7 @@ const hexApkUrl=env.HEXSTORE_APK_URL||(base+'/?app='+encodeURIComponent(id));
 const webFallback=base+'/?app='+encodeURIComponent(id);
 const intentUrl='intent://hexstore/app/'+encodeURIComponent(id)+'#Intent;scheme=hexstore;package='+PACKAGE_NAME+';S.browser_fallback_url='+encodeURIComponent(webFallback)+';end';
 
-const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>'+esc(a.name)+' — HEXSTORE</title><meta name="description" content="'+desc+'"><meta property="og:title" content="'+esc(a.name)+' — free APK on HEXSTORE"><meta property="og:description" content="'+desc+'">'+(icon?'<meta property="og:image" content="'+esc(icon)+'">':'')+'<meta property="og:url" content="'+base+'/a/'+esc(id)+'"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#0a0a0c"><style>*{box-sizing:border-box}body{margin:0;background:#0a0a0c;color:#f4f4f5;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}main{max-width:560px;margin:auto;padding:32px 18px 60px}.top{display:flex;align-items:center;gap:10px;color:#9a9aa4;font-weight:700;letter-spacing:.08em;font-size:13px;margin-bottom:26px}.top i{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#43c25c,#27913f);display:inline-block}.card{background:#17171b;border:1px solid #2b2b31;border-radius:24px;padding:26px}.ic{width:112px;height:112px;border-radius:26px;object-fit:cover;background:#222227;display:block}h1{font-size:32px;margin:20px 0 4px;letter-spacing:-.02em}.mu{color:#9a9aa4}.btn{display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;text-decoration:none;font-weight:700;border-radius:14px;padding:16px 20px;font-size:17px;box-shadow:0 6px 20px #43c25c33}.btn.o{background:transparent;color:#f4f4f5;border:1px solid #2b2b31;box-shadow:none;margin-top:12px;font-weight:600}.st{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #2b2b31;margin:24px -26px 0;padding-top:16px;text-align:center;font-size:12px;color:#9a9aa4;text-transform:uppercase}.st b{display:block;font-size:20px;color:#f4f4f5;text-transform:none}h2{font-size:20px;margin:30px 0 8px}p{margin:0 0 10px;white-space:pre-wrap}</style></head><body><main><div class="top"><i></i>HEXSTORE</div><div class="card">'+(icon?'<img class="ic" src="'+esc(icon)+'" alt="">':'<div class="ic"></div>')+'<h1>'+esc(a.name)+'</h1>'+(a.summary?'<p style="font-size:17px;margin:0 0 8px">'+esc(a.summary)+'</p>':'')+'<p class="mu">by '+esc(a.owner_name)+' · '+esc(a.category)+'</p><div style="margin-top:22px"><a class="btn" href="'+esc(hexApkUrl)+'">'+(env.HEXSTORE_APK_URL?'Install HEXSTORE to view this app':'Open HEXSTORE')+'</a><a class="btn o" href="'+esc(intentUrl)+'">Already installed? Open in HEXSTORE</a></div><div class="st"><div><b>'+(a.rating||'–')+'</b>Rating</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fsize(v.size):'–')+'</b>Size</div></div></div>'+(v?'<h2>What’s new in v'+esc(v.version_name)+'</h2><p>'+esc(v.changelog||'Initial release')+'</p>':'')+'<h2>About this app</h2><p>'+esc(a.description)+'</p></main></body></html>';
+const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>'+esc(a.name)+' — HEXSTORE</title><meta name="description" content="'+desc+'"><meta property="og:title" content="'+esc(a.name)+' — on HEXSTORE"><meta property="og:description" content="'+desc+'">'+(icon?'<meta property="og:image" content="'+esc(icon)+'">':'')+'<meta property="og:url" content="'+base+'/a/'+esc(id)+'"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#35a64c"><style>*{box-sizing:border-box}body{margin:0;background:#0a0a0c;color:#f4f4f5;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}main{max-width:560px;margin:auto;padding:32px 18px 60px}.top{display:flex;align-items:center;gap:10px;color:#9a9aa4;font-weight:700;letter-spacing:.08em;font-size:13px;margin-bottom:26px}.top i{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#43c25c,#27913f);display:inline-block}.card{background:#17171b;border:1px solid #2b2b31;border-radius:24px;padding:26px}.ic{width:112px;height:112px;border-radius:26px;object-fit:cover;background:#222227;display:block}h1{font-size:32px;margin:20px 0 4px;letter-spacing:-.02em}.mu{color:#9a9aa4}.btn{display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;text-decoration:none;font-weight:700;border-radius:14px;padding:16px 20px;font-size:17px;box-shadow:0 6px 20px #43c25c33}.btn.o{background:transparent;color:#f4f4f5;border:1px solid #2b2b31;box-shadow:none;margin-top:12px;font-weight:600}.st{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #2b2b31;margin:24px -26px 0;padding-top:16px;text-align:center;font-size:12px;color:#9a9aa4;text-transform:uppercase}.st b{display:block;font-size:20px;color:#f4f4f5;text-transform:none}h2{font-size:20px;margin:30px 0 8px}p{margin:0 0 10px;white-space:pre-wrap}.and-banner{position:fixed;top:10px;left:12px;right:12px;max-width:540px;margin:auto;z-index:100;background:#111216;border:1px solid #245a33;border-radius:20px;padding:12px 14px;box-shadow:0 12px 35px rgba(0,0,0,.75);display:flex;align-items:center;gap:12px;transform:translateY(0);animation:sl-down .35s ease}.and-banner .ico{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;display:grid;place-items:center;font-size:22px;flex:none}.and-banner .tx{flex:1;min-width:0}.and-banner b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.and-banner small{color:#9a9aa4;font-size:13px;display:block}.and-banner .b-inst{background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;border:0;border-radius:10px;padding:8px 14px;font-weight:700;font-size:13px;text-decoration:none}.and-banner .b-cls{background:none;border:0;color:#f4f4f5;font-size:18px;padding:4px;cursor:pointer}@keyframes sl-down{from{transform:translateY(-120%)}to{transform:translateY(0)}}</style></head><body><div class="and-banner" id="ab"><div class="ico">📦</div><div class="tx"><b>Install HEXSTORE</b><small>Get the official app to download</small></div><a class="b-inst" href="'+esc(hexApkUrl)+'">Install</a><button class="b-cls" onclick="document.getElementById(\'ab\').style.display=\'none\'">✕</button></div><main style="padding-top:70px"><div class="top"><i></i>HEXSTORE</div><div class="card">'+(icon?'<img class="ic" src="'+esc(icon)+'" alt="">':'<div class="ic"></div>')+'<h1>'+esc(a.name)+'</h1>'+(a.summary?'<p style="font-size:17px;margin:0 0 8px">'+esc(a.summary)+'</p>':'')+'<p class="mu">by '+esc(a.owner_name)+' · '+esc(a.category)+'</p><div style="margin-top:22px"><a class="btn" href="'+esc(hexApkUrl)+'">'+(env.HEXSTORE_APK_URL?'Install HEXSTORE to view this app':'Open HEXSTORE')+'</a><a class="btn o" href="'+esc(intentUrl)+'">Already installed? Open in HEXSTORE</a></div><div class="st"><div><b>'+(a.rating||'–')+'</b>Rating</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fsize(v.size):'–')+'</b>Size</div></div></div>'+(v?'<h2>What’s new in v'+esc(v.version_name)+'</h2><p>'+esc(v.changelog||'Initial release')+'</p>':'')+'<h2>About this app</h2><p>'+esc(a.description)+'</p></main></body></html>';
 return new Response(html,{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'public, max-age=300'}});
 }
 function fsize(b){b=+b||0;return b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB'}
