@@ -8,6 +8,7 @@ const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(
 const unhex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
 const q=(env,sql,...b)=>env.DB.prepare(sql).bind(...b);
 const uid=()=>crypto.randomUUID();
+const sd=s=>{try{return decodeURIComponent(s)}catch(e){return ''}};
 
 const PACKAGE_NAME='com.hexstore.app';
 
@@ -98,8 +99,8 @@ export default{
     try{
       const miss=['DB','JWT_SECRET','GITHUB_TOKEN','GITHUB_OWNER','GITHUB_REPO'].filter(k=>!env[k]);
       if(miss.length)throw new E(500,'Setup incomplete. Missing: '+miss.join(', '));
-      if(path.startsWith('/files/'))return await file(req,env,decodeURIComponent(path.slice(7)),url);
-      if(path.startsWith('/a/'))return await sharePage(env,url,decodeURIComponent(path.slice(3)));
+      if(path.startsWith('/files/'))return await file(req,env,sd(path.slice(7)),url);
+      if(path.startsWith('/a/'))return await sharePage(env,url,sd(path.slice(3)));
       if(!path.startsWith('/api/'))return env.ASSETS?env.ASSETS.fetch(req):J({name:'HEXSTORE API',ok:true});
       return await api(req,env,url,path,ctx);
     }catch(e){return J({error:e.s?e.message:'Server error: '+(e.message||'')},e.s||500)}
@@ -192,8 +193,10 @@ async function api(req,env,url,path,ctx){
     const subject=clip(body.subject,100),message=clip(body.message,2000),email=clip(body.email,120).toLowerCase(),name=clip(body.name,60);
     if(!subject||!message)throw new E(400,'Subject and message are required.');
     const id=uid(),userId=me?me.id:null;
+    const lim=(await q(env,'select count(*) n from support_tickets where (email=? or user_id=?) and created_at>?',email,userId||'',now-36e5).first()).n;
+    if(lim>=5)throw new E(429,'Too many messages. Try again later.');
     await q(env,'insert into support_tickets(id,user_id,name,email,subject,message,created_at) values(?,?,?,?,?,?,?)',id,userId,name,email,subject,message,now).run();
-    await q(env,"insert into notifications(id,user_id,title,body,created_at) select lower(hex(randomblob(16))),u.id,'📩 Support: '+?1,?2,?3 from users u where u.is_admin=1",subject,(name||'User')+': '+message.slice(0,80),now).run();
+    await q(env,"insert into notifications(id,user_id,title,body,created_at) select lower(hex(randomblob(16))),u.id,'📩 Support: '||?1,?2,?3 from users u where u.is_admin=1",subject,(name||'User')+': '+message.slice(0,80),now).run();
     return J({ok:true});
   }
   if(path==='/api/admin/support'&&m==='GET'){
@@ -220,7 +223,7 @@ async function api(req,env,url,path,ctx){
   }
   if((r=path.match(/^\/api\/users\/([\w-]+)\/(followers|following)$/))&&m==='GET'){
     const fol=r[2]==='followers';
-    const rows=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,u.is_admin,(select count(*) from dev_follows where dev_id=u.id) followers,(select coalesce(sum(downloads),0) from apps where owner_id=u.id and status="published") downloads from dev_follows f join users u on u.id='+(fol?'f.follower_id':'f.dev_id')+' where '+(fol?'f.dev_id':'f.follower_id')+'=? order by f.created_at desc limit 200',r[1]).all()).results;
+    const rows=(await q(env,'select u.id,u.username,u.bio,u.avatar_key,u.is_admin,(select count(*) from dev_follows where dev_id=u.id) followers,(select coalesce(sum(downloads),0) from apps where owner_id=u.id and status=\'published\') downloads from dev_follows f join users u on u.id='+(fol?'f.follower_id':'f.dev_id')+' where '+(fol?'f.dev_id':'f.follower_id')+'=? order by f.created_at desc limit 200',r[1]).all()).results;
     return J({users:rows.map(x=>({id:x.id,username:x.username,bio:x.bio||'',is_admin:Boolean(x.is_admin),followers:+(x.followers||0)+(x.is_admin?256789:0),downloads:+(x.downloads||0),avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}))});
   }
   if((r=path.match(/^\/api\/users\/([\w-]+)\/follow$/))&&m==='POST'){
@@ -399,19 +402,23 @@ async function api(req,env,url,path,ctx){
     return J({id:vid,version_code:code,status:st});
   }
   if((r=path.match(/^\/api\/versions\/([\w-]+)\/download$/))&&m==='POST'){
-    const v=await q(env,'select app_id from versions where id=?',r[1]).first();
+    const v=await q(env,'select v.app_id from versions v join apps a on a.id=v.app_id where v.id=? and v.status=\'approved\' and a.status=\'published\'',r[1]).first();
     if(v){await q(env,'update versions set downloads=downloads+1 where id=?',r[1]).run();await q(env,'update apps set downloads=downloads+1 where id=?',v.app_id).run()}
     return J({ok:true});
   }
   if((r=path.match(/^\/api\/apps\/([\w-]+)\/(follow|favorite)$/))&&m==='POST'){
     need();
     const t=r[2]==='follow'?'follows':'favorites';
+    if(!await q(env,"select 1 x from apps where id=? and (status='published' or owner_id=?)",r[1],me.id).first())throw new E(404,'App not found');
     if(body.on)await q(env,'insert or ignore into '+t+'(user_id,app_id) values(?,?)',me.id,r[1]).run();
     else await q(env,'delete from '+t+' where user_id=? and app_id=?',me.id,r[1]).run();
     return J({ok:true});
   }
   if((r=path.match(/^\/api\/apps\/([\w-]+)\/reviews$/))&&m==='POST'){
     need();
+    const ra=await q(env,'select owner_id,status from apps where id=?',r[1]).first();
+    if(!ra||ra.status!=='published')throw new E(404,'App not found');
+    if(ra.owner_id===me.id)throw new E(400,'You cannot review your own app.');
     const rating=Math.round(+body.rating);
     if(!(rating>=1&&rating<=5))throw new E(400,'Tap a star to rate.');
     await q(env,'insert into reviews(id,app_id,user_id,rating,comment,created_at) values(?,?,?,?,?,?) on conflict(app_id,user_id) do update set rating=excluded.rating,comment=excluded.comment,created_at=excluded.created_at',uid(),r[1],me.id,rating,clip(body.comment,1000),now).run();
@@ -476,7 +483,8 @@ async function api(req,env,url,path,ctx){
   if(path==='/api/notifications'&&m==='GET'){
     need();
     const rows=(await q(env,'select * from notifications where user_id=? order by created_at desc limit 50',me.id).all()).results;
-    return J({notifications:rows,unread:rows.filter(n=>!n.is_read).length});
+    const un=(await q(env,'select count(*) n from notifications where user_id=? and is_read=0',me.id).first()).n;
+    return J({notifications:rows,unread:un});
   }
   if(path==='/api/notifications/read'&&m==='POST'){
     need();
