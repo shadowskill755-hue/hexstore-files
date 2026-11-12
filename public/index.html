@@ -7,34 +7,34 @@
 <title>HEXSTORE</title>
 <style>
 :root{--bg:#0a0a0c;--bar:#111216;--sf:#17171b;--sf2:#222227;--ln:#2b2b31;--tx:#f4f4f5;--mu:#9a9aa4;--ac:#35a64c;--bt:#e4e4e7;--bt-tx:#111;--bl:#0a2230;--bl2:#134058;--blue:#1d9bf0}
-[data-theme=light]{--bg:#f6f6f7;--bar:#fff;--sf:#fff;--sf2:#ececef;--ln:#dcdce1;--tx:#16161a;--mu:#6b6b75;--bt:#18181b;--bt-tx:#fff;--bl:#e6f4fb;--bl2:#b9dcee}
+[data-theme=light]{--bg:#f6f6f7;--bar:#ffffff;--sf:#ffffff;--sf2:#ececef;--ln:#dcdce1;--tx:#16161a;--mu:#6b6b75;--bt:#18181b;--bt-tx:#ffffff;--bl:#e6f4fb;--bl2:#b9dcee;--blue:#0284c7}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom);overflow-x:hidden}
 button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
 svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.top{position:sticky;top:0;z-index:30;background:var(--bar);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px}
-.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#43c25c,#27913f);border:0;color:#fff;font-size:24px;display:grid;place-items:center;flex:none}
-.search-btn{flex:1;display:flex;align-items:center;gap:10px;background:var(--sf2);border-radius:14px;padding:0 14px;height:46px;color:var(--mu);border:0;text-align:left;font-size:16px}
-.ib{background:none;border:0;font-size:22px;width:40px;height:40px;display:grid;place-items:center;color:var(--tx);flex:none}
-.av{width:46px;height:46px;border-radius:50%;background:#000;border:0;color:#fff;font-weight:800;font-size:13px;letter-spacing:1px;padding:0;flex:none;overflow:hidden}
-.pop{position:fixed;right:14px;top:calc(env(safe-area-inset-top) + 66px);width:min(280px,86vw);background:var(--sf);border:1px solid var(--ln);border-radius:16px;box-shadow:0 20px 50px #0007;z-index:40;overflow:hidden}
+.top{position:sticky;top:0;z-index:30;background:var(--bar);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#43c25c,#27913f);border:0;color:#fff;font-size:24px;display:grid;place-items:center;flex:none}
+.search-btn{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:var(--sf2);border-radius:14px;padding:0 12px;height:42px;color:var(--mu);border:0;text-align:left;font-size:15px;overflow:hidden}
+.search-btn span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{background:none;border:0;font-size:22px;width:38px;height:38px;display:grid;place-items:center;color:var(--tx);flex:none}
+.av{width:42px;height:42px;border-radius:50%;background:#000;border:0;color:#fff;font-weight:800;font-size:13px;letter-spacing:1px;padding:0;flex:none;overflow:hidden}
+.pop{position:fixed;right:14px;top:calc(env(safe-area-inset-top) + 64px);width:min(280px,86vw);background:var(--sf);border:1px solid var(--ln);border-radius:16px;box-shadow:0 20px 50px #0007;z-index:40;overflow:hidden}
 .pop .h{padding:16px 18px;border-bottom:1px solid var(--ln)}.pop .h small{color:var(--mu)}
-.pop button{display:flex;align-items:center;gap:14px;width:100%;padding:14px 18px;background:none;border:0;text-align:left;font-size:17px}
+.pop button{display:flex;align-items:center;gap:14px;width:100%;padding:14px 18px;background:none;border:0;text-align:left;font-size:17px;color:var(--tx)}
 .pop .red{color:#f2555a;border-top:1px solid var(--ln)}
 main{max-width:760px;margin:auto;padding:22px 16px 40px}
 h1{font-size:34px;letter-spacing:-.02em;margin:18px 0 8px}h2{font-size:25px;margin:0 0 16px;letter-spacing:-.01em}
 .mu{color:var(--mu)}.back{background:none;border:0;color:var(--mu);display:flex;gap:10px;align-items:center;padding:8px 0;font-size:17px}
-.row{display:flex;align-items:center;gap:16px;width:100%;background:none;border:0;text-align:left;padding:14px 4px}
+.row{display:flex;align-items:center;gap:16px;width:100%;background:none;border:0;text-align:left;padding:14px 4px;color:var(--tx)}
 .ico{width:56px;height:56px;border-radius:15px;flex:none;display:grid;place-items:center;font-weight:800;color:#fff;font-size:19px;overflow:hidden}
 .ico img{width:100%;height:100%;object-fit:cover}
-.row b{display:block;font-size:19px}.row small{display:flex;gap:8px;color:var(--mu);font-size:15px;align-items:center}.st{color:#fff}.dot{opacity:.5}
+.row b{display:block;font-size:19px}.row small{display:flex;gap:8px;color:var(--mu);font-size:15px;align-items:center;flex-wrap:wrap}.st{color:var(--tx)}.dot{opacity:.5}
 .card{background:var(--sf);border:1px solid var(--ln);border-radius:24px;overflow:hidden;margin:14px 0}
 .pad{padding:22px}.sec{padding:26px 0;border-bottom:1px solid var(--ln)}
 .btn{background:var(--bt);color:var(--bt-tx);border:1px solid transparent;border-radius:13px;padding:0 20px;height:52px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none}
 .btn.o{background:transparent;color:var(--tx);border-color:var(--ln)}.btn.f{width:100%}.btn[disabled]{opacity:.45;cursor:not-allowed}
-.sq{width:52px;height:52px;border-radius:13px;background:transparent;border:1px solid var(--ln);display:grid;place-items:center;font-size:22px}
+.sq{width:52px;height:52px;border-radius:13px;background:transparent;border:1px solid var(--ln);display:grid;place-items:center;font-size:22px;color:var(--tx)}
 .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--ln);border-radius:999px;padding:8px 14px;font-weight:600;font-size:15px;margin:0 8px 8px 0}
-.pill.g{color:#4fcb68;background:#14301c55;border-color:#245a33}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ln)}
 .stats div{padding:18px 6px;text-align:center;border-right:1px solid var(--ln);color:var(--mu);font-size:13px;text-transform:uppercase}
 .stats div:last-child{border:0}.stats b{display:block;font-size:24px;color:var(--tx)}
@@ -45,14 +45,13 @@ h1{font-size:34px;letter-spacing:-.02em;margin:18px 0 8px}h2{font-size:25px;marg
 .ver{display:inline-block;border:1px solid var(--ln);border-radius:10px;padding:4px 12px;font-family:ui-monospace,monospace;margin-right:10px}
 .info{display:flex;justify-content:space-between;gap:16px;padding:15px 0;align-items:center}.info span{color:var(--mu);display:flex;gap:14px;align-items:center}.info b{text-align:right}
 .pm{display:flex;justify-content:space-between;align-items:center;padding:13px 0;font-size:18px}.pm span:first-child{display:flex;gap:14px;align-items:center}.pm span:last-child{color:var(--mu)}
-.sh{display:flex;gap:14px;align-items:center}.sh .ic{width:48px;height:48px;border-radius:50%;background:#15301d;color:#4fcb68;display:grid;place-items:center;font-size:24px}
-.bar{display:grid;grid-template-columns:20px 1fr 28px;gap:12px;align-items:center;color:var(--mu);margin:10px 0}.bar i{height:9px;background:var(--sf2);border-radius:9px}
+.bar{display:grid;grid-template-columns:20px 1fr 28px;gap:12px;align-items:center;color:var(--mu);margin:10px 0}.bar i{height:9px;background:var(--sf2);border-radius:999px}
 .stars{display:flex;gap:12px;font-size:38px;color:var(--mu);margin:14px 0}.stars button{background:none;border:0;color:inherit;font-size:inherit;padding:0}.stars .on{color:#f3c84b}
-textarea,input[type=text],input[type=url],input[type=password],input[type=email],select{width:100%;background:var(--bg);border:1px solid var(--ln);border-radius:14px;padding:15px;outline:0}
+textarea,input[type=text],input[type=url],input[type=password],input[type=email],select{width:100%;background:var(--bg);border:1px solid var(--ln);border-radius:14px;padding:15px;outline:0;color:var(--tx)}
 textarea{resize:vertical;min-height:110px}textarea:focus,input:focus,select:focus{border-color:var(--mu)}
 label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{color:#f2555a}.hint{color:var(--mu);font-size:14px;margin:8px 0 0}
 .sel{width:100%;margin:12px 0;appearance:none;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%239a9aa4' stroke-width='2'%3E%3Cpath d='M4 7l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center}
-.tabs{display:flex;gap:24px;border-bottom:1px solid var(--ln);margin:30px 0 20px;overflow-x:auto}.tabs button{background:none;border:0;padding:0 0 14px;font-size:18px;color:var(--mu);font-weight:600;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.tabs{display:flex;gap:20px;border-bottom:1px solid var(--ln);margin:30px 0 20px;overflow-x:auto}.tabs button{background:none;border:0;padding:0 0 14px;font-size:18px;color:var(--mu);font-weight:600;display:flex;gap:8px;align-items:center;white-space:nowrap}
 .tabs .on{color:var(--tx);border-bottom:2px solid var(--tx)}.tabs em{font-style:normal;background:var(--sf2);border-radius:999px;font-size:14px;padding:3px 10px}
 .badge{border:1px solid var(--ln);border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;letter-spacing:.04em;white-space:nowrap}
 .drop{border:1.5px dashed var(--ln);border-radius:20px;padding:34px 16px;text-align:center;color:var(--mu);cursor:pointer;display:block}
@@ -60,7 +59,6 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .file{border:1px solid var(--ln);border-radius:18px;padding:18px;display:flex;align-items:center;gap:16px}.file b{display:block}
 .opt{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--ln);border-radius:16px;padding:18px;margin-bottom:12px;cursor:pointer}
 .opt i{width:30px;height:30px;border-radius:50%;border:2px solid var(--mu);flex:none;margin-top:2px}.opt.on i{border-color:var(--ac);background:radial-gradient(var(--ac) 45%,transparent 50%)}
-.opt b{display:block;font-size:19px}.opt span{color:var(--mu)}
 .dock{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);background:var(--bar);border:1px solid var(--ln);border-radius:22px;padding:16px 18px;z-index:20;box-shadow:0 10px 40px #0008;max-width:736px;margin:auto}
 .dock p{margin:0 0 12px;color:var(--mu)}.dock div{display:flex;gap:12px}
 .foot{border-top:1px solid var(--ln);margin-top:50px;padding:28px 0 40px;color:var(--mu)}.foot nav{display:flex;flex-wrap:wrap;gap:14px 26px;font-size:18px}.foot p{margin-top:28px}
@@ -76,16 +74,12 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .shots>div{position:relative}
 .xb{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:0;background:#000b;color:#fff;font-size:18px;display:grid;place-items:center;padding:0}
 .view{background:none;border:0;color:var(--tx);font-weight:700;text-decoration:underline;padding:6px 0;font-size:17px}
-button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 .terms h3{margin:20px 0 6px;font-size:18px}.terms p{color:var(--mu);margin:0 0 6px;line-height:1.6}
 .mod{border:1px solid var(--ln);border-radius:20px;padding:18px;margin:14px 0;background:var(--sf)}
 .tagl{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.06em;padding:4px 10px;border-radius:999px;background:var(--sf2);margin-bottom:10px}
-.card,.mod{box-shadow:0 1px 0 #ffffff08 inset}
 .dlb{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
 .prog{position:relative;height:52px;border-radius:13px;background:var(--sf2);overflow:hidden;border:1px solid var(--ln)}
 .prog i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#43c25c,#27913f);transition:width .25s ease}
-.prog i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,#ffffff40,transparent);background-size:60% 100%;background-repeat:no-repeat;animation:sw 1.2s linear infinite}
-@keyframes sw{from{background-position:-100% 0}to{background-position:200% 0}}
 .prog span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;text-shadow:0 1px 3px #000a}
 .btn.g{background:linear-gradient(135deg,#43c25c,#27913f);color:#fff}
 .btn.ok{background:#14301c;color:#4fcb68;border-color:#245a33}
@@ -94,7 +88,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .pulse{animation:pl 1.6s ease-in-out infinite}
 @keyframes pl{0%,100%{box-shadow:0 0 0 0 #43c25c66}50%{box-shadow:0 0 0 8px #43c25c00}}
 
-/* Bottom sheet system */
+/* Bottom Sheet */
 .sheet-bd{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:90;backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s ease}
 .sheet-bd.on{opacity:1;pointer-events:auto}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:95;background:var(--sf);border-top:1px solid var(--ln);border-radius:24px 24px 0 0;max-width:580px;margin:auto;padding:12px 20px calc(env(safe-area-inset-bottom) + 24px);transform:translateY(105%);transition:transform .22s cubic-bezier(0.2,0.9,0.3,1);box-shadow:0 -12px 40px #000c;max-height:85vh;overflow-y:auto}
@@ -104,7 +98,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .steps li{display:flex;gap:14px;align-items:flex-start;font-size:15px;line-height:1.5}
 .steps li i{width:26px;height:26px;border-radius:50%;background:var(--sf2);color:var(--tx);font-weight:700;font-style:normal;font-size:13px;display:grid;place-items:center;flex:none;margin-top:2px}
 
-/* Android Notification Banner from Top */
+/* Android Top Banner */
 .and-banner{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:12px;right:12px;max-width:540px;margin:auto;z-index:110;background:var(--bar);border:1px solid #245a33;border-radius:20px;padding:12px 14px;box-shadow:0 12px 35px rgba(0,0,0,.75);display:flex;align-items:center;gap:12px;transform:translateY(-150%);transition:transform .3s cubic-bezier(0.18,0.89,0.32,1.2)}
 .and-banner.on{transform:translateY(0)}
 .and-banner .ic{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;display:grid;place-items:center;font-size:24px;flex:none}
@@ -112,28 +106,28 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .and-banner b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .and-banner small{color:var(--mu);font-size:13px;display:block}
 
-/* YouTube Style Search Overlay */
+/* YouTube Style Search */
 .yt-search{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;flex-direction:column}
 .yt-search.on{display:flex}
 .yt-head{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 8px) 14px 10px;border-bottom:1px solid var(--ln);background:var(--bar)}
 .yt-input-wrap{flex:1;display:flex;align-items:center;background:var(--sf2);border-radius:12px;padding:0 12px;height:46px}
-.yt-input-wrap input{border:0;background:none;width:100%;outline:0;font-size:17px}
+.yt-input-wrap input{border:0;background:none;width:100%;outline:0;font-size:17px;color:var(--tx)}
 .yt-body{flex:1;overflow-y:auto;padding:14px 16px}
-.yt-item{display:flex;align-items:center;gap:16px;width:100%;padding:13px 4px;border:0;background:none;text-align:left;font-size:16px;border-bottom:1px solid #ffffff0a}
+.yt-item{display:flex;align-items:center;gap:16px;width:100%;padding:13px 4px;border:0;background:none;text-align:left;font-size:16px;border-bottom:1px solid var(--ln);color:var(--tx)}
 .yt-item span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* Verified Blue Badge */
-.v-badge{display:inline-flex;align-items:center;justify-content:center;color:var(--blue);margin-left:5px;font-size:1.05em;vertical-align:-1px}
+/* Badges */
+.v-badge{display:inline-flex;align-items:center;justify-content:center;color:var(--blue);margin-left:4px;font-size:1.05em;vertical-align:-1px}
+.prime-badge{display:inline-flex;align-items:center;background:linear-gradient(135deg,#f3c84b,#d97706);color:#000;font-size:11px;font-weight:900;letter-spacing:.05em;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle;box-shadow:0 2px 8px rgba(243,200,75,.35)}
 
-/* Splash and Tutorial Animation */
-.splash{position:fixed;inset:0;background:#0a0a0c;z-index:200;display:grid;place-items:center;transition:opacity .4s ease}
+/* Splash & Guide */
+.splash{position:fixed;inset:0;background:var(--bg);z-index:200;display:grid;place-items:center;transition:opacity .4s ease}
 .splash-box{text-align:center;animation:sp-in .8s cubic-bezier(0.18,0.89,0.32,1.2)}
 .splash-logo{width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;font-size:48px;display:grid;place-items:center;margin:0 auto 16px;box-shadow:0 0 50px rgba(67,194,92,.5)}
 .splash h1{margin:0;font-size:32px;letter-spacing:1px}
 .splash p{color:var(--mu);margin:6px 0 0;font-size:17px}
 @keyframes sp-in{from{transform:scale(0.6);opacity:0}to{transform:scale(1);opacity:1}}
 
-/* Onboarding Guide Popover */
 .guide{position:fixed;inset:0;z-index:180;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:20px}
 .guide-card{background:var(--sf);border:1px solid var(--ln);border-radius:24px;padding:26px;max-width:440px;width:100%;box-shadow:0 10px 40px #000;text-align:center}
 .guide-icon{width:64px;height:64px;border-radius:20px;background:var(--sf2);color:var(--ac);display:grid;place-items:center;font-size:32px;margin:0 auto 14px}
@@ -184,13 +178,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 <div id="sheet" class="sheet"></div>
 
 <script>
-var P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',heart:'<path d="M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A4.5 4.5 0 0117 18z"/><path d="M12 12v6M9.5 14.5L12 12l2.5 2.5"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="8" cy="9" r="1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',bell:'<path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8M10 21h4"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>',chat:'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>'};
+var P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',heart:'<path d="M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A4.5 4.5 0 0117 18z"/><path d="M12 12v6M9.5 14.5L12 12l2.5 2.5"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="8" cy="9" r="1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',bell:'<path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8M10 21h4"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>'};
 var ic=function(n){return '<svg viewBox="0 0 24 24">'+P[n]+'</svg>'};
-var blueCheck='<span class="v-badge" title="Verified Admin"><svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 14.6l-3.9-3.9 1.41-1.41 2.49 2.48 6.08-6.08 1.41 1.41-7.49 7.5z"/></svg></span>';
+var blueCheck='<span class="v-badge" title="Verified"><svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 14.6l-3.9-3.9 1.41-1.41 2.49 2.48 6.08-6.08 1.41 1.41-7.49 7.5z"/></svg></span>';
+var primeBadge='<span class="prime-badge" title="Prime Developer">PRIME</span>';
 
 var API=window.location.origin;
 var G=['#e0552b,#3a1a14','#2e6bd6,#101a3a','#8a3fd1,#1c1030','#1d9e6e,#0b2a20','#d6a02e,#3a2a0a','#c23b6b,#2a0f1c'];
-var S={page:'home',id:null,pop:0,tab:'apps',reg:0,after:'',origin:'',apk:null,icon:null,shots:[],name:'',cat:'',desc:'',log:'',ver:'1.0',src:'',excl:0,star:0,q:'',user:null,apps:null,det:null,mine:null,me:null,fav:null,err:'',busy:0,unread:0,notes:null,pending:null,delArm:0,nver:'',nlog:'',napk:null,sum:'',editId:null,eicon:null,eshots:[],agree:0,queue:null,qn:0,eun:'',ebio:'',emal:1,efile:null,eprev:null,eclear:0,dev:null,dtab:'apps',dfol:null,dposts:null,cpostText:'',cpostFile:null,tickets:null};
+var S={page:'home',id:null,pop:0,tab:'apps',reg:0,after:'',origin:'',apk:null,icon:null,shots:[],name:'',cat:'',desc:'',log:'',ver:'1.0',src:'',excl:0,star:0,q:'',user:null,apps:null,det:null,mine:null,me:null,fav:null,err:'',busy:0,unread:0,notes:null,pending:null,delArm:0,nver:'',nlog:'',napk:null,sum:'',editId:null,eicon:null,eshots:[],agree:0,queue:null,qn:0,eun:'',ebio:'',emal:1,efile:null,eprev:null,eclear:0,dev:null,dtab:'apps',dfol:null,dposts:null,cpostFile:null,tickets:null};
 var $=function(s){return document.querySelector(s)},app=$('#app');
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
@@ -198,6 +193,17 @@ var fmt=function(b){b=+b||0;return b>=1048576?(b/1048576).toFixed(2)+' MB':Math.
 var fd=function(t){return new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})};
 var DL={},INST=(function(){try{return JSON.parse(store.get('hxi')||'{}')||{}}catch(e){return{}}})();
 var saveInst=function(){store.set('hxi',JSON.stringify(INST))};
+
+// Theme preference
+var savedTheme=store.get('hx_theme')||'';
+if(savedTheme)document.documentElement.dataset.theme=savedTheme;
+
+function toggleTheme(){
+  var cur=document.documentElement.dataset.theme==='light'?'':'light';
+  document.documentElement.dataset.theme=cur;
+  store.set('hx_theme',cur);
+  draw();
+}
 
 function api(path,o){o=o||{};var h={};var t=store.get('hx');if(t)h.Authorization='Bearer '+t;var b;if(o.body){h['Content-Type']='application/json';b=JSON.stringify(o.body)}
  return fetch(API+path,{method:o.method||'GET',headers:h,body:b}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok)throw new Error(j.error||'Request failed ('+r.status+')');return j})},function(){throw new Error('Cannot reach the server. Check your internet.')})}
@@ -207,9 +213,33 @@ function up(f,kind,cb){return new Promise(function(res,rej){var x=new XMLHttpReq
  x.onerror=function(){rej(new Error('Cannot reach the server. Check your internet.'))};x.send(f)})}
 
 function ico(a,big){var st=big?'width:112px;height:112px;border-radius:26px;font-size:30px;':'';if(a.icon_url)return '<div class="ico" style="'+st+'"><img src="'+esc(a.icon_url)+'" alt=""></div>';var g=G[(a.name||'x').length%6].split(',');return '<div class="ico" style="'+st+'background:linear-gradient(135deg,'+g[0]+','+g[1]+')">'+esc((a.name||'?').slice(0,2).toUpperCase())+'</div>'}
-function row(a){return '<button class="row" data-open="'+esc(a.id)+'">'+ico(a)+'<span style="flex:1;min-width:0"><b>'+esc(a.name)+'</b><small class="by">by '+esc(a.owner_name||'')+(a.owner_is_admin?blueCheck:'')+' · '+esc(a.category)+'</small>'+(a.summary?'<small class="sum">'+esc(a.summary)+'</small>':'')+'<small>'+(INST[a.id]?(a.version_code&&a.version_code>INST[a.id].c?'<span class="st" style="color:#e0a82e">Update</span>':'<span class="st" style="color:#4fcb68">Installed ✅</span>')+'<span class="dot">•</span>':'')+(a.rating_count?'<span class="st">★ '+a.rating+'</span><span class="dot">•</span>':'')+'⤓ '+a.downloads+(a.size?' <span class="dot">•</span> '+fmt(a.size):'')+'</small></span>'+(a.status!='published'?'<span class="badge">'+(a.status=='draft'?'DRAFT':a.status=='pending'?'IN REVIEW':'REJECTED')+'</span>':'')+'</button>'}
 
-function head(){var u=S.user;return '<div class="top"><button class="logo" data-go="home">'+ic('box')+'</button><button class="search-btn" id="open-yt-search">'+ic('search')+'<span>'+esc(S.q||'Search apps, games...')+'</span></button>'+(u?'<button class="ib" data-go="notif" style="position:relative">'+ic('bell')+'<span id="bdg" style="position:absolute;top:0;right:-2px;background:#f2555a;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 6px;'+(S.unread?'':'display:none')+'">'+S.unread+'</span></button>':'')+'<button class="ib" data-theme>'+ic('sun')+'</button><button class="av" data-pop>'+(u?(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':esc(u.username.slice(0,2).toUpperCase())):ic('user'))+'</button></div>'+(S.pop?'<div class="pop">'+(u?'<div class="h"><b style="font-size:19px">'+esc(u.username)+(u.is_admin?blueCheck:'')+'</b><br><small>'+esc(u.email)+'</small></div><button data-go="profile">'+ic('user')+'Profile</button><button data-go="upload">'+ic('up')+'Upload app</button><button data-go="settings">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button data-go="moderation">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="red" data-out>'+ic('out')+'Sign out</button>':'<button data-go="login">'+ic('user')+'Sign in / Create account</button><button data-go="settings">'+ic('gear')+'Settings</button>')+'</div>':'')}
+function getDevBadges(u){
+  var res='';if(!u)return res;
+  var fol=+(u.followers||u.owner_followers||0);
+  var dl=+(u.downloads||u.owner_downloads||0);
+  var adm=Boolean(u.is_admin||u.owner_is_admin);
+  if(adm||fol>=1000)res+=blueCheck;
+  if(adm||dl>=500||fol>=1000)res+=primeBadge;
+  return res;
+}
+
+function getFollowersCount(u, raw){
+  var n=+raw||0;
+  if(u&&(u.is_admin||u.owner_is_admin)) n+=256789;
+  return n.toLocaleString();
+}
+
+function row(a){
+  var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_followers,downloads:a.owner_downloads,is_prime:a.owner_is_prime});
+  return '<button class="row" data-open="'+esc(a.id)+'">'+ico(a)+'<span style="flex:1;min-width:0"><b>'+esc(a.name)+'</b><small class="by">by '+esc(a.owner_name||'')+devBadges+' · '+esc(a.category)+'</small>'+(a.summary?'<small class="sum">'+esc(a.summary)+'</small>':'')+'<small>'+(INST[a.id]?(a.version_code&&a.version_code>INST[a.id].c?'<span class="st" style="color:#e0a82e">Update</span>':'<span class="st" style="color:#4fcb68">Installed ✅</span>')+'<span class="dot">•</span>':'')+(a.rating_count?'<span class="st">★ '+a.rating+'</span><span class="dot">•</span>':'')+'⤓ '+a.downloads+(a.size?' <span class="dot">•</span> '+fmt(a.size):'')+'</small></span>'+(a.status!='published'?'<span class="badge">'+(a.status=='draft'?'DRAFT':a.status=='pending'?'IN REVIEW':'REJECTED')+'</span>':'')+'</button>';
+}
+
+function head(){
+  var u=S.user,devBadges=getDevBadges(u);
+  return '<div class="top"><button class="logo" data-go="home">'+ic('box')+'</button><button class="search-btn" id="open-yt-search">'+ic('search')+'<span>'+esc(S.q||'Search apps, games, tools...')+'</span></button>'+(u?'<button class="ib" data-go="notif" style="position:relative">'+ic('bell')+'<span id="bdg" style="position:absolute;top:0;right:-2px;background:#f2555a;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 6px;'+(S.unread?'':'display:none')+'">'+S.unread+'</span></button>':'')+'<button class="ib" data-theme>'+ic('sun')+'</button><button class="av" data-pop>'+(u?(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':esc(u.username.slice(0,2).toUpperCase())):ic('user'))+'</button></div>'+(S.pop?'<div class="pop">'+(u?'<div class="h"><b style="font-size:19px">'+esc(u.username)+devBadges+'</b><br><small>'+esc(u.email)+'</small></div><button data-go="profile">'+ic('user')+'Profile</button><button data-go="upload">'+ic('up')+'Upload app</button><button data-go="settings">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button data-go="moderation">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="red" data-out>'+ic('out')+'Sign out</button>':'<button data-go="login">'+ic('user')+'Sign in / Create account</button><button data-go="settings">'+ic('gear')+'Settings</button>')+'</div>':'');
+}
+
 function foot(){return '<div class="foot"><nav><a data-go="home">Home</a><a data-go="upload">Publish your app</a><a data-go="settings">Settings &amp; Help</a><a data-go="terms">Terms</a>'+(S.user?'<a data-go="profile">Profile</a>':'<a data-go="login">Sign in</a>')+'</nav><p>© 2026 HEXSTORE — Creator: <b>mrdakroma</b></p></div>'}
 function wait(){return '<main>'+(S.err?'<p class="mu" style="padding:60px 0;text-align:center">'+esc(S.err)+'<br><br><button class="btn" data-retry>Try again</button></p>':'<div class="sk" style="height:34px;width:60%;margin:20px 0"></div>'+[1,2,3,4].map(function(){return '<div style="display:flex;gap:16px;padding:14px 4px"><div class="sk" style="width:56px;height:56px"></div><div style="flex:1"><div class="sk" style="height:18px;width:50%;margin-bottom:10px"></div><div class="sk" style="height:14px;width:35%"></div></div></div>'}).join(''))+'</main>'}
 function home(){if(!S.apps)return wait();return '<main><h1>'+(S.q?'Results':'Discover apps')+'</h1><p class="mu">'+(S.q?esc(S.q):'Games, tools, and indie apps on HEXSTORE.')+'</p>'+(S.apps.length?S.apps.map(row).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No apps found.</p>')+foot()+'</main>'}
@@ -217,10 +247,11 @@ function login(){var r=S.reg;return '<main style="max-width:480px"><h1>'+(r?'Cre
 
 function detail(){if(!S.det)return wait();var d=S.det,a=d.app,vs=d.versions,own=d.is_owner||(S.user&&S.user.is_admin),v=vs.filter(function(x){return x.status=='approved'})[0],dist={};d.dist.forEach(function(x){dist[x.rating]=x.n});
 var by={username:a.owner_name,avatar_url:a.owner_avatar},desc=a.description,short=desc.length>180?desc.slice(0,180).replace(/\s+\S*$/,'')+'…':desc;
+var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_followers,downloads:a.owner_downloads,is_prime:a.owner_is_prime});
 var note=a.status=='published'?'':'<div class="note"><span style="font-size:22px">'+ic('eye')+'</span><div><b style="font-size:19px">'+(a.status=='rejected'?'Not approved':a.status=='pending'?'In review':'Draft')+'</b><br>'+(a.status=='rejected'?'Reason: '+esc(a.reject_reason||'No reason given')+'. Edit the app or upload a fixed APK, then submit it again.':a.status=='pending'?'A moderator is checking this app. It goes live once approved.':'Only you can see this app. Submit it for review when you are ready.')+'</div></div>';
 var showV=vs.length>1||(own&&vs.some(function(x){return x.status!='approved'}));
 return '<main><button class="back" data-go="home">'+ic('back')+'Back</button>'+note+
-'<div class="card"><div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px">'+esc(a.name)+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+(a.owner_is_admin?blueCheck:'')+'</button> · '+esc(a.category)+'</div>'+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+
+'<div class="card"><div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px">'+esc(a.name)+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+devBadges+'</button> · '+esc(a.category)+'</div>'+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+
 '<div style="display:flex;gap:10px;margin-top:14px;align-items:flex-start">'+'<div id="dlbox" style="display:flex;flex:1;min-width:0">'+dlBox(a,v)+'</div>'+(d.is_owner?'':'<button class="sq" data-follow style="color:'+(d.following?'var(--ac)':'inherit')+'">'+ic('bell')+'</button>')+'<button class="sq" data-fav style="'+(d.favorited?'color:#f2555a;':'')+'">'+ic('heart')+'</button><button class="sq" data-share>'+ic('share')+'</button></div>'+
 (own?'<div style="display:grid;gap:10px;margin-top:14px"><button class="btn o f" data-nv>'+ic('up')+'Upload new version</button><button class="btn o f" data-edit>'+ic('edit')+'Edit app</button>'+(a.status=='draft'||a.status=='rejected'?'<button class="btn o f" data-submit>Submit for review</button>':'')+'<button class="btn o f" data-del style="color:#f2555a">'+(S.delArm?'Tap again to delete':'Delete app')+'</button></div>':'')+
 (d.is_owner?'':'<p class="hint" style="margin:12px 0 0">'+(d.following?'You will be notified about new versions.':'Tap the bell to get notified about new versions.')+'</p>')+'</div>'+
@@ -235,14 +266,16 @@ d.reviews.map(function(r){return '<div style="padding:16px 0;border-top:1px soli
 '<h3 style="margin-top:30px">Write a review</h3><div class="stars">'+[1,2,3,4,5].map(function(n){return '<button data-star="'+n+'" class="'+(S.star>=n?'on':'')+'">'+(S.star>=n?'★':'☆')+'</button>'}).join('')+'</div><p class="mu">Tap a star to rate this app</p><textarea id="rv" placeholder="Share your experience…"></textarea><div style="text-align:right;margin-top:14px"><button class="btn" data-review>Submit review</button></div></div>'+foot()+'</main>'}
 
 function profile(){if(!S.me)return wait();var u=S.me.user,st=S.me.stats,list=S.tab=='fav'?S.fav:S.mine;
-return '<main><div class="card pad" style="padding:26px"><div style="margin-bottom:20px">'+pic(u,120,40)+'</div><h1 style="margin:0 0 8px;font-size:32px;display:flex;align-items:center">'+esc(u.username)+(u.is_admin?blueCheck:'')+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:12px">'+ic('cal')+'Joined '+fd(u.created_at)+(u.is_admin?' <span class="dot">·</span> Admin':'')+'</div><div class="mu" style="display:flex;gap:22px;margin-bottom:22px"><span>'+ic('box')+' '+st.apps+'</span><span>'+ic('dl')+' '+st.downloads+'</span><span>'+ic('heart')+' '+st.favorites+'</span></div>'+
-'<div style="display:flex;gap:18px;margin-bottom:18px"><button class="view" data-devtab="followers" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+(st.followers||0)+'</b> <span class="mu" style="font-weight:400">followers</span></button><button class="view" data-devtab="following" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+(st.following||0)+'</b> <span class="mu" style="font-weight:400">following</span></button></div><button class="btn f" data-go="upload" style="margin-bottom:12px">'+ic('up')+'Upload app</button><button class="btn o f" data-dev="'+u.id+'" style="margin-bottom:12px">'+ic('eye')+'View public profile</button><button class="btn o f" data-editprofile style="margin-bottom:12px">'+ic('edit')+'Edit profile</button><button class="btn o f" data-go="settings" style="margin-bottom:12px">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button class="btn o f" data-go="moderation" style="margin-bottom:12px">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="btn o f" data-out>'+ic('out')+'Sign out</button></div>'+
+var devBadges=getDevBadges(u);
+var folDisplay=getFollowersCount(u, st.followers);
+return '<main><div class="card pad" style="padding:26px"><div style="margin-bottom:20px">'+pic(u,120,40)+'</div><h1 style="margin:0 0 8px;font-size:32px;display:flex;align-items:center">'+esc(u.username)+devBadges+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:12px">'+ic('cal')+'Joined '+fd(u.created_at)+(u.is_admin?' <span class="dot">·</span> Admin':'')+'</div><div class="mu" style="display:flex;gap:22px;margin-bottom:22px"><span>'+ic('box')+' '+st.apps+'</span><span>'+ic('dl')+' '+st.downloads+'</span><span>'+ic('heart')+' '+st.favorites+'</span></div>'+
+'<div style="display:flex;gap:18px;margin-bottom:18px"><button class="view" data-devtab="followers" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+folDisplay+'</b> <span class="mu" style="font-weight:400">followers</span></button><button class="view" data-devtab="following" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+(st.following||0)+'</b> <span class="mu" style="font-weight:400">following</span></button></div><button class="btn f" data-go="upload" style="margin-bottom:12px">'+ic('up')+'Upload app</button><button class="btn o f" data-dev="'+u.id+'" style="margin-bottom:12px">'+ic('eye')+'View public profile</button><button class="btn o f" data-editprofile style="margin-bottom:12px">'+ic('edit')+'Edit profile</button><button class="btn o f" data-go="settings" style="margin-bottom:12px">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button class="btn o f" data-go="moderation" style="margin-bottom:12px">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="btn o f" data-out>'+ic('out')+'Sign out</button></div>'+
 '<div class="tabs">'+[['apps','Apps',S.mine.length],['fav','Favorites',S.fav.length]].map(function(t){return '<button data-tab="'+t[0]+'" class="'+(S.tab==t[0]?'on':'')+'">'+t[1]+' <em>'+t[2]+'</em></button>'}).join('')+'</div>'+(list.length?list.map(row).join(''):'<p class="mu" style="text-align:center;padding:40px 0">Nothing here yet.</p>')+foot()+'</main>'}
 
 function settings(){
 return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><h1>Settings</h1><p class="mu">Support, Creator info &amp; Tour</p>'+
 '<div class="card pad" style="margin-bottom:16px"><h2 style="font-size:22px;margin-bottom:6px">Help Center</h2><p class="mu" style="margin:0 0 16px">Need help, have feedback, or found an issue? Send a direct message to our moderation team.</p><button class="btn f" data-openhelp>'+ic('help')+'Contact Support</button></div>'+
-'<div class="card pad" style="margin-bottom:16px"><h2 style="font-size:22px;margin-bottom:6px">App Creator</h2><div style="display:flex;align-items:center;gap:14px;margin:16px 0"><span class="pic" style="width:60px;height:60px;font-size:24px;background:linear-gradient(135deg,#43c25c,#27913f)">MD</span><div><b style="font-size:20px;display:flex;align-items:center">mrdakroma '+blueCheck+'</b><span class="mu">Creator &amp; Lead Engineer</span></div></div><p class="mu" style="line-height:1.6">HEXSTORE is crafted and maintained by <b>mrdakroma</b>. Built as an open, fast marketplace for independent Android developers and community creators.</p></div>'+
+'<div class="card pad" style="margin-bottom:16px"><h2 style="font-size:22px;margin-bottom:6px">App Creator</h2><div style="display:flex;align-items:center;gap:14px;margin:16px 0"><span class="pic" style="width:60px;height:60px;font-size:24px;background:linear-gradient(135deg,#43c25c,#27913f)">MD</span><div><b style="font-size:20px;display:flex;align-items:center">mrdakroma '+blueCheck+primeBadge+'</b><span class="mu">Creator &amp; Lead Engineer</span></div></div><p class="mu" style="line-height:1.6">HEXSTORE is crafted and maintained by <b>mrdakroma</b>. Built as an open, fast marketplace for independent Android developers and community creators.</p></div>'+
 '<div class="card pad"><h2 style="font-size:22px;margin-bottom:6px">Guide &amp; Tour</h2><p class="mu" style="margin:0 0 16px">Want to see the intro animation and feature guide again?</p><button class="btn o f" data-replayguide>'+ic('box')+'Replay Welcome Tutorial</button></div>'+foot()+'</main>';
 }
 
@@ -270,8 +303,9 @@ function shrink(f,max){return new Promise(function(res){if(!/^image\/(png|jpeg|w
 function upImg(f,max){return shrink(f,max).then(function(x){return up(x,'image')})}
 
 function about(){if(!S.det||S.det.app.id!=S.id)return wait();var a=S.det.app,v=S.det.versions.filter(function(x){return x.status=='approved'})[0],by={username:a.owner_name,avatar_url:a.owner_avatar};
+var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_followers,downloads:a.owner_downloads,is_prime:a.owner_is_prime});
 return '<main><button class="back" data-open="'+esc(a.id)+'">'+ic('back')+'Back to app</button><h1>About this app</h1><p class="mu" style="font-size:18px">'+esc(a.name)+'</p>'+(a.summary?'<p style="font-size:19px;font-weight:600">'+esc(a.summary)+'</p>':'')+'<p style="font-size:18px;line-height:1.75;white-space:pre-wrap">'+esc(a.description)+'</p><div>'+a.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div>'+
-'<div class="sec" style="border:0"><h2>Details</h2>'+[['Category',esc(a.category)],['Type',a.origin=='mod'?'Mod':'Original'],['Exclusive',a.is_exclusive?'Not on Google Play':'No'],['Latest version',v?'v'+esc(v.version_name):'–'],['Developer','<button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+(a.owner_is_admin?blueCheck:'')+'</button>'],['Source code',a.source_url?(/^https?:\/\//.test(a.source_url)?'<a href="'+esc(a.source_url)+'" target="_blank" rel="noopener" style="color:var(--tx)">Open link</a>':esc(a.source_url)):'–']].map(function(r){return '<div class="info"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join('')+'</div>'+foot()+'</main>'}
+'<div class="sec" style="border:0"><h2>Details</h2>'+[['Category',esc(a.category)],['Type',a.origin=='mod'?'Mod':'Original'],['Exclusive',a.is_exclusive?'Not on Google Play':'No'],['Latest version',v?'v'+esc(v.version_name):'–'],['Developer','<button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+devBadges+'</button>'],['Source code',a.source_url?(/^https?:\/\//.test(a.source_url)?'<a href="'+esc(a.source_url)+'" target="_blank" rel="noopener" style="color:var(--tx)">Open link</a>':esc(a.source_url)):'–']].map(function(r){return '<div class="info"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join('')+'</div>'+foot()+'</main>'}
 function terms(){return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><h1>Terms of Service</h1><p class="mu">Last updated November 2026</p><div class="terms">'+termsBody()+'</div>'+foot()+'</main>'}
 function gate(){return '<main><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Before you publish</h1><p class="mu" style="font-size:18px">Please read and accept the Terms of Service. You only need to do this once.</p><div class="card pad terms" style="max-height:46vh;overflow:auto">'+termsBody()+'</div><label class="tg"><input type="checkbox" data-k="agree"'+(S.agree?' checked':'')+'><span><b style="font-size:18px">I agree to the Terms of Service</b><br><span class="mu">I will not upload malware or anything harmful or illegal.</span></span></label><button class="btn f" style="margin-top:22px" data-agree>Agree and continue</button></main>'}
 function editprofile(){var u=S.user,shown=S.eclear?null:(S.eprev||u.avatar_url);return '<main style="max-width:520px"><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Edit profile</h1><div class="card pad"><div style="display:flex;align-items:center;gap:18px;margin-bottom:8px">'+pic({username:S.eun,avatar_url:shown},96,30)+'<div><label class="btn o" style="cursor:pointer;height:46px">Change photo<input type="file" id="ap" accept="image/*" hidden></label>'+(shown?'<button class="btn o" style="height:46px;margin-top:8px;color:#f2555a" data-rmavatar>Remove photo</button>':'')+'</div></div><label class="l">Username</label><input type="text" data-k="eun" maxlength="30" value="'+esc(S.eun)+'"><label class="l">About you</label><textarea data-k="ebio" maxlength="300" placeholder="Tell people who you are">'+esc(S.ebio)+'</textarea><label class="tg"><input type="checkbox" data-k="emal"'+(S.emal?' checked':'')+'><span><b style="font-size:18px">Email me about app updates</b><br><span class="mu">Sent to '+esc(u.email)+' when an app you follow gets a new version.</span></span></label><button class="btn f" style="margin-top:22px" data-saveprofile>Save profile</button></div></main>'}
@@ -375,7 +409,6 @@ function openInstallSheet(id){
 function markInstalled(id){var d=DL[id];if(!d)return;INST[id]={c:d.vc,n:d.vn};saveInst();DL[id]=null;hideSheet();toast('Installed ✅');if(S.page=='detail'&&S.det&&S.det.app.id==id)keep(draw)}
 function retryDirect(id){var d=DL[id];if(d&&d.vk)window.location.href=API+'/files/'+d.vk+'?dl=1'}
 
-/* Bottom sheet controller */
 function showSheet(html){
  var s=$('#sheet'),bd=$('#sheet-bd');if(!s||!bd)return;
  s.innerHTML=html;bd.classList.add('on');s.classList.add('on');
@@ -391,10 +424,12 @@ function openUserPopup(uid){
  showSheet('<div class="sheet-bar"></div><p class="mu" style="text-align:center;padding:30px 0">Loading user profile…</p>');
  api('/api/users/'+uid).then(function(d){
   var u=d.user,st=d.stats,mine=S.user&&S.user.id==u.id;
+  var devBadges=getDevBadges({is_admin:u.is_admin,followers:st.followers,downloads:st.downloads,is_prime:d.is_prime});
+  var folDisplay=getFollowersCount(u, st.followers);
   var html='<div class="sheet-bar"></div>'+
-  '<div style="display:flex;gap:16px;align-items:center;margin-bottom:14px">'+pic(u,64,22)+'<div style="min-width:0"><b style="font-size:22px;display:flex;align-items:center">'+esc(u.username)+(u.is_admin?blueCheck:'')+'</b><span class="mu">Joined '+fd(u.created_at)+'</span></div></div>'+
+  '<div style="display:flex;gap:16px;align-items:center;margin-bottom:14px">'+pic(u,64,22)+'<div style="min-width:0"><b style="font-size:22px;display:flex;align-items:center">'+esc(u.username)+devBadges+'</b><span class="mu">Joined '+fd(u.created_at)+'</span></div></div>'+
   (u.bio?'<p style="margin:0 0 14px;white-space:pre-wrap;font-size:15px">'+esc(u.bio)+'</p>':'')+
-  '<div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0 -20px 18px;border-bottom:1px solid var(--ln)">'+[['Apps',st.apps],['Downloads',st.downloads],['Followers',st.followers],['Following',st.following]].map(function(x){return '<div style="padding:10px 2px;font-size:11px"><b style="font-size:18px">'+x[1]+'</b>'+x[0]+'</div>'}).join('')+'</div>'+
+  '<div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0 -20px 18px;border-bottom:1px solid var(--ln)">'+[['Apps',st.apps],['Downloads',st.downloads],['Followers',folDisplay],['Following',st.following]].map(function(x){return '<div style="padding:10px 2px;font-size:11px"><b style="font-size:18px">'+x[1]+'</b>'+x[0]+'</div>'}).join('')+'</div>'+
   '<div style="display:grid;gap:10px">'+
   '<button class="btn f" data-sheetgo="'+u.id+'">'+ic('user')+'View user profile</button>'+
   (mine?'':'<button class="btn o f" id="btn-pop-fol" data-popupfol="'+u.id+'" data-st="'+(d.is_following?1:0)+'">'+(d.is_following?'Following ✓':'Follow')+'</button>')+
@@ -405,329 +440,334 @@ function openUserPopup(uid){
 }
 
 function openNewFollowerSheet(n){
- var uid=n.from_user;
- var html='<div class="sheet-bar"></div>'+
- '<div style="font-size:32px;text-align:center;margin-bottom:8px">🎉</div>'+
- '<h2 style="text-align:center;margin:0 0 6px">'+esc(n.title)+'</h2>'+
- '<p class="mu" style="text-align:center;margin:0 0 20px">'+esc(n.body)+'</p>'+
- '<div style="display:grid;gap:10px">'+
- (uid?'<button class="btn f" data-sheetgo="'+esc(uid)+'">'+ic('user')+'View user profile</button>':'')+
- '<button class="btn o f" data-sheetclose>Close</button>'+
- '</div>';
- showSheet(html);
+  var uid=n.from_user;
+  var html='<div class="sheet-bar"></div>'+
+  '<div style="font-size:32px;text-align:center;margin-bottom:8px">🎉</div>'+
+  '<h2 style="text-align:center;margin:0 0 6px">'+esc(n.title)+'</h2>'+
+  '<p class="mu" style="text-align:center;margin:0 0 20px">'+esc(n.body)+'</p>'+
+  '<div style="display:grid;gap:10px">'+
+  (uid?'<button class="btn f" data-sheetgo="'+esc(uid)+'">'+ic('user')+'View user profile</button>':'')+
+  '<button class="btn o f" data-sheetclose>Close</button>'+
+  '</div>';
+  showSheet(html);
 }
 
 function openHelpSheet(){
- var html='<div class="sheet-bar"></div>'+
- '<h2 style="margin:0 0 6px">Help Center</h2>'+
- '<p class="mu" style="margin:0 0 16px">Describe your issue or feedback. The moderation team will review it.</p>'+
- '<label class="l" style="margin-top:0">Subject</label><input type="text" id="tk-sub" placeholder="e.g. Question about an app">'+
- (S.user?'':'<label class="l">Your Email</label><input type="email" id="tk-em" placeholder="your@email.com">')+
- '<label class="l">Message</label><textarea id="tk-msg" placeholder="Write your message here..." style="min-height:120px"></textarea>'+
- '<div style="display:grid;gap:10px;margin-top:18px">'+
- '<button class="btn f" id="btn-submitticket">Submit message</button>'+
- '<button class="btn o f" data-sheetclose>Cancel</button>'+
- '</div>';
- showSheet(html);
- $('#btn-submitticket').onclick=function(){
-  var sub=$('#tk-sub').value.trim(),msg=$('#tk-msg').value.trim();
-  var em=S.user?S.user.email:($('#tk-em')?$('#tk-em').value.trim():'');
-  if(!sub)return toast('Enter a subject');
-  if(!msg)return toast('Write a message');
-  if(!em||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return toast('Enter a valid email');
-  toast('Sending…');
-  api('/api/support',{method:'POST',body:{subject:sub,message:msg,email:em,name:S.user?S.user.username:'Guest'}}).then(function(){
-   hideSheet();toast('Message sent to moderation ✓');
-  },function(e){toast(e.message)});
- };
+  var html='<div class="sheet-bar"></div>'+
+  '<h2 style="margin:0 0 6px">Help Center</h2>'+
+  '<p class="mu" style="margin:0 0 16px">Describe your issue or feedback. The moderation team will review it.</p>'+
+  '<label class="l" style="margin-top:0">Subject</label><input type="text" id="tk-sub" placeholder="e.g. Question about an app">'+
+  (S.user?'':'<label class="l">Your Email</label><input type="email" id="tk-em" placeholder="your@email.com">')+
+  '<label class="l">Message</label><textarea id="tk-msg" placeholder="Write your message here..." style="min-height:120px"></textarea>'+
+  '<div style="display:grid;gap:10px;margin-top:18px">'+
+  '<button class="btn f" id="btn-submitticket">Submit message</button>'+
+  '<button class="btn o f" data-sheetclose>Cancel</button>'+
+  '</div>';
+  showSheet(html);
+  $('#btn-submitticket').onclick=function(){
+    var sub=$('#tk-sub').value.trim(),msg=$('#tk-msg').value.trim();
+    var em=S.user?S.user.email:($('#tk-em')?$('#tk-em').value.trim():'');
+    if(!sub)return toast('Enter a subject');
+    if(!msg)return toast('Write a message');
+    if(!em||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return toast('Enter a valid email');
+    toast('Sending…');
+    api('/api/support',{method:'POST',body:{subject:sub,message:msg,email:em,name:S.user?S.user.username:'Guest'}}).then(function(){
+      hideSheet();toast('Message sent to moderation ✓');
+    },function(e){toast(e.message)});
+  };
 }
 
-function urow(x){return '<button class="row" data-userpopup="'+esc(x.id)+'">'+pic(x,52)+'<span style="flex:1;min-width:0"><b style="display:flex;align-items:center">'+esc(x.username)+(x.is_admin?blueCheck:'')+'</b>'+(x.bio?'<small class="sum" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(x.bio)+'</small>':'')+'</span></button>'}
+function urow(x){
+  var devBadges=getDevBadges({is_admin:x.is_admin,followers:x.followers,downloads:x.downloads,is_prime:x.is_prime});
+  return '<button class="row" data-userpopup="'+esc(x.id)+'">'+pic(x,52)+'<span style="flex:1;min-width:0"><b style="display:flex;align-items:center">'+esc(x.username)+devBadges+'</b>'+(x.bio?'<small class="sum" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(x.bio)+'</small>':'')+'</span></button>';
+}
 
 function dev(){
- if(!S.dev||S.dev.user.id!=S.id)return wait();
- var d=S.dev,u=d.user,st=d.stats,mine=S.user&&S.user.id==u.id,t=S.dtab,body;
- if(t=='apps')body=d.apps.length?d.apps.map(row).join(''):'<p class="mu" style="text-align:center;padding:40px 0">No published apps yet.</p>';
- else if(t=='community')body=communityTabBody(d);
- else if(!S.dfol)body='<p class="mu" style="text-align:center;padding:40px 0">Loading…</p>';
- else body=S.dfol.length?S.dfol.map(urow).join(''):'<p class="mu" style="text-align:center;padding:40px 0">'+(t=='followers'?'No followers yet.':'Not following anyone yet.')+'</p>';
+  if(!S.dev||S.dev.user.id!=S.id)return wait();
+  var d=S.dev,u=d.user,st=d.stats,mine=S.user&&S.user.id==u.id,t=S.dtab,body;
+  var devBadges=getDevBadges({is_admin:u.is_admin,followers:st.followers,downloads:st.downloads,is_prime:d.is_prime});
+  var folDisplay=getFollowersCount(u, st.followers);
+  if(t=='apps')body=d.apps.length?d.apps.map(row).join(''):'<p class="mu" style="text-align:center;padding:40px 0">No published apps yet.</p>';
+  else if(t=='community')body=communityTabBody(d);
+  else if(!S.dfol)body='<p class="mu" style="text-align:center;padding:40px 0">Loading…</p>';
+  else body=S.dfol.length?S.dfol.map(urow).join(''):'<p class="mu" style="text-align:center;padding:40px 0">'+(t=='followers'?'No followers yet.':'Not following anyone yet.')+'</p>';
 
- return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><div class="card pad" style="padding:26px"><div style="margin-bottom:18px">'+pic(u,110,36)+'</div><h1 style="margin:0 0 8px;font-size:32px;display:flex;align-items:center">'+esc(u.username)+(u.is_admin?blueCheck:'')+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:18px">'+ic('cal')+'Joined '+fd(u.created_at)+'</div>'+
- '<div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0 -26px 20px">'+[['Apps',st.apps],['Downloads',st.downloads],['Followers',st.followers],['Following',st.following]].map(function(x){return '<div style="padding:14px 2px;font-size:11px"><b style="font-size:20px" id="st-'+x[0].toLowerCase()+'">'+x[1]+'</b>'+x[0]+'</div>'}).join('')+'</div>'+
- (mine?'<button class="btn o f" data-go="profile">'+ic('user')+'My profile</button>':'<button class="btn f'+(d.is_following?' o':'')+'" id="btn-dev-fol" data-dfollow>'+(d.is_following?'Following ✓':'Follow')+'</button>'+(d.is_following?'<p class="hint" style="text-align:center">Tap again to unfollow.</p>':''))+'</div>'+
- '<div class="tabs" style="gap:18px">'+[['apps','Apps',st.apps],['community','Community',d.stats.posts||0],['followers','Followers',st.followers],['following','Following',st.following]].map(function(x){return '<button data-dtab="'+x[0]+'" class="'+(t==x[0]?'on':'')+'" style="font-size:16px">'+x[1]+' <em>'+x[2]+'</em></button>'}).join('')+'</div>'+body+foot()+'</main>'}
+  return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><div class="card pad" style="padding:26px"><div style="margin-bottom:18px">'+pic(u,110,36)+'</div><h1 style="margin:0 0 8px;font-size:32px;display:flex;align-items:center">'+esc(u.username)+devBadges+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:18px">'+ic('cal')+'Joined '+fd(u.created_at)+'</div>'+
+  '<div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0 -26px 20px">'+[['Apps',st.apps],['Downloads',st.downloads],['Followers',folDisplay],['Following',st.following]].map(function(x){return '<div style="padding:14px 2px;font-size:11px"><b style="font-size:20px" id="st-'+x[0].toLowerCase()+'">'+x[1]+'</b>'+x[0]+'</div>'}).join('')+'</div>'+
+  (mine?'<button class="btn o f" data-go="profile">'+ic('user')+'My profile</button>':'<button class="btn f'+(d.is_following?' o':'')+'" id="btn-dev-fol" data-dfollow>'+(d.is_following?'Following ✓':'Follow')+'</button>'+(d.is_following?'<p class="hint" style="text-align:center">Tap again to unfollow.</p>':''))+'</div>'+
+  '<div class="tabs" style="gap:18px">'+[['apps','Apps',st.apps],['community','Community',d.stats.posts||0],['followers','Followers',st.followers],['following','Following',st.following]].map(function(x){return '<button data-dtab="'+x[0]+'" class="'+(t==x[0]?'on':'')+'" style="font-size:16px">'+x[1]+' <em>'+x[2]+'</em></button>'}).join('')+'</div>'+body+foot()+'</main>';
+}
 
 function communityTabBody(d){
- var mine=S.user&&S.user.id==d.user.id,eligible=d.can_post||(mine&&(d.stats.apps>0||S.user.is_admin));
- var comp='';
- if(eligible&&mine){
-  comp='<div class="card pad" style="margin-bottom:20px"><h3 style="margin:0 0 8px">Create Community Post</h3><textarea id="cp-text" placeholder="Share an update or news with your followers..."></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><label class="btn o" style="height:44px;font-size:14px;cursor:pointer">'+ic('img')+'Add image<input type="file" id="cp-img" accept="image/*" hidden></label><button class="btn g" style="height:44px" id="cp-submit">Post update</button></div><div id="cp-prev" style="margin-top:10px"></div></div>';
- }else if(!eligible&&mine){
-  comp='<div class="note" style="margin-bottom:20px"><span style="font-size:24px">'+ic('shield')+'</span><div><b>Community Locked</b><br><small>Publish at least 1 app on HEXSTORE to unlock your community page and post updates.</small></div></div>';
- }
- if(!S.dposts)return comp+'<p class="mu" style="text-align:center;padding:30px 0">Loading posts…</p>';
- var list=S.dposts.length?S.dposts.map(function(p){
-  return '<div class="c-post"><div style="display:flex;align-items:center;gap:12px">'+pic(d.user,42)+'<div style="min-width:0;flex:1"><b style="display:flex;align-items:center">'+esc(d.user.username)+(d.user.is_admin?blueCheck:'')+'</b><small class="mu">'+fd(p.created_at)+'</small></div>'+(mine||(S.user&&S.user.is_admin)?'<button class="ib" data-delpost="'+p.id+'" style="color:#f2555a">'+ic('x')+'</button>':'')+'</div><p style="margin:14px 0 6px;white-space:pre-wrap;font-size:17px;line-height:1.6">'+esc(p.content)+'</p>'+(p.image_url?'<img class="c-post-img" src="'+esc(p.image_url)+'">':'')+'<div class="c-actions"><button class="c-btn'+(p.is_liked?' liked':'')+'" data-likepost="'+p.id+'" data-st="'+(p.is_liked?1:0)+'">'+ic('heart')+' <span>'+(p.likes_count||0)+'</span></button></div></div>';
- }).join(''):'<p class="mu" style="text-align:center;padding:40px 0">No community posts yet.</p>';
- return comp+list;
+  var mine=S.user&&S.user.id==d.user.id,eligible=d.can_post||(mine&&(d.stats.apps>0||S.user.is_admin));
+  var comp='';
+  if(eligible&&mine){
+    comp='<div class="card pad" style="margin-bottom:20px"><h3 style="margin:0 0 8px">Create Community Post</h3><textarea id="cp-text" placeholder="Share an update or news with your followers..."></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><label class="btn o" style="height:44px;font-size:14px;cursor:pointer">'+ic('img')+'Add image<input type="file" id="cp-img" accept="image/*" hidden></label><button class="btn g" style="height:44px" id="cp-submit">Post update</button></div><div id="cp-prev" style="margin-top:10px"></div></div>';
+  }else if(!eligible&&mine){
+    comp='<div class="note" style="margin-bottom:20px"><span style="font-size:24px">'+ic('shield')+'</span><div><b>Community Locked</b><br><small>Publish at least 1 app on HEXSTORE to unlock your community page and post updates.</small></div></div>';
+  }
+  if(!S.dposts)return comp+'<p class="mu" style="text-align:center;padding:30px 0">Loading posts…</p>';
+  var list=S.dposts.length?S.dposts.map(function(p){
+    return '<div class="c-post"><div style="display:flex;align-items:center;gap:12px">'+pic(d.user,42)+'<div style="min-width:0;flex:1"><b style="display:flex;align-items:center">'+esc(d.user.username)+getDevBadges(d.user)+'</b><small class="mu">'+fd(p.created_at)+'</small></div>'+(mine||(S.user&&S.user.is_admin)?'<button class="ib" data-delpost="'+p.id+'" style="color:#f2555a">'+ic('x')+'</button>':'')+'</div><p style="margin:14px 0 6px;white-space:pre-wrap;font-size:17px;line-height:1.6">'+esc(p.content)+'</p>'+(p.image_url?'<img class="c-post-img" src="'+esc(p.image_url)+'">':'')+'<div class="c-actions"><button class="c-btn'+(p.is_liked?' liked':'')+'" data-likepost="'+p.id+'" data-st="'+(p.is_liked?1:0)+'">'+ic('heart')+' <span>'+(p.likes_count||0)+'</span></button></div></div>';
+  }).join(''):'<p class="mu" style="text-align:center;padding:40px 0">No community posts yet.</p>';
+  return comp+list;
 }
 
 function loadCommunityPosts(){
- var id=S.id;S.dposts=null;draw();
- api('/api/users/'+id+'/posts').then(function(j){
-  if(S.page=='dev'&&S.id==id){S.dposts=j.posts;if(S.dev)S.dev.can_post=j.can_post;draw();bindCommunityComposer()}
- },function(e){toast(e.message)});
+  var id=S.id;S.dposts=null;draw();
+  api('/api/users/'+id+'/posts').then(function(j){
+    if(S.page=='dev'&&S.id==id){S.dposts=j.posts;if(S.dev)S.dev.can_post=j.can_post;draw();bindCommunityComposer()}
+  },function(e){toast(e.message)});
 }
 
 function bindCommunityComposer(){
- var f=$('#cp-img'),btn=$('#cp-submit');
- if(f)f.onchange=function(){
-  var x=f.files[0];if(x){S.cpostFile=x;$('#cp-prev').innerHTML='<span class="pill">'+ic('img')+esc(x.name)+' <button class="ib" id="rm-cp-img" style="width:20px;height:20px;font-size:14px">'+ic('x')+'</button></span>';
-  var rm=$('#rm-cp-img');if(rm)rm.onclick=function(){S.cpostFile=null;$('#cp-prev').innerHTML=''};}
- };
- if(btn)btn.onclick=function(){
-  var t=$('#cp-text').value.trim();if(!t)return toast('Write something to post');
-  btn.disabled=true;toast('Posting…');
-  var pr=S.cpostFile?upImg(S.cpostFile,1280).then(function(r){return r.key}):Promise.resolve(null);
-  pr.then(function(imgKey){
-   return api('/api/community/posts',{method:'POST',body:{content:t,image_key:imgKey}});
-  }).then(function(){
-   S.cpostFile=null;toast('Post published ✓');loadCommunityPosts();
-  },function(e){btn.disabled=false;toast(e.message)});
- };
+  var f=$('#cp-img'),btn=$('#cp-submit');
+  if(f)f.onchange=function(){
+    var x=f.files[0];if(x){S.cpostFile=x;$('#cp-prev').innerHTML='<span class="pill">'+ic('img')+esc(x.name)+' <button class="ib" id="rm-cp-img" style="width:20px;height:20px;font-size:14px">'+ic('x')+'</button></span>';
+    var rm=$('#rm-cp-img');if(rm)rm.onclick=function(){S.cpostFile=null;$('#cp-prev').innerHTML=''};}
+  };
+  if(btn)btn.onclick=function(){
+    var t=$('#cp-text').value.trim();if(!t)return toast('Write something to post');
+    btn.disabled=true;toast('Posting…');
+    var pr=S.cpostFile?upImg(S.cpostFile,1280).then(function(r){return r.key}):Promise.resolve(null);
+    pr.then(function(imgKey){
+      return api('/api/community/posts',{method:'POST',body:{content:t,image_key:imgKey}});
+    }).then(function(){
+      S.cpostFile=null;toast('Post published ✓');loadCommunityPosts();
+    },function(e){btn.disabled=false;toast(e.message)});
+  };
 }
 
 function loadDfol(){var t=S.dtab,id=S.id;S.dfol=null;draw();api('/api/users/'+id+'/'+t).then(function(j){if(S.dtab==t&&S.id==id&&S.page=='dev'){S.dfol=j.users;draw()}},function(e){toast(e.message)})}
 
-function ready(){return !!(S.apk&&S.icon)}
+function ready(){return Boolean(S.apk&&S.icon)}
 function dock(t){if(S.editId)return '<div class="dock"><p>'+(t||'Editing '+esc(S.name||'app'))+'</p><div><button class="btn o" data-open="'+esc(S.editId)+'">Cancel</button><button class="btn" data-saveedit '+(S.busy?'disabled':'')+'>Save changes</button></div></div>';var adm=S.user&&S.user.is_admin;return '<div class="dock"><p>'+(t||(ready()?(adm?'Ready to publish.':'Ready to submit. A moderator reviews it before it goes live.'):'Add an APK and an icon to continue.'))+'</p><div><button class="btn o" data-draft '+(S.busy?'disabled':'')+'>Save as draft</button><button class="btn" data-pub '+(ready()&&!S.busy?'':'disabled')+'>'+(adm?'Publish':'Submit for review')+'</button></div></div>'}
 function preview(){var n=S.name||(S.apk?S.apk.name.replace(/\.apk$/i,''):'Your app'),i=S.icon||S.eicon;return '<div class="pv"><div class="ico" style="width:96px;height:96px;border-radius:24px;background:var(--sf2);color:var(--mu)">'+(i?'<img src="'+esc(i.url)+'">':ic('box').replace('<svg','<svg style="font-size:44px"'))+'</div><div style="min-width:0"><b style="font-size:22px">'+esc(n)+'</b>'+(S.sum?'<div style="margin-top:2px">'+esc(S.sum)+'</div>':'')+'<div class="mu">'+(S.user?'by '+esc(S.user.username)+' · ':'')+esc(S.cat)+'</div></div></div>'}
 function upload(){if(!S.user)return wait();if(!S.user.tos)return gate();return formPage()}
 function paintUp(){if(!$('#icobox'))return;var ab=$('#apkbox'),ci=S.icon||S.eicon;
- if(ab)ab.innerHTML=S.apk?'<div class="file">'+ic('box').replace('<svg','<svg style="font-size:44px"')+'<div style="flex:1;min-width:0"><b style="font-size:19px;word-break:break-all">'+esc(S.apk.name)+'</b><span class="mu">'+fmt(S.apk.size)+'</span></div><button class="ib" data-rm="apk">'+ic('x')+'</button></div>':'<label class="drop">'+ic('cloud')+'<b>Choose APK</b>Android package (.apk)<input type="file" id="fa" accept=".apk,application/vnd.android.package-archive" hidden></label>';
- $('#icobox').innerHTML=ci?'<div class="file"><div class="ico" style="width:64px;height:64px"><img src="'+esc(ci.url)+'"></div><div style="flex:1;min-width:0"><b style="word-break:break-all">'+esc(ci.name)+'</b></div><button class="ib" data-rm="'+(S.icon?'icon':'eicon')+'">'+ic('x')+'</button></div>':'<label class="drop">'+ic('img')+'<b>Upload icon</b>PNG or JPG — square works best<input type="file" id="fi" accept="image/*" hidden></label>';
- document.querySelectorAll('[data-or]').forEach(function(o){o.className='opt'+(o.dataset.or==S.origin?' on':'')});
- $('#shl').innerHTML=S.eshots.map(function(x,i){return '<div style="background-image:url('+esc(x.url)+')"><button class="xb" data-rmes="'+i+'">'+ic('x')+'</button></div>'}).concat(S.shots.map(function(x,i){return '<div style="background-image:url('+esc(x.url)+')"><button class="xb" data-rmns="'+i+'">'+ic('x')+'</button></div>'})).join('');
- $('#pvb').innerHTML=preview();$('#dk').innerHTML=dock();
- var fa=$('#fa');if(fa)fa.onchange=function(){var f=fa.files[0];if(f){if(!/\.apk$/i.test(f.name))return toast('Choose an .apk file');S.apk={name:f.name,size:f.size,file:f};paintUp()}};
- var fi=$('#fi');if(fi)fi.onchange=function(){var f=fi.files[0];if(f){S.icon={name:f.name,url:URL.createObjectURL(f),file:f};paintUp()}};
- $('#sh').onchange=function(e){Array.prototype.slice.call(e.target.files).forEach(function(f){if(S.eshots.length+S.shots.length<8)S.shots.push({name:f.name,url:URL.createObjectURL(f),file:f})});paintUp()}}
+  if(ab)ab.innerHTML=S.apk?'<div class="file">'+ic('box').replace('<svg','<svg style="font-size:44px"')+'<div style="flex:1;min-width:0"><b style="font-size:19px;word-break:break-all">'+esc(S.apk.name)+'</b><span class="mu">'+fmt(S.apk.size)+'</span></div><button class="ib" data-rm="apk">'+ic('x')+'</button></div>':'<label class="drop">'+ic('cloud')+'<b>Choose APK</b>Android package (.apk)<input type="file" id="fa" accept=".apk,application/vnd.android.package-archive" hidden></label>';
+  $('#icobox').innerHTML=ci?'<div class="file"><div class="ico" style="width:64px;height:64px"><img src="'+esc(ci.url)+'"></div><div style="flex:1;min-width:0"><b style="word-break:break-all">'+esc(ci.name)+'</b></div><button class="ib" data-rm="'+(S.icon?'icon':'eicon')+'">'+ic('x')+'</button></div>':'<label class="drop">'+ic('img')+'<b>Upload icon</b>PNG or JPG — square works best<input type="file" id="fi" accept="image/*" hidden></label>';
+  document.querySelectorAll('[data-or]').forEach(function(o){o.className='opt'+(o.dataset.or==S.origin?' on':'')});
+  $('#shl').innerHTML=S.eshots.map(function(x,i){return '<div style="background-image:url('+esc(x.url)+')"><button class="xb" data-rmes="'+i+'">'+ic('x')+'</button></div>'}).concat(S.shots.map(function(x,i){return '<div style="background-image:url('+esc(x.url)+')"><button class="xb" data-rmns="'+i+'">'+ic('x')+'</button></div>'})).join('');
+  $('#pvb').innerHTML=preview();$('#dk').innerHTML=dock();
+  var fa=$('#fa');if(fa)fa.onchange=function(){var f=fa.files[0];if(f){if(!/\.apk$/i.test(f.name))return toast('Choose an .apk file');S.apk={name:f.name,size:f.size,file:f};paintUp()}};
+  var fi=$('#fi');if(fi)fi.onchange=function(){var f=fi.files[0];if(f){S.icon={name:f.name,url:URL.createObjectURL(f),file:f};paintUp()}};
+  $('#sh').onchange=function(e){Array.prototype.slice.call(e.target.files).forEach(function(f){if(S.eshots.length+S.shots.length<8)S.shots.push({name:f.name,url:URL.createObjectURL(f),file:f})});paintUp()}}
 
 function draw(){if(S.page=='edit'&&S.det&&S.det.app.id==S.id&&S.editId!=S.id)initEdit();var P={home:home,detail:detail,profile:profile,upload:upload,login:login,notif:notif,newver:newver,about:about,terms:terms,edit:edit,editprofile:editprofile,moderation:moderation,dev:dev,settings:settings};app.innerHTML=head()+(P[S.page]||home)();if(S.page=='upload'||S.page=='edit')paintUp();if(S.page=='newver')paintNv();if(S.page=='editprofile')bindEp();bindSearchTrigger()}
 function toast(t){var d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2800)}
 
 function go(p,id){if((p=='profile'||p=='upload'||p=='notif'||p=='newver'||p=='edit'||p=='editprofile'||p=='moderation')&&!S.user){S.after=p;p='login'}if(p=='moderation'&&!(S.user&&S.user.is_admin))p='home';
- if(p=='upload'&&S.editId)resetForm();if(p!='edit')S.editId=null;
- S.page=p;S.id=id||null;S.pop=0;S.err='';S.delArm=0;scrollTo(0,0);
- if(p=='notif')S.notes=null;if(p=='home'&&!S.q)S.apps=null;if(p=='detail'){S.det=null;S.star=0}if(p=='profile'){S.me=null;S.mine=null;S.fav=null}if(p=='moderation'){S.queue=null;S.tickets=null}if(p=='dev'){S.dev=null;S.dfol=null;S.dposts=null}draw();fetchPage()}
+  if(p=='upload'&&S.editId)resetForm();if(p!='edit')S.editId=null;
+  S.page=p;S.id=id||null;S.pop=0;S.err='';S.delArm=0;scrollTo(0,0);
+  if(p=='notif')S.notes=null;if(p=='home'&&!S.q)S.apps=null;if(p=='detail'){S.det=null;S.star=0}if(p=='profile'){S.me=null;S.mine=null;S.fav=null}if(p=='moderation'){S.queue=null;S.tickets=null}if(p=='dev'){S.dev=null;S.dfol=null;S.dposts=null}draw();fetchPage()}
 
 function fetchPage(){var p=S.page,id=S.id;var done=function(){if(S.page==p&&S.id==id)draw()};
- var fail=function(e){if(/sign in/i.test(e.message)){logout();return}S.err=e.message;done()};
- if(p=='home')api('/api/apps?q='+encodeURIComponent(S.q)).then(function(j){S.apps=j.apps;done()},fail);
- if(p=='detail')api('/api/apps/'+id).then(function(j){S.det=j;done()},fail);
- if(p=='profile')Promise.all([api('/api/me'),api('/api/apps?mine=1'),api('/api/favorites'),S.user.is_admin?api('/api/admin/queue'):Promise.resolve({items:[]})]).then(function(r){S.me=r[0];S.mine=r[1].apps;S.fav=r[2].apps;S.qn=r[3].items.length;done()},fail);
- if(p=='moderation')Promise.all([api('/api/admin/queue'),api('/api/admin/support')]).then(function(r){S.queue=r[0].items;S.tickets=r[1].tickets;done()},fail);
- if(p=='dev')api('/api/users/'+id).then(function(j){S.dev=j;done();if(S.dtab=='community')loadCommunityPosts();else if(S.dtab!='apps')loadDfol()},fail);
- if(p=='notif')api('/api/notifications').then(function(j){S.notes=j.notifications;S.unread=0;done();if(j.unread)api('/api/notifications/read',{method:'POST',body:{}}).catch(function(){})},fail);
- if((p=='newver'||p=='about'||p=='edit')&&(!S.det||S.det.app.id!=id))api('/api/apps/'+id).then(function(j){S.det=j;done()},fail)}
+  var fail=function(e){if(/sign in/i.test(e.message)){logout();return}S.err=e.message;done()};
+  if(p=='home')api('/api/apps?q='+encodeURIComponent(S.q)).then(function(j){S.apps=j.apps;done()},fail);
+  if(p=='detail')api('/api/apps/'+id).then(function(j){S.det=j;done()},fail);
+  if(p=='profile')Promise.all([api('/api/me'),api('/api/apps?mine=1'),api('/api/favorites'),S.user.is_admin?api('/api/admin/queue'):Promise.resolve({items:[]})]).then(function(r){S.me=r[0];S.mine=r[1].apps;S.fav=r[2].apps;S.qn=r[3].items.length;done()},fail);
+  if(p=='moderation')Promise.all([api('/api/admin/queue'),api('/api/admin/support')]).then(function(r){S.queue=r[0].items;S.tickets=r[1].tickets;done()},fail);
+  if(p=='dev')api('/api/users/'+id).then(function(j){S.dev=j;done();if(S.dtab=='community')loadCommunityPosts();else if(S.dtab!='apps')loadDfol()},fail);
+  if(p=='notif')api('/api/notifications').then(function(j){S.notes=j.notifications;S.unread=0;done();if(j.unread)api('/api/notifications/read',{method:'POST',body:{}}).catch(function(){})},fail);
+  if((p=='newver'||p=='about'||p=='edit')&&(!S.det||S.det.app.id!=id))api('/api/apps/'+id).then(function(j){S.det=j;done()},fail)}
 
 function logout(){store.del('hx');store.del('hxu');S.user=null;go('home')}
 function auth(){var em=$('#em').value.trim(),pw=$('#pw').value,m=$('#lm'),b=$('#go');m.textContent='';b.disabled=true;
- api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;var n=S.after||'home';S.after='';go(n);poll()},function(e){m.textContent=e.message;b.disabled=false})}
+  api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;var n=S.after||'home';S.after='';go(n);poll()},function(e){m.textContent=e.message;b.disabled=false})}
 function submit(status){if(S.busy)return;if(!ready())return toast('Add an APK and an icon first');
- if(!S.cat)return toast('Choose a category');if(!S.ver.trim())return toast('Enter a version, for example 1.0');
- if(status!='draft'){if(S.desc.trim().length<100)return toast('Description needs 100+ characters (now '+S.desc.trim().length+')');if(!S.origin)return toast('Choose Original or Mod')}
- S.busy=1;var say=function(t){$('#dk').innerHTML=dock(t)};say('Uploading APK… 0%');var K={shots:[]},adm=S.user&&S.user.is_admin;
- up(S.apk.file,'apk',function(p){say('Uploading APK… '+p+'%')}).then(function(r){K.apk=r;say('Uploading icon…');return upImg(S.icon.file,512)}).then(function(r){K.icon=r;
-  return S.shots.reduce(function(pr,x,i){return pr.then(function(){say('Uploading screenshot '+(i+1)+'/'+S.shots.length+'…');return upImg(x.file,1280).then(function(r){K.shots.push(r.key)})})},Promise.resolve())})
- .then(function(){say('Saving…');return api('/api/apps',{method:'POST',body:{name:S.name.trim()||S.apk.name.replace(/\.apk$/i,''),summary:S.sum.trim(),category:S.cat,description:S.desc.trim(),origin:S.origin||null,source_url:S.src,is_exclusive:S.excl,icon_key:K.icon.key,shots:K.shots,status:status}})})
- .then(function(a){K.id=a.id;return api('/api/apps/'+a.id+'/versions',{method:'POST',body:{version_name:S.ver.trim(),changelog:S.log.trim(),apk_key:K.apk.key,size:K.apk.size}})})
- .then(function(){S.busy=0;resetForm();toast(status=='draft'?'Saved as draft':adm?'Published!':'Submitted! A moderator will review it.');go('detail',K.id)},function(e){S.busy=0;toast(e.message);if($('#dk'))$('#dk').innerHTML=dock()})}
+  if(!S.cat)return toast('Choose a category');if(!S.ver.trim())return toast('Enter a version, for example 1.0');
+  if(status!='draft'){if(S.desc.trim().length<100)return toast('Description needs 100+ characters (now '+S.desc.trim().length+')');if(!S.origin)return toast('Choose Original or Mod')}
+  S.busy=1;var say=function(t){$('#dk').innerHTML=dock(t)};say('Uploading APK… 0%');var K={shots:[]},adm=S.user&&S.user.is_admin;
+  up(S.apk.file,'apk',function(p){say('Uploading APK… '+p+'%')}).then(function(r){K.apk=r;say('Uploading icon…');return upImg(S.icon.file,512)}).then(function(r){K.icon=r;
+    return S.shots.reduce(function(pr,x,i){return pr.then(function(){say('Uploading screenshot '+(i+1)+'/'+S.shots.length+'…');return upImg(x.file,1280).then(function(r){K.shots.push(r.key)})})},Promise.resolve())})
+  .then(function(){say('Saving…');return api('/api/apps',{method:'POST',body:{name:S.name.trim()||S.apk.name.replace(/\.apk$/i,''),summary:S.sum.trim(),category:S.cat,description:S.desc.trim(),origin:S.origin||null,source_url:S.src,is_exclusive:S.excl,icon_key:K.icon.key,shots:K.shots,status:status}})})
+  .then(function(a){K.id=a.id;return api('/api/apps/'+a.id+'/versions',{method:'POST',body:{version_name:S.ver.trim(),changelog:S.log.trim(),apk_key:K.apk.key,size:K.apk.size}})})
+  .then(function(){S.busy=0;resetForm();toast(status=='draft'?'Saved as draft':adm?'Published!':'Submitted! A moderator will review it.');go('detail',K.id)},function(e){S.busy=0;toast(e.message);if($('#dk'))$('#dk').innerHTML=dock()})}
 function keep(f){var y=scrollY;f();scrollTo(0,y)}
 
-/* YouTube Style Search Logic */
+/* YouTube Search */
 var recentSearches=(function(){try{return JSON.parse(store.get('hx_rec_s')||'[]')}catch(e){return[]}})();
 function saveRecentSearch(w){if(!w)return;recentSearches=recentSearches.filter(function(x){return x!=w});recentSearches.unshift(w);if(recentSearches.length>8)recentSearches.pop();store.set('hx_rec_s',JSON.stringify(recentSearches))}
 function bindSearchTrigger(){var b=$('#open-yt-search');if(b)b.onclick=openYtSearch}
 function openYtSearch(){
- var o=$('#yt-search'),inp=$('#yt-q');o.classList.add('on');inp.value=S.q||'';inp.focus();renderYtResults(inp.value.trim());
+  var o=$('#yt-search'),inp=$('#yt-q');o.classList.add('on');inp.value=S.q||'';inp.focus();renderYtResults(inp.value.trim());
 }
 function closeYtSearch(){$('#yt-search').classList.remove('on')}
 $('#yt-back').onclick=closeYtSearch;
 $('#yt-clear').onclick=function(){$('#yt-q').value='';$('#yt-clear').style.display='none';renderYtResults('')};
 var searchTimer=null;
 $('#yt-q').addEventListener('input',function(e){
- var v=e.target.value;$('#yt-clear').style.display=v?'grid':'none';
- clearTimeout(searchTimer);searchTimer=setTimeout(function(){renderYtResults(v.trim())},180);
+  var v=e.target.value;$('#yt-clear').style.display=v?'grid':'none';
+  clearTimeout(searchTimer);searchTimer=setTimeout(function(){renderYtResults(v.trim())},180);
 });
 $('#yt-q').addEventListener('keydown',function(e){
- if(e.key=='Enter'){
-  var val=e.target.value.trim();if(!val)return;
-  var m=val.match(/\/a\/([a-zA-Z0-9_-]+)/);
-  if(m&&m[1]){closeYtSearch();go('detail',m[1]);return}
-  saveRecentSearch(val);closeYtSearch();S.q=val;go('home');
- }
+  if(e.key=='Enter'){
+    var val=e.target.value.trim();if(!val)return;
+    var m=val.match(/\/a\/([a-zA-Z0-9_-]+)/);
+    if(m&&m[1]){closeYtSearch();go('detail',m[1]);return}
+    saveRecentSearch(val);closeYtSearch();S.q=val;go('home');
+  }
 });
 function renderYtResults(query){
- var rb=$('#yt-results');if(!query){
-  var h='<div style="font-size:14px;color:var(--mu);margin-bottom:12px;font-weight:700">RECENT SEARCHES</div>';
-  if(!recentSearches.length)h+='<p class="mu">No recent searches.</p>';
-  else h+=recentSearches.map(function(s){return '<button class="yt-item" data-yts="'+esc(s)+'">'+ic('clock')+'<span>'+esc(s)+'</span></button>'}).join('')+'<button class="ulk" id="clear-rec-s" style="margin-top:14px">Clear recent searches</button>';
-  rb.innerHTML=h;
-  var cb=$('#clear-rec-s');if(cb)cb.onclick=function(){recentSearches=[];store.del('hx_rec_s');renderYtResults('')};
-  return;
- }
- api('/api/apps?q='+encodeURIComponent(query)).then(function(j){
-  if(!j.apps.length){rb.innerHTML='<p class="mu" style="padding:20px 0;text-align:center">No apps found for “'+esc(query)+'”</p>';return}
-  rb.innerHTML=j.apps.map(function(a){
-   return '<button class="yt-item" data-openapp="'+a.id+'">'+ico(a)+'<span><b>'+esc(a.name)+'</b><br><small class="mu">'+esc(a.category)+' · by '+esc(a.owner_name)+'</small></span>'+ic('search')+'</button>';
-  }).join('');
- });
+  var rb=$('#yt-results');if(!query){
+    var h='<div style="font-size:14px;color:var(--mu);margin-bottom:12px;font-weight:700">RECENT SEARCHES</div>';
+    if(!recentSearches.length)h+='<p class="mu">No recent searches.</p>';
+    else h+=recentSearches.map(function(s){return '<button class="yt-item" data-yts="'+esc(s)+'">'+ic('clock')+'<span>'+esc(s)+'</span></button>'}).join('')+'<button class="ulk" id="clear-rec-s" style="margin-top:14px">Clear recent searches</button>';
+    rb.innerHTML=h;
+    var cb=$('#clear-rec-s');if(cb)cb.onclick=function(){recentSearches=[];store.del('hx_rec_s');renderYtResults('')};
+    return;
+  }
+  api('/api/apps?q='+encodeURIComponent(query)).then(function(j){
+    if(!j.apps.length){rb.innerHTML='<p class="mu" style="padding:20px 0;text-align:center">No apps found for “'+esc(query)+'”</p>';return}
+    rb.innerHTML=j.apps.map(function(a){
+      return '<button class="yt-item" data-openapp="'+a.id+'">'+ico(a)+'<span><b>'+esc(a.name)+'</b><br><small class="mu">'+esc(a.category)+' · by '+esc(a.owner_name)+'</small></span>'+ic('search')+'</button>';
+    }).join('');
+  });
 }
 
 /* Event delegation */
 document.addEventListener('click',function(e){
- var t=e.target.closest('[data-go],[data-open],[data-theme],[data-pop],[data-tab],[data-star],[data-fav],[data-or],[data-rm],[data-toast],[data-dl],[data-auth],[data-swap],[data-retry],[data-out],[data-pub],[data-draft],[data-review],[data-follow],[data-submit],[data-del],[data-nv],[data-nvsubmit],[data-about],[data-edit],[data-agree],[data-editprofile],[data-saveprofile],[data-rmavatar],[data-mod],[data-saveedit],[data-rmes],[data-rmns],[data-share],[data-dev],[data-dfollow],[data-dtab],[data-openinstall],[data-installed],[data-dlretry],[data-reinst],[data-userpopup],[data-sheetclose],[data-sheetgo],[data-popupfol],[data-devtab],[data-openhelp],[data-replayguide],[data-likepost],[data-delpost],[data-resolveticket],[data-yts],[data-openapp]');
- if(!t){if(S.pop){S.pop=0;draw()}return}var d=t.dataset;
- if('pop' in d){S.pop=S.pop?0:1;draw();return}
- if('theme' in d){document.documentElement.dataset.theme=document.documentElement.dataset.theme=='light'?'':'light';return}
- if('go' in d){if(d.go=='notif'){try{Notification.requestPermission()}catch(e){}}go(d.go);return}
- if('open' in d){go('detail',d.open);return}
- if('openapp' in d){closeYtSearch();go('detail',d.openapp);return}
- if('yts' in d){closeYtSearch();S.q=d.yts;saveRecentSearch(d.yts);go('home');return}
- if('out' in d){logout();return}
- if('retry' in d){S.err='';draw();fetchPage();return}
- if('swap' in d){S.reg=S.reg?0:1;draw();return}
- if('auth' in d){auth();return}
- if('tab' in d){S.tab=d.tab;draw();return}
- if('star' in d){keep(function(){S.star=+d.star;draw()});return}
- if('or' in d){S.origin=d.or;paintUp();return}
- if('rm' in d){S[d.rm]=null;if(S.page=='newver')draw();else paintUp();return}
- if('pub' in d){if(!t.disabled)submit('pending');return}
- if('draft' in d){if(!t.disabled)submit('draft');return}
- if('about' in d){go('about',S.det.app.id);return}
- if('edit' in d){go('edit',S.det.app.id);return}
- if('share' in d){share(S.det.app);return}
- if('rmes' in d){S.eshots.splice(+d.rmes,1);paintUp();return}
- if('rmns' in d){S.shots.splice(+d.rmns,1);paintUp();return}
- if('saveedit' in d){saveEdit();return}
- if('saveprofile' in d){saveProfile();return}
- if('rmavatar' in d){S.eclear=1;S.efile=null;S.eprev=null;draw();return}
- if('editprofile' in d){S.eun=S.user.username;S.ebio=S.user.bio||'';S.emal=S.user.email_alerts?1:0;S.efile=null;S.eprev=null;S.eclear=0;go('editprofile');return}
- if('agree' in d){if(!S.agree)return toast('Tick the box to agree');api('/api/me/terms',{method:'POST',body:{}}).then(function(){S.user.tos=true;store.set('hxu',JSON.stringify(S.user));draw()},function(e){toast(e.message)});return}
- if('mod' in d){var pr=d.mod.split('|'),it=S.queue[+pr[0]],rs=$('#rs'+pr[0]).value;api('/api/admin/review',{method:'POST',body:{type:it.type,id:it.type=='app'?it.app.id:it.version.id,decision:pr[1],reason:rs}}).then(function(){toast(pr[1]=='approve'?'Approved':'Rejected');S.queue.splice(+pr[0],1);S.qn=S.queue.length;draw()},function(e){toast(e.message)});return}
- if('nv' in d){go('newver',S.det.app.id);return}
- if('nvsubmit' in d){nvSubmit();return}
- if('follow' in d){if(!S.user)return go('login');var on=!S.det.following;api('/api/apps/'+S.det.app.id+'/follow',{method:'POST',body:{on:on}}).then(function(){S.det.following=on;toast(on?'You will get update alerts':'Alerts turned off');keep(draw)},function(e){toast(e.message)});return}
- if('submit' in d){api('/api/apps/'+S.det.app.id,{method:'PATCH',body:{status:'pending'}}).then(function(){toast('Submitted for review');go('detail',S.det.app.id)},function(e){toast(e.message)});return}
- if('del' in d){if(!S.delArm){S.delArm=1;keep(draw);toast('Tap Delete again to confirm');return}api('/api/apps/'+S.det.app.id,{method:'DELETE'}).then(function(){toast('App deleted');go('profile')},function(e){toast(e.message)});return}
- if('dl' in d){var v=S.det.versions.filter(function(x){return x.id==d.dl})[0];if(v)startDl(S.det.app,v);return}
- if('openinstall' in d){openInstallSheet(d.openinstall);return}
- if('installed' in d){markInstalled(d.installed);return}
- if('dlretry' in d){retryDirect(d.dlretry);return}
- if('reinst' in d){delete INST[d.reinst];saveInst();keep(draw);return}
- if('sheetclose' in d){hideSheet();return}
- if('sheetgo' in d){hideSheet();S.dtab='apps';go('dev',d.sheetgo);return}
- if('userpopup' in d){openUserPopup(d.userpopup);return}
- if('openhelp' in d){openHelpSheet();return}
- if('replayguide' in d){startSplashAndGuide(true);return}
- if('popupfol' in d){
-  if(!S.user)return go('login');
-  var puid=d.popupfol,nst=d.st!='1';
-  api('/api/users/'+puid+'/follow',{method:'POST',body:{on:nst}}).then(function(j){
-   d.st=nst?'1':'0';t.textContent=nst?'Following ✓':'Follow';t.className='btn o f'+(nst?' on':'');
-   toast(nst?'Following user':'Unfollowed');
-   if(S.page=='dev'&&S.dev&&S.dev.user.id==puid){S.dev.is_following=nst;S.dev.stats.followers=j.followers;var b=$('#btn-dev-fol');if(b){b.textContent=nst?'Following ✓':'Follow';b.className='btn f'+(nst?' o':'')}var sf=$('#st-followers');if(sf)sf.textContent=j.followers}
-   if(S.page=='dev'&&S.dtab=='followers')loadDfol();
-  },function(e){toast(e.message)});
-  return;
- }
- if('dev' in d){S.dtab=d.t||'apps';go('dev',d.dev);return}
- if('devtab' in d){S.dtab=d.devtab;go('dev',d.devid);return}
- if('dtab' in d){S.dtab=d.dtab;if(S.dtab=='community')loadCommunityPosts();else if(S.dtab=='apps')draw();else loadDfol();return}
- if('dfollow' in d){
-  if(!S.user)return go('login');var don=!S.dev.is_following;
-  api('/api/users/'+S.dev.user.id+'/follow',{method:'POST',body:{on:don}}).then(function(j){
-   S.dev.is_following=don;S.dev.stats.followers=j.followers;toast(don?'You are following '+S.dev.user.username:'Unfollowed');
-   if(S.dtab=='followers')loadDfol();else keep(draw);
-  },function(e){toast(e.message)});return;
- }
- if('likepost' in d){
-  if(!S.user)return go('login');
-  var pid=d.likepost,on=d.st!='1';
-  api('/api/community/posts/'+pid+'/like',{method:'POST',body:{on:on}}).then(function(j){
-   d.st=on?'1':'0';t.className='c-btn'+(on?' liked':'');t.querySelector('span').textContent=j.likes;
-  },function(e){toast(e.message)});return;
- }
- if('delpost' in d){
-  api('/api/community/posts/'+d.delpost,{method:'DELETE'}).then(function(){toast('Post removed');loadCommunityPosts()},function(e){toast(e.message)});return;
- }
- if('resolveticket' in d){
-  api('/api/admin/support/'+d.resolveticket+'/resolve',{method:'POST'}).then(function(){toast('Ticket closed');fetchPage()},function(e){toast(e.message)});return;
- }
- if('fav' in d){if(!S.user)return go('login');var on=!S.det.favorited;api('/api/apps/'+S.det.app.id+'/favorite',{method:'POST',body:{on:on}}).then(function(){S.det.favorited=on;keep(draw)},function(e){toast(e.message)});return}
- if('review' in d){if(!S.user)return go('login');if(!S.star)return toast('Tap a star to rate');api('/api/apps/'+S.det.app.id+'/reviews',{method:'POST',body:{rating:S.star,comment:$('#rv').value}}).then(function(){toast('Thanks for your review!');return api('/api/apps/'+S.det.app.id)}).then(function(j){S.det=j;S.star=0;keep(draw)},function(e){toast(e.message)});return}
+  var t=e.target.closest('[data-go],[data-open],[data-theme],[data-pop],[data-tab],[data-star],[data-fav],[data-or],[data-rm],[data-toast],[data-dl],[data-auth],[data-swap],[data-retry],[data-out],[data-pub],[data-draft],[data-review],[data-follow],[data-submit],[data-del],[data-nv],[data-nvsubmit],[data-about],[data-edit],[data-agree],[data-editprofile],[data-saveprofile],[data-rmavatar],[data-mod],[data-saveedit],[data-rmes],[data-rmns],[data-share],[data-dev],[data-dfollow],[data-dtab],[data-openinstall],[data-installed],[data-dlretry],[data-reinst],[data-userpopup],[data-sheetclose],[data-sheetgo],[data-popupfol],[data-devtab],[data-openhelp],[data-replayguide],[data-likepost],[data-delpost],[data-resolveticket],[data-yts],[data-openapp]');
+  if(!t){if(S.pop){S.pop=0;draw()}return}var d=t.dataset;
+  if('pop' in d){S.pop=S.pop?0:1;draw();return}
+  if('theme' in d){toggleTheme();return}
+  if('go' in d){if(d.go=='notif'){try{Notification.requestPermission()}catch(e){}}go(d.go);return}
+  if('open' in d){go('detail',d.open);return}
+  if('openapp' in d){closeYtSearch();go('detail',d.openapp);return}
+  if('yts' in d){closeYtSearch();S.q=d.yts;saveRecentSearch(d.yts);go('home');return}
+  if('out' in d){logout();return}
+  if('retry' in d){S.err='';draw();fetchPage();return}
+  if('swap' in d){S.reg=S.reg?0:1;draw();return}
+  if('auth' in d){auth();return}
+  if('tab' in d){S.tab=d.tab;draw();return}
+  if('star' in d){keep(function(){S.star=+d.star;draw()});return}
+  if('or' in d){S.origin=d.or;paintUp();return}
+  if('rm' in d){S[d.rm]=null;if(S.page=='newver')draw();else paintUp();return}
+  if('pub' in d){if(!t.disabled)submit('pending');return}
+  if('draft' in d){if(!t.disabled)submit('draft');return}
+  if('about' in d){go('about',S.det.app.id);return}
+  if('edit' in d){go('edit',S.det.app.id);return}
+  if('share' in d){share(S.det.app);return}
+  if('rmes' in d){S.eshots.splice(+d.rmes,1);paintUp();return}
+  if('rmns' in d){S.shots.splice(+d.rmns,1);paintUp();return}
+  if('saveedit' in d){saveEdit();return}
+  if('saveprofile' in d){saveProfile();return}
+  if('rmavatar' in d){S.eclear=1;S.efile=null;S.eprev=null;draw();return}
+  if('editprofile' in d){S.eun=S.user.username;S.ebio=S.user.bio||'';S.emal=S.user.email_alerts?1:0;S.efile=null;S.eprev=null;S.eclear=0;go('editprofile');return}
+  if('agree' in d){if(!S.agree)return toast('Tick the box to agree');api('/api/me/terms',{method:'POST',body:{}}).then(function(){S.user.tos=true;store.set('hxu',JSON.stringify(S.user));draw()},function(e){toast(e.message)});return}
+  if('mod' in d){var pr=d.mod.split('|'),it=S.queue[+pr[0]],rs=$('#rs'+pr[0]).value;api('/api/admin/review',{method:'POST',body:{type:it.type,id:it.type=='app'?it.app.id:it.version.id,decision:pr[1],reason:rs}}).then(function(){toast(pr[1]=='approve'?'Approved':'Rejected');S.queue.splice(+pr[0],1);S.qn=S.queue.length;draw()},function(e){toast(e.message)});return}
+  if('nv' in d){go('newver',S.det.app.id);return}
+  if('nvsubmit' in d){nvSubmit();return}
+  if('follow' in d){if(!S.user)return go('login');var on=!S.det.following;api('/api/apps/'+S.det.app.id+'/follow',{method:'POST',body:{on:on}}).then(function(){S.det.following=on;toast(on?'You will get update alerts':'Alerts turned off');keep(draw)},function(e){toast(e.message)});return}
+  if('submit' in d){api('/api/apps/'+S.det.app.id,{method:'PATCH',body:{status:'pending'}}).then(function(){toast('Submitted for review');go('detail',S.det.app.id)},function(e){toast(e.message)});return}
+  if('del' in d){if(!S.delArm){S.delArm=1;keep(draw);toast('Tap Delete again to confirm');return}api('/api/apps/'+S.det.app.id,{method:'DELETE'}).then(function(){toast('App deleted');go('profile')},function(e){toast(e.message)});return}
+  if('dl' in d){var v=S.det.versions.filter(function(x){return x.id==d.dl})[0];if(v)startDl(S.det.app,v);return}
+  if('openinstall' in d){openInstallSheet(d.openinstall);return}
+  if('installed' in d){markInstalled(d.installed);return}
+  if('dlretry' in d){retryDirect(d.dlretry);return}
+  if('reinst' in d){delete INST[d.reinst];saveInst();keep(draw);return}
+  if('sheetclose' in d){hideSheet();return}
+  if('sheetgo' in d){hideSheet();S.dtab='apps';go('dev',d.sheetgo);return}
+  if('userpopup' in d){openUserPopup(d.userpopup);return}
+  if('openhelp' in d){openHelpSheet();return}
+  if('replayguide' in d){startSplashAndGuide(true);return}
+  if('popupfol' in d){
+    if(!S.user)return go('login');
+    var puid=d.popupfol,nst=d.st!='1';
+    api('/api/users/'+puid+'/follow',{method:'POST',body:{on:nst}}).then(function(j){
+      d.st=nst?'1':'0';t.textContent=nst?'Following ✓':'Follow';t.className='btn o f'+(nst?' on':'');
+      toast(nst?'Following user':'Unfollowed');
+      if(S.page=='dev'&&S.dev&&S.dev.user.id==puid){S.dev.is_following=nst;S.dev.stats.followers=j.followers;var b=$('#btn-dev-fol');if(b){b.textContent=nst?'Following ✓':'Follow';b.className='btn f'+(nst?' o':'')}var sf=$('#st-followers');if(sf)sf.textContent=j.followers}
+      if(S.page=='dev'&&S.dtab=='followers')loadDfol();
+    },function(e){toast(e.message)});
+    return;
+  }
+  if('dev' in d){S.dtab=d.t||'apps';go('dev',d.dev);return}
+  if('devtab' in d){S.dtab=d.devtab;go('dev',d.devid);return}
+  if('dtab' in d){S.dtab=d.dtab;if(S.dtab=='community')loadCommunityPosts();else if(S.dtab=='apps')draw();else loadDfol();return}
+  if('dfollow' in d){
+    if(!S.user)return go('login');var don=!S.dev.is_following;
+    api('/api/users/'+S.dev.user.id+'/follow',{method:'POST',body:{on:don}}).then(function(j){
+      S.dev.is_following=don;S.dev.stats.followers=j.followers;toast(don?'You are following '+S.dev.user.username:'Unfollowed');
+      if(S.dtab=='followers')loadDfol();else keep(draw);
+    },function(e){toast(e.message)});return;
+  }
+  if('likepost' in d){
+    if(!S.user)return go('login');
+    var pid=d.likepost,on=d.st!='1';
+    api('/api/community/posts/'+pid+'/like',{method:'POST',body:{on:on}}).then(function(j){
+      d.st=on?'1':'0';t.className='c-btn'+(on?' liked':'');t.querySelector('span').textContent=j.likes;
+    },function(e){toast(e.message)});return;
+  }
+  if('delpost' in d){
+    api('/api/community/posts/'+d.delpost,{method:'DELETE'}).then(function(){toast('Post removed');loadCommunityPosts()},function(e){toast(e.message)});return;
+  }
+  if('resolveticket' in d){
+    api('/api/admin/support/'+d.resolveticket+'/resolve',{method:'POST'}).then(function(){toast('Ticket closed');fetchPage()},function(e){toast(e.message)});return;
+  }
+  if('fav' in d){if(!S.user)return go('login');var on=!S.det.favorited;api('/api/apps/'+S.det.app.id+'/favorite',{method:'POST',body:{on:on}}).then(function(){S.det.favorited=on;keep(draw)},function(e){toast(e.message)});return}
+  if('review' in d){if(!S.user)return go('login');if(!S.star)return toast('Tap a star to rate');api('/api/apps/'+S.det.app.id+'/reviews',{method:'POST',body:{rating:S.star,comment:$('#rv').value}}).then(function(){toast('Thanks for your review!');return api('/api/apps/'+S.det.app.id)}).then(function(j){S.det=j;S.star=0;keep(draw)},function(e){toast(e.message)});return}
 });
 
-/* Interactive Splash & Step-by-Step Tutorial */
+/* Tutorial & Guide */
 var guideSteps=[
- {title:'Welcome to HEXSTORE',desc:'Your fast Android marketplace for discovering games, mods, and indie utilities.',ic:'box'},
- {title:'YouTube-Style Search',desc:'Tap the search bar at any time to get instant suggestions, history, and app search results.',ic:'search'},
- {title:'Download & Track Updates',desc:'Download APKs directly with live speed stats. Follow apps to get notifications when updates drop.',ic:'dl'},
- {title:'Creator Communities',desc:'Publishers can create community feeds, share dev updates, and interact directly with followers.',ic:'user'}
+  {title:'Welcome to HEXSTORE',desc:'Your fast Android marketplace for discovering games, mods, and indie utilities.',ic:'box'},
+  {title:'YouTube-Style Search',desc:'Tap the search bar to get instant search suggestions, history, and real-time app results.',ic:'search'},
+  {title:'Live Downloads & Updates',desc:'Download APKs directly with live speed stats. Follow apps to get notifications when updates arrive.',ic:'dl'},
+  {title:'Creator Communities & Prime',desc:'Developers get Prime and Verified badges, post dev updates, and interact directly with followers.',ic:'user'}
 ];
-var currGuide=0;
 function startSplashAndGuide(force){
- if(!force&&store.get('hx_onboarded_v2'))return;
- var sp=$('#splash');sp.style.display='grid';
- var un=(S.user&&S.user.username)?('Welcome back, '+S.user.username):'Welcome to HEXSTORE';
- $('#sp-welcome').textContent=un;
- setTimeout(function(){
-  sp.style.opacity='0';
-  setTimeout(function(){sp.style.display='none';sp.style.opacity='1';showGuideStep(0)},400);
- },1500);
+  if(!force&&store.get('hx_onboarded_v2'))return;
+  var sp=$('#splash');sp.style.display='grid';
+  var un=(S.user&&S.user.username)?('Welcome back, '+S.user.username):'Welcome to HEXSTORE';
+  $('#sp-welcome').textContent=un;
+  setTimeout(function(){
+    sp.style.opacity='0';
+    setTimeout(function(){sp.style.display='none';sp.style.opacity='1';showGuideStep(0)},400);
+  },1500);
 }
 
 function showGuideStep(idx){
- currGuide=idx;var g=$('#guide');g.style.display='flex';var s=guideSteps[idx];
- var dots=guideSteps.map(function(_,i){return '<i class="'+(i==idx?'on':'')+'"></i>'}).join('');
- g.innerHTML='<div class="guide-card">'+
- '<div class="guide-icon">'+ic(s.ic)+'</div>'+
- '<h2 style="font-size:22px;margin:0 0 8px">'+esc(s.title)+'</h2>'+
- '<p class="mu" style="font-size:16px;line-height:1.6;margin:0">'+esc(s.desc)+'</p>'+
- '<div class="guide-dots">'+dots+'</div>'+
- '<div style="display:flex;gap:10px">'+
- '<button class="btn o f" id="guide-skip">Skip</button>'+
- '<button class="btn g f" id="guide-next">'+(idx===guideSteps.length-1?'Finish':'Next')+'</button>'+
- '</div></div>';
- $('#guide-skip').onclick=function(){g.style.display='none';store.set('hx_onboarded_v2','1')};
- $('#guide-next').onclick=function(){
-  if(idx<guideSteps.length-1)showGuideStep(idx+1);
-  else{g.style.display='none';store.set('hx_onboarded_v2','1');toast('Tutorial completed ✓')}
- };
+  var g=$('#guide');g.style.display='flex';var s=guideSteps[idx];
+  var dots=guideSteps.map(function(_,i){return '<i class="'+(i==idx?'on':'')+'"></i>'}).join('');
+  g.innerHTML='<div class="guide-card">'+
+  '<div class="guide-icon">'+ic(s.ic)+'</div>'+
+  '<h2 style="font-size:22px;margin:0 0 8px">'+esc(s.title)+'</h2>'+
+  '<p class="mu" style="font-size:16px;line-height:1.6;margin:0">'+esc(s.desc)+'</p>'+
+  '<div class="guide-dots">'+dots+'</div>'+
+  '<div style="display:flex;gap:10px">'+
+  '<button class="btn o f" id="guide-skip">Skip</button>'+
+  '<button class="btn g f" id="guide-next">'+(idx===guideSteps.length-1?'Finish':'Next')+'</button>'+
+  '</div></div>';
+  $('#guide-skip').onclick=function(){g.style.display='none';store.set('hx_onboarded_v2','1')};
+  $('#guide-next').onclick=function(){
+    if(idx<guideSteps.length-1)showGuideStep(idx+1);
+    else{g.style.display='none';store.set('hx_onboarded_v2','1');toast('Tutorial completed ✓')}
+  };
 }
 
-/* Android Top Install Banner System */
+/* Android Top Install Banner */
 var defPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){
- e.preventDefault();defPrompt=e;
- var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
- var isWebView=/\bwv\b|WebView/i.test(navigator.userAgent);
- if(!isStandalone&&!isWebView&&!store.get('hx_and_dismissed')){
-  var b=$('#and-banner');if(b)b.classList.add('on');
- }
+  e.preventDefault();defPrompt=e;
+  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  var isWebView=/\bwv\b|WebView/i.test(navigator.userAgent);
+  if(!isStandalone&&!isWebView&&!store.get('hx_and_dismissed')){
+    var b=$('#and-banner');if(b)b.classList.add('on');
+  }
 });
 $('#and-install').onclick=function(){
- if(defPrompt){defPrompt.prompt();defPrompt=null}
- else{window.location.href='/';}
- $('#and-banner').classList.remove('on');
+  if(defPrompt){defPrompt.prompt();defPrompt=null}
+  else{window.location.href='/';}
+  $('#and-banner').classList.remove('on');
 };
 $('#and-close').onclick=function(){
- store.set('hx_and_dismissed','1');$('#and-banner').classList.remove('on');
+  store.set('hx_and_dismissed','1');$('#and-banner').classList.remove('on');
 };
 
 if('serviceWorker' in navigator){
- window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})});
+  window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})});
 }
 
 /* Boot & Init */
