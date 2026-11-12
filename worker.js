@@ -247,7 +247,7 @@ const id=uid();
 await q(env,'insert into community_posts(id,user_id,content,image_key,created_at) values(?,?,?,?,?)',id,me.id,content,img,now).run();
 return J({id,ok:true});
 }
-if((r=path.match(/^\/api\/community/posts\/([\w-]+)$/))&&m==='DELETE'){
+if((r=path.match(/^\/api\/community\/posts\/([\w-]+)$/))&&m==='DELETE'){
 need();
 const p=await q(env,'select * from community_posts where id=?',r[1]).first();
 if(!p)throw new E(404,'Post not found');
