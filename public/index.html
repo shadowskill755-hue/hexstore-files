@@ -6,18 +6,17 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>HEXSTORE</title>
 <style>
-:root{--bg:#0a0a0c;--bar:#111216;--sf:#17171b;--sf2:#222227;--ln:#2b2b31;--tx:#f4f4f5;--mu:#9a9aa4;--ac:#35a64c;--bt:#e4e4e7;--bt-tx:#111;--bl:#0a2230;--bl2:#134058}
+:root{--bg:#0a0a0c;--bar:#111216;--sf:#17171b;--sf2:#222227;--ln:#2b2b31;--tx:#f4f4f5;--mu:#9a9aa4;--ac:#35a64c;--bt:#e4e4e7;--bt-tx:#111;--bl:#0a2230;--bl2:#134058;--blue:#1d9bf0}
 [data-theme=light]{--bg:#f6f6f7;--bar:#fff;--sf:#fff;--sf2:#ececef;--ln:#dcdce1;--tx:#16161a;--mu:#6b6b75;--bt:#18181b;--bt-tx:#fff;--bl:#e6f4fb;--bl2:#b9dcee}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom);overflow-x:hidden}
 button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
 svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .top{position:sticky;top:0;z-index:30;background:var(--bar);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px}
 .logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#43c25c,#27913f);border:0;color:#fff;font-size:24px;display:grid;place-items:center;flex:none}
-.search{flex:1;display:flex;align-items:center;gap:10px;background:var(--sf2);border-radius:14px;padding:0 14px;height:46px;color:var(--mu)}
-.search input{border:0;outline:0;background:none;width:100%;min-width:0}
+.search-btn{flex:1;display:flex;align-items:center;gap:10px;background:var(--sf2);border-radius:14px;padding:0 14px;height:46px;color:var(--mu);border:0;text-align:left;font-size:16px}
 .ib{background:none;border:0;font-size:22px;width:40px;height:40px;display:grid;place-items:center;color:var(--tx);flex:none}
-.av{width:46px;height:46px;border-radius:50%;background:#000;border:0;color:#fff;font-weight:800;font-size:13px;letter-spacing:1px;padding:0;flex:none}
+.av{width:46px;height:46px;border-radius:50%;background:#000;border:0;color:#fff;font-weight:800;font-size:13px;letter-spacing:1px;padding:0;flex:none;overflow:hidden}
 .pop{position:fixed;right:14px;top:calc(env(safe-area-inset-top) + 66px);width:min(280px,86vw);background:var(--sf);border:1px solid var(--ln);border-radius:16px;box-shadow:0 20px 50px #0007;z-index:40;overflow:hidden}
 .pop .h{padding:16px 18px;border-bottom:1px solid var(--ln)}.pop .h small{color:var(--mu)}
 .pop button{display:flex;align-items:center;gap:14px;width:100%;padding:14px 18px;background:none;border:0;text-align:left;font-size:17px}
@@ -53,7 +52,7 @@ textarea,input[type=text],input[type=url],input[type=password],input[type=email]
 textarea{resize:vertical;min-height:110px}textarea:focus,input:focus,select:focus{border-color:var(--mu)}
 label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{color:#f2555a}.hint{color:var(--mu);font-size:14px;margin:8px 0 0}
 .sel{width:100%;margin:12px 0;appearance:none;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%239a9aa4' stroke-width='2'%3E%3Cpath d='M4 7l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center}
-.tabs{display:flex;gap:28px;border-bottom:1px solid var(--ln);margin:30px 0 20px}.tabs button{background:none;border:0;padding:0 0 14px;font-size:19px;color:var(--mu);font-weight:600;display:flex;gap:10px;align-items:center}
+.tabs{display:flex;gap:24px;border-bottom:1px solid var(--ln);margin:30px 0 20px;overflow-x:auto}.tabs button{background:none;border:0;padding:0 0 14px;font-size:18px;color:var(--mu);font-weight:600;display:flex;gap:8px;align-items:center;white-space:nowrap}
 .tabs .on{color:var(--tx);border-bottom:2px solid var(--tx)}.tabs em{font-style:normal;background:var(--sf2);border-radius:999px;font-size:14px;padding:3px 10px}
 .badge{border:1px solid var(--ln);border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;letter-spacing:.04em;white-space:nowrap}
 .drop{border:1.5px dashed var(--ln);border-radius:20px;padding:34px 16px;text-align:center;color:var(--mu);cursor:pointer;display:block}
@@ -67,9 +66,9 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .foot{border-top:1px solid var(--ln);margin-top:50px;padding:28px 0 40px;color:var(--mu)}.foot nav{display:flex;flex-wrap:wrap;gap:14px 26px;font-size:18px}.foot p{margin-top:28px}
 .tg{display:flex;align-items:center;gap:14px;margin-top:22px}.tg input{width:26px;height:26px;accent-color:var(--ac)}
 .pv{border:1px solid var(--ln);border-radius:20px;padding:16px;display:flex;gap:16px}
-.toast{position:fixed;left:16px;right:16px;bottom:110px;background:var(--ac);color:#fff;padding:14px;border-radius:14px;text-align:center;font-weight:700;z-index:60;box-shadow:0 8px 30px #000a}
+.toast{position:fixed;left:16px;right:16px;bottom:110px;background:var(--ac);color:#fff;padding:14px;border-radius:14px;text-align:center;font-weight:700;z-index:120;box-shadow:0 8px 30px #000a}
 .pic{display:inline-grid;place-items:center;border-radius:50%;background:#000;color:#fff;font-weight:800;letter-spacing:.5px;overflow:hidden;flex:none;vertical-align:middle}
-.pic img,.av img{width:100%;height:100%;object-fit:cover;display:block}.av{overflow:hidden}
+.pic img,.av img{width:100%;height:100%;object-fit:cover;display:block}
 .btn{white-space:nowrap}.by{color:var(--mu)}.sum{color:var(--tx);opacity:.85}
 @media(max-width:420px){.sq{width:46px}.btn .dl-i{display:none}}
 .sk{background:linear-gradient(90deg,var(--sf) 25%,var(--sf2) 50%,var(--sf) 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:14px}
@@ -98,31 +97,100 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 /* Bottom sheet system */
 .sheet-bd{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:90;backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s ease}
 .sheet-bd.on{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:95;background:var(--sf);border-top:1px solid var(--ln);border-radius:24px 24px 0 0;max-width:580px;margin:auto;padding:12px 20px calc(env(safe-area-inset-bottom) + 24px);transform:translateY(105%);transition:transform .22s cubic-bezier(0.2,0.9,0.3,1);box-shadow:0 -12px 40px #000c}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:95;background:var(--sf);border-top:1px solid var(--ln);border-radius:24px 24px 0 0;max-width:580px;margin:auto;padding:12px 20px calc(env(safe-area-inset-bottom) + 24px);transform:translateY(105%);transition:transform .22s cubic-bezier(0.2,0.9,0.3,1);box-shadow:0 -12px 40px #000c;max-height:85vh;overflow-y:auto}
 .sheet.on{transform:translateY(0)}
 .sheet-bar{width:40px;height:5px;background:var(--ln);border-radius:999px;margin:0 auto 18px}
 .steps{margin:18px 0;padding-left:0;list-style:none;display:grid;gap:12px}
 .steps li{display:flex;gap:14px;align-items:flex-start;font-size:15px;line-height:1.5}
 .steps li i{width:26px;height:26px;border-radius:50%;background:var(--sf2);color:var(--tx);font-weight:700;font-style:normal;font-size:13px;display:grid;place-items:center;flex:none;margin-top:2px}
 
-/* PWA App install banner */
-.pwa-banner{position:sticky;top:0;z-index:35;background:linear-gradient(135deg,#15301d,#111216);border-bottom:1px solid #245a33;padding:12px 16px;display:flex;align-items:center;gap:14px}
-.pwa-banner .ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;font-size:22px;display:grid;place-items:center}
-.pwa-banner .tx{flex:1;min-width:0}
-.pwa-banner b{display:block;font-size:16px}
-.pwa-banner small{color:var(--mu);font-size:13px;display:block}
+/* Android Notification Banner from Top */
+.and-banner{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:12px;right:12px;max-width:540px;margin:auto;z-index:110;background:var(--bar);border:1px solid #245a33;border-radius:20px;padding:12px 14px;box-shadow:0 12px 35px rgba(0,0,0,.75);display:flex;align-items:center;gap:12px;transform:translateY(-150%);transition:transform .3s cubic-bezier(0.18,0.89,0.32,1.2)}
+.and-banner.on{transform:translateY(0)}
+.and-banner .ic{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;display:grid;place-items:center;font-size:24px;flex:none}
+.and-banner .tx{flex:1;min-width:0}
+.and-banner b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.and-banner small{color:var(--mu);font-size:13px;display:block}
+
+/* YouTube Style Search Overlay */
+.yt-search{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;flex-direction:column}
+.yt-search.on{display:flex}
+.yt-head{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 8px) 14px 10px;border-bottom:1px solid var(--ln);background:var(--bar)}
+.yt-input-wrap{flex:1;display:flex;align-items:center;background:var(--sf2);border-radius:12px;padding:0 12px;height:46px}
+.yt-input-wrap input{border:0;background:none;width:100%;outline:0;font-size:17px}
+.yt-body{flex:1;overflow-y:auto;padding:14px 16px}
+.yt-item{display:flex;align-items:center;gap:16px;width:100%;padding:13px 4px;border:0;background:none;text-align:left;font-size:16px;border-bottom:1px solid #ffffff0a}
+.yt-item span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Verified Blue Badge */
+.v-badge{display:inline-flex;align-items:center;justify-content:center;color:var(--blue);margin-left:5px;font-size:1.05em;vertical-align:-1px}
+
+/* Splash and Tutorial Animation */
+.splash{position:fixed;inset:0;background:#0a0a0c;z-index:200;display:grid;place-items:center;transition:opacity .4s ease}
+.splash-box{text-align:center;animation:sp-in .8s cubic-bezier(0.18,0.89,0.32,1.2)}
+.splash-logo{width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;font-size:48px;display:grid;place-items:center;margin:0 auto 16px;box-shadow:0 0 50px rgba(67,194,92,.5)}
+.splash h1{margin:0;font-size:32px;letter-spacing:1px}
+.splash p{color:var(--mu);margin:6px 0 0;font-size:17px}
+@keyframes sp-in{from{transform:scale(0.6);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* Onboarding Guide Popover */
+.guide{position:fixed;inset:0;z-index:180;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:20px}
+.guide-card{background:var(--sf);border:1px solid var(--ln);border-radius:24px;padding:26px;max-width:440px;width:100%;box-shadow:0 10px 40px #000;text-align:center}
+.guide-icon{width:64px;height:64px;border-radius:20px;background:var(--sf2);color:var(--ac);display:grid;place-items:center;font-size:32px;margin:0 auto 14px}
+.guide-dots{display:flex;justify-content:center;gap:6px;margin:20px 0}
+.guide-dots i{width:8px;height:8px;border-radius:50%;background:var(--ln)}
+.guide-dots i.on{background:var(--ac);width:22px;border-radius:999px;transition:all .2s ease}
+
+/* Community Post Cards */
+.c-post{background:var(--sf);border:1px solid var(--ln);border-radius:20px;padding:18px;margin:14px 0}
+.c-post-img{width:100%;max-height:360px;object-fit:cover;border-radius:14px;margin-top:12px;border:1px solid var(--ln)}
+.c-actions{display:flex;align-items:center;gap:18px;margin-top:14px;border-top:1px solid var(--ln);padding-top:10px}
+.c-btn{background:none;border:0;color:var(--mu);display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;padding:6px}
+.c-btn.liked{color:#f2555a}
 </style></head><body>
-<div id="pwa-box"></div>
+
+<div id="and-banner" class="and-banner">
+  <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div>
+  <div class="tx">
+    <b>Install HEXSTORE App</b>
+    <small>Tap to install for faster speeds &amp; updates</small>
+  </div>
+  <button class="btn g" style="height:38px;padding:0 14px;font-size:14px" id="and-install">Install</button>
+  <button class="ib" style="width:34px;height:34px;font-size:18px" id="and-close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+
+<div id="yt-search" class="yt-search">
+  <div class="yt-head">
+    <button class="ib" id="yt-back"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+    <div class="yt-input-wrap">
+      <input type="text" id="yt-q" placeholder="Search apps, games, tools..." autocomplete="off">
+      <button class="ib" id="yt-clear" style="font-size:18px;display:none"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+  <div class="yt-body" id="yt-results"></div>
+</div>
+
+<div id="splash" class="splash" style="display:none">
+  <div class="splash-box">
+    <div class="splash-logo"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div>
+    <h1>HEXSTORE</h1>
+    <p id="sp-welcome">Welcome to HEXSTORE</p>
+  </div>
+</div>
+
+<div id="guide" class="guide" style="display:none"></div>
 <div id="app"></div>
 <div id="sheet-bd" class="sheet-bd"></div>
 <div id="sheet" class="sheet"></div>
 
 <script>
-var P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',heart:'<path d="M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A4.5 4.5 0 0117 18z"/><path d="M12 12v6M9.5 14.5L12 12l2.5 2.5"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="8" cy="9" r="1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',bell:'<path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8M10 21h4"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'};
+var P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',heart:'<path d="M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A4.5 4.5 0 0117 18z"/><path d="M12 12v6M9.5 14.5L12 12l2.5 2.5"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="8" cy="9" r="1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',bell:'<path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8M10 21h4"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>',chat:'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>'};
 var ic=function(n){return '<svg viewBox="0 0 24 24">'+P[n]+'</svg>'};
+var blueCheck='<span class="v-badge" title="Verified Admin"><svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 14.6l-3.9-3.9 1.41-1.41 2.49 2.48 6.08-6.08 1.41 1.41-7.49 7.5z"/></svg></span>';
+
 var API=window.location.origin;
 var G=['#e0552b,#3a1a14','#2e6bd6,#101a3a','#8a3fd1,#1c1030','#1d9e6e,#0b2a20','#d6a02e,#3a2a0a','#c23b6b,#2a0f1c'];
-var S={page:'home',id:null,pop:0,tab:'apps',reg:0,after:'',origin:'',apk:null,icon:null,shots:[],name:'',cat:'',desc:'',log:'',ver:'1.0',src:'',excl:0,star:0,q:'',user:null,apps:null,det:null,mine:null,me:null,fav:null,err:'',busy:0,unread:0,notes:null,pending:null,delArm:0,nver:'',nlog:'',napk:null,sum:'',editId:null,eicon:null,eshots:[],agree:0,queue:null,qn:0,eun:'',ebio:'',emal:1,efile:null,eprev:null,eclear:0,dev:null,dtab:'apps',dfol:null};
+var S={page:'home',id:null,pop:0,tab:'apps',reg:0,after:'',origin:'',apk:null,icon:null,shots:[],name:'',cat:'',desc:'',log:'',ver:'1.0',src:'',excl:0,star:0,q:'',user:null,apps:null,det:null,mine:null,me:null,fav:null,err:'',busy:0,unread:0,notes:null,pending:null,delArm:0,nver:'',nlog:'',napk:null,sum:'',editId:null,eicon:null,eshots:[],agree:0,queue:null,qn:0,eun:'',ebio:'',emal:1,efile:null,eprev:null,eclear:0,dev:null,dtab:'apps',dfol:null,dposts:null,cpostText:'',cpostFile:null,tickets:null};
 var $=function(s){return document.querySelector(s)},app=$('#app');
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
@@ -139,12 +207,12 @@ function up(f,kind,cb){return new Promise(function(res,rej){var x=new XMLHttpReq
  x.onerror=function(){rej(new Error('Cannot reach the server. Check your internet.'))};x.send(f)})}
 
 function ico(a,big){var st=big?'width:112px;height:112px;border-radius:26px;font-size:30px;':'';if(a.icon_url)return '<div class="ico" style="'+st+'"><img src="'+esc(a.icon_url)+'" alt=""></div>';var g=G[(a.name||'x').length%6].split(',');return '<div class="ico" style="'+st+'background:linear-gradient(135deg,'+g[0]+','+g[1]+')">'+esc((a.name||'?').slice(0,2).toUpperCase())+'</div>'}
-function row(a){return '<button class="row" data-open="'+esc(a.id)+'">'+ico(a)+'<span style="flex:1;min-width:0"><b>'+esc(a.name)+'</b><small class="by">by '+esc(a.owner_name||'')+' · '+esc(a.category)+'</small>'+(a.summary?'<small class="sum">'+esc(a.summary)+'</small>':'')+'<small>'+(INST[a.id]?(a.version_code&&a.version_code>INST[a.id].c?'<span class="st" style="color:#e0a82e">Update</span>':'<span class="st" style="color:#4fcb68">Installed ✅</span>')+'<span class="dot">•</span>':'')+(a.rating_count?'<span class="st">★ '+a.rating+'</span><span class="dot">•</span>':'')+'⤓ '+a.downloads+(a.size?' <span class="dot">•</span> '+fmt(a.size):'')+'</small></span>'+(a.status!='published'?'<span class="badge">'+(a.status=='draft'?'DRAFT':a.status=='pending'?'IN REVIEW':'REJECTED')+'</span>':'')+'</button>'}
+function row(a){return '<button class="row" data-open="'+esc(a.id)+'">'+ico(a)+'<span style="flex:1;min-width:0"><b>'+esc(a.name)+'</b><small class="by">by '+esc(a.owner_name||'')+(a.owner_is_admin?blueCheck:'')+' · '+esc(a.category)+'</small>'+(a.summary?'<small class="sum">'+esc(a.summary)+'</small>':'')+'<small>'+(INST[a.id]?(a.version_code&&a.version_code>INST[a.id].c?'<span class="st" style="color:#e0a82e">Update</span>':'<span class="st" style="color:#4fcb68">Installed ✅</span>')+'<span class="dot">•</span>':'')+(a.rating_count?'<span class="st">★ '+a.rating+'</span><span class="dot">•</span>':'')+'⤓ '+a.downloads+(a.size?' <span class="dot">•</span> '+fmt(a.size):'')+'</small></span>'+(a.status!='published'?'<span class="badge">'+(a.status=='draft'?'DRAFT':a.status=='pending'?'IN REVIEW':'REJECTED')+'</span>':'')+'</button>'}
 
-function head(){var u=S.user;return '<div class="top"><button class="logo" data-go="home">'+ic('box')+'</button><label class="search">'+ic('search')+'<input id="q" placeholder="Search apps, or paste /a/ link" value="'+esc(S.q)+'"></label>'+(u?'<button class="ib" data-go="notif" style="position:relative">'+ic('bell')+'<span id="bdg" style="position:absolute;top:0;right:-2px;background:#f2555a;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 6px;'+(S.unread?'':'display:none')+'">'+S.unread+'</span></button>':'')+'<button class="ib" data-theme>'+ic('sun')+'</button><button class="av" data-pop>'+(u?(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':esc(u.username.slice(0,2).toUpperCase())):ic('user'))+'</button></div>'+(S.pop?'<div class="pop">'+(u?'<div class="h"><b style="font-size:19px">'+esc(u.username)+'</b><br><small>'+esc(u.email)+'</small></div><button data-go="profile">'+ic('user')+'Profile</button><button data-go="upload">'+ic('up')+'Upload app</button>'+(u.is_admin?'<button data-go="moderation">'+ic('shield')+'Moderation</button>':'')+'<button class="red" data-out>'+ic('out')+'Sign out</button>':'<button data-go="login">'+ic('user')+'Sign in / Create account</button>')+'</div>':'')}
-function foot(){return '<div class="foot"><nav><a data-go="home">Home</a><a data-go="upload">Publish your app</a><a data-go="terms">Terms</a>'+(S.user?'<a data-go="profile">Profile</a>':'<a data-go="login">Sign in</a>')+'</nav><p>© 2026 HEXSTORE — Free Android App Marketplace.</p></div>'}
+function head(){var u=S.user;return '<div class="top"><button class="logo" data-go="home">'+ic('box')+'</button><button class="search-btn" id="open-yt-search">'+ic('search')+'<span>'+esc(S.q||'Search apps, games...')+'</span></button>'+(u?'<button class="ib" data-go="notif" style="position:relative">'+ic('bell')+'<span id="bdg" style="position:absolute;top:0;right:-2px;background:#f2555a;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 6px;'+(S.unread?'':'display:none')+'">'+S.unread+'</span></button>':'')+'<button class="ib" data-theme>'+ic('sun')+'</button><button class="av" data-pop>'+(u?(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':esc(u.username.slice(0,2).toUpperCase())):ic('user'))+'</button></div>'+(S.pop?'<div class="pop">'+(u?'<div class="h"><b style="font-size:19px">'+esc(u.username)+(u.is_admin?blueCheck:'')+'</b><br><small>'+esc(u.email)+'</small></div><button data-go="profile">'+ic('user')+'Profile</button><button data-go="upload">'+ic('up')+'Upload app</button><button data-go="settings">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button data-go="moderation">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="red" data-out>'+ic('out')+'Sign out</button>':'<button data-go="login">'+ic('user')+'Sign in / Create account</button><button data-go="settings">'+ic('gear')+'Settings</button>')+'</div>':'')}
+function foot(){return '<div class="foot"><nav><a data-go="home">Home</a><a data-go="upload">Publish your app</a><a data-go="settings">Settings &amp; Help</a><a data-go="terms">Terms</a>'+(S.user?'<a data-go="profile">Profile</a>':'<a data-go="login">Sign in</a>')+'</nav><p>© 2026 HEXSTORE — Creator: <b>mrdakroma</b></p></div>'}
 function wait(){return '<main>'+(S.err?'<p class="mu" style="padding:60px 0;text-align:center">'+esc(S.err)+'<br><br><button class="btn" data-retry>Try again</button></p>':'<div class="sk" style="height:34px;width:60%;margin:20px 0"></div>'+[1,2,3,4].map(function(){return '<div style="display:flex;gap:16px;padding:14px 4px"><div class="sk" style="width:56px;height:56px"></div><div style="flex:1"><div class="sk" style="height:18px;width:50%;margin-bottom:10px"></div><div class="sk" style="height:14px;width:35%"></div></div></div>'}).join(''))+'</main>'}
-function home(){if(!S.apps)return wait();return '<main><h1>'+(S.q?'Results':'Discover apps')+'</h1><p class="mu">'+(S.q?esc(S.q):'Games and tools from independent developers.')+'</p>'+(S.apps.length?S.apps.map(row).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No apps found.</p>')+foot()+'</main>'}
+function home(){if(!S.apps)return wait();return '<main><h1>'+(S.q?'Results':'Discover apps')+'</h1><p class="mu">'+(S.q?esc(S.q):'Games, tools, and indie apps on HEXSTORE.')+'</p>'+(S.apps.length?S.apps.map(row).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No apps found.</p>')+foot()+'</main>'}
 function login(){var r=S.reg;return '<main style="max-width:480px"><h1>'+(r?'Create account':'Sign in')+'</h1><p class="mu">'+(r?'Join HEXSTORE to publish apps and get update alerts.':'Welcome back.')+'</p><div class="card pad"><label class="l" style="margin-top:0">Email</label><input type="email" id="em" autocapitalize="off" autocomplete="email"><label class="l">Password</label><input type="password" id="pw" autocomplete="'+(r?'new-password':'current-password')+'">'+(r?'<label class="l">Username (optional)</label><input type="text" id="un">':'')+'<p class="hint" id="lm" style="color:#f2555a;min-height:22px"></p><button class="btn f" id="go" data-auth>'+(r?'Create account':'Sign in')+'</button><button class="btn o f" style="margin-top:12px" data-swap>'+(r?'I already have an account':'Create a new account')+'</button></div></main>'}
 
 function detail(){if(!S.det)return wait();var d=S.det,a=d.app,vs=d.versions,own=d.is_owner||(S.user&&S.user.is_admin),v=vs.filter(function(x){return x.status=='approved'})[0],dist={};d.dist.forEach(function(x){dist[x.rating]=x.n});
@@ -152,7 +220,7 @@ var by={username:a.owner_name,avatar_url:a.owner_avatar},desc=a.description,shor
 var note=a.status=='published'?'':'<div class="note"><span style="font-size:22px">'+ic('eye')+'</span><div><b style="font-size:19px">'+(a.status=='rejected'?'Not approved':a.status=='pending'?'In review':'Draft')+'</b><br>'+(a.status=='rejected'?'Reason: '+esc(a.reject_reason||'No reason given')+'. Edit the app or upload a fixed APK, then submit it again.':a.status=='pending'?'A moderator is checking this app. It goes live once approved.':'Only you can see this app. Submit it for review when you are ready.')+'</div></div>';
 var showV=vs.length>1||(own&&vs.some(function(x){return x.status!='approved'}));
 return '<main><button class="back" data-go="home">'+ic('back')+'Back</button>'+note+
-'<div class="card"><div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px">'+esc(a.name)+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b></button> · '+esc(a.category)+'</div>'+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+
+'<div class="card"><div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px">'+esc(a.name)+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+(a.owner_is_admin?blueCheck:'')+'</button> · '+esc(a.category)+'</div>'+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+
 '<div style="display:flex;gap:10px;margin-top:14px;align-items:flex-start">'+'<div id="dlbox" style="display:flex;flex:1;min-width:0">'+dlBox(a,v)+'</div>'+(d.is_owner?'':'<button class="sq" data-follow style="color:'+(d.following?'var(--ac)':'inherit')+'">'+ic('bell')+'</button>')+'<button class="sq" data-fav style="'+(d.favorited?'color:#f2555a;':'')+'">'+ic('heart')+'</button><button class="sq" data-share>'+ic('share')+'</button></div>'+
 (own?'<div style="display:grid;gap:10px;margin-top:14px"><button class="btn o f" data-nv>'+ic('up')+'Upload new version</button><button class="btn o f" data-edit>'+ic('edit')+'Edit app</button>'+(a.status=='draft'||a.status=='rejected'?'<button class="btn o f" data-submit>Submit for review</button>':'')+'<button class="btn o f" data-del style="color:#f2555a">'+(S.delArm?'Tap again to delete':'Delete app')+'</button></div>':'')+
 (d.is_owner?'':'<p class="hint" style="margin:12px 0 0">'+(d.following?'You will be notified about new versions.':'Tap the bell to get notified about new versions.')+'</p>')+'</div>'+
@@ -163,13 +231,20 @@ return '<main><button class="back" data-go="home">'+ic('back')+'Back</button>'+n
 '<div class="sec"><h2>About this version</h2>'+[['tag','Version',esc(v.version_name)+' ('+v.version_code+')'],['box','Size',fmt(v.size)],['dl','Downloads',v.downloads],['cal','Updated',fd(v.created_at)]].map(function(r){return '<div class="info"><span>'+ic(r[0])+r[1]+'</span><b>'+r[2]+'</b></div>'}).join('')+'</div>':'')+
 (showV?'<div class="sec"><h2>Versions</h2>'+vs.map(function(x){var ok=x.status=='approved';return '<'+(ok?'button class="pm row" data-dl="'+x.id+'"':'div class="pm"')+' style="padding:13px 0"><span><i style="width:10px;height:10px;border-radius:50%;background:'+(ok?((v&&x.id==v.id)?'var(--ac)':'var(--mu)'):'#e0a82e')+'"></i><b>v'+esc(x.version_name)+'</b>'+(ok?'':'<span class="badge" style="font-size:11px;padding:4px 10px">'+(x.status=='pending'?'IN REVIEW':'REJECTED')+'</span>')+'</span><span>'+(ok?'⤓ '+x.downloads:'')+'</span></'+(ok?'button':'div')+'>'+(x.status=='rejected'&&x.reject_reason?'<p class="hint" style="margin:0 0 8px">Reason: '+esc(x.reject_reason)+'</p>':'')}).join('')+'</div>':'')+
 '<div class="sec" style="border:0"><h2>Ratings &amp; reviews</h2><div style="text-align:center"><div style="font-size:54px;font-weight:800">'+(a.rating||'—')+'</div><p class="mu">'+a.rating_count+' ratings</p></div>'+[5,4,3,2,1].map(function(n){var c=dist[n]||0,w=a.rating_count?Math.round(c/a.rating_count*100):0;return '<div class="bar"><span>'+n+'</span><i style="background:linear-gradient(90deg,#f3c84b '+w+'%,var(--sf2) '+w+'%)"></i><span>'+c+'</span></div>'}).join('')+
-d.reviews.map(function(r){return '<div style="padding:16px 0;border-top:1px solid var(--ln);display:flex;gap:12px">'+pic(r,40)+'<div style="min-width:0"><b>'+esc(r.username)+'</b> <span style="color:#f3c84b">'+'★'.repeat(r.rating)+'</span><br><span class="mu" style="white-space:pre-wrap">'+esc(r.comment)+'</span></div></div>'}).join('')+
+d.reviews.map(function(r){return '<div style="padding:16px 0;border-top:1px solid var(--ln);display:flex;gap:12px">'+pic(r,40)+'<div style="min-width:0"><b style="display:flex;align-items:center">'+esc(r.username)+(r.is_admin?blueCheck:'')+'</b> <span style="color:#f3c84b">'+'★'.repeat(r.rating)+'</span><br><span class="mu" style="white-space:pre-wrap">'+esc(r.comment)+'</span></div></div>'}).join('')+
 '<h3 style="margin-top:30px">Write a review</h3><div class="stars">'+[1,2,3,4,5].map(function(n){return '<button data-star="'+n+'" class="'+(S.star>=n?'on':'')+'">'+(S.star>=n?'★':'☆')+'</button>'}).join('')+'</div><p class="mu">Tap a star to rate this app</p><textarea id="rv" placeholder="Share your experience…"></textarea><div style="text-align:right;margin-top:14px"><button class="btn" data-review>Submit review</button></div></div>'+foot()+'</main>'}
 
 function profile(){if(!S.me)return wait();var u=S.me.user,st=S.me.stats,list=S.tab=='fav'?S.fav:S.mine;
-return '<main><div class="card pad" style="padding:26px"><div style="margin-bottom:20px">'+pic(u,120,40)+'</div><h1 style="margin:0 0 8px;font-size:32px">'+esc(u.username)+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:12px">'+ic('cal')+'Joined '+fd(u.created_at)+(u.is_admin?' <span class="dot">·</span> Admin':'')+'</div><div class="mu" style="display:flex;gap:22px;margin-bottom:22px"><span>'+ic('box')+' '+st.apps+'</span><span>'+ic('dl')+' '+st.downloads+'</span><span>'+ic('heart')+' '+st.favorites+'</span></div>'+
-'<div style="display:flex;gap:22px;margin-bottom:18px"><button class="view" data-devtab="followers" data-devid="'+u.id+'" style="text-decoration:none;padding:6px 12px;background:var(--sf2);border-radius:12px"><b>'+(st.followers||0)+'</b> <span class="mu" style="font-weight:400">followers</span></button><button class="view" data-devtab="following" data-devid="'+u.id+'" style="text-decoration:none;padding:6px 12px;background:var(--sf2);border-radius:12px"><b>'+(st.following||0)+'</b> <span class="mu" style="font-weight:400">following</span></button></div><button class="btn f" data-go="upload" style="margin-bottom:12px">'+ic('up')+'Upload app</button><button class="btn o f" data-dev="'+u.id+'" style="margin-bottom:12px">'+ic('eye')+'View public profile</button><button class="btn o f" data-editprofile style="margin-bottom:12px">'+ic('edit')+'Edit profile</button>'+(u.is_admin?'<button class="btn o f" data-go="moderation" style="margin-bottom:12px">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="btn o f" data-out>'+ic('out')+'Sign out</button></div>'+
+return '<main><div class="card pad" style="padding:26px"><div style="margin-bottom:20px">'+pic(u,120,40)+'</div><h1 style="margin:0 0 8px;font-size:32px;display:flex;align-items:center">'+esc(u.username)+(u.is_admin?blueCheck:'')+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:12px">'+ic('cal')+'Joined '+fd(u.created_at)+(u.is_admin?' <span class="dot">·</span> Admin':'')+'</div><div class="mu" style="display:flex;gap:22px;margin-bottom:22px"><span>'+ic('box')+' '+st.apps+'</span><span>'+ic('dl')+' '+st.downloads+'</span><span>'+ic('heart')+' '+st.favorites+'</span></div>'+
+'<div style="display:flex;gap:18px;margin-bottom:18px"><button class="view" data-devtab="followers" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+(st.followers||0)+'</b> <span class="mu" style="font-weight:400">followers</span></button><button class="view" data-devtab="following" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+(st.following||0)+'</b> <span class="mu" style="font-weight:400">following</span></button></div><button class="btn f" data-go="upload" style="margin-bottom:12px">'+ic('up')+'Upload app</button><button class="btn o f" data-dev="'+u.id+'" style="margin-bottom:12px">'+ic('eye')+'View public profile</button><button class="btn o f" data-editprofile style="margin-bottom:12px">'+ic('edit')+'Edit profile</button><button class="btn o f" data-go="settings" style="margin-bottom:12px">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button class="btn o f" data-go="moderation" style="margin-bottom:12px">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="btn o f" data-out>'+ic('out')+'Sign out</button></div>'+
 '<div class="tabs">'+[['apps','Apps',S.mine.length],['fav','Favorites',S.fav.length]].map(function(t){return '<button data-tab="'+t[0]+'" class="'+(S.tab==t[0]?'on':'')+'">'+t[1]+' <em>'+t[2]+'</em></button>'}).join('')+'</div>'+(list.length?list.map(row).join(''):'<p class="mu" style="text-align:center;padding:40px 0">Nothing here yet.</p>')+foot()+'</main>'}
+
+function settings(){
+return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><h1>Settings</h1><p class="mu">Support, Creator info &amp; Tour</p>'+
+'<div class="card pad" style="margin-bottom:16px"><h2 style="font-size:22px;margin-bottom:6px">Help Center</h2><p class="mu" style="margin:0 0 16px">Need help, have feedback, or found an issue? Send a direct message to our moderation team.</p><button class="btn f" data-openhelp>'+ic('help')+'Contact Support</button></div>'+
+'<div class="card pad" style="margin-bottom:16px"><h2 style="font-size:22px;margin-bottom:6px">App Creator</h2><div style="display:flex;align-items:center;gap:14px;margin:16px 0"><span class="pic" style="width:60px;height:60px;font-size:24px;background:linear-gradient(135deg,#43c25c,#27913f)">MD</span><div><b style="font-size:20px;display:flex;align-items:center">mrdakroma '+blueCheck+'</b><span class="mu">Creator &amp; Lead Engineer</span></div></div><p class="mu" style="line-height:1.6">HEXSTORE is crafted and maintained by <b>mrdakroma</b>. Built as an open, fast marketplace for independent Android developers and community creators.</p></div>'+
+'<div class="card pad"><h2 style="font-size:22px;margin-bottom:6px">Guide &amp; Tour</h2><p class="mu" style="margin:0 0 16px">Want to see the intro animation and feature guide again?</p><button class="btn o f" data-replayguide>'+ic('box')+'Replay Welcome Tutorial</button></div>'+foot()+'</main>';
+}
 
 function notif(){if(!S.notes)return wait();return '<main><h1>Notifications</h1>'+(S.notes.length?S.notes.map(function(n){return '<button class="row" '+(n.from_user?'data-userpopup="'+esc(n.from_user)+'"':'data-open="'+esc(n.app_id)+'"')+' style="'+(n.is_read?'':'background:var(--sf);border-radius:16px;padding:14px;margin:6px 0;')+'"><span class="ico" style="background:var(--sf2);color:var(--ac);font-size:26px">'+ic(n.from_user?'user':'bell')+'</span><span style="flex:1;min-width:0"><b style="font-size:17px">'+esc(n.title)+'</b><small style="display:block">'+esc(n.body)+'</small><small>'+fd(n.created_at)+'</small></span></button>'}).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No notifications yet.<br>Open an app and tap the bell to follow it.</p>')+foot()+'</main>'}
 
@@ -193,16 +268,24 @@ function termsBody(){return TERMS.map(function(t){return '<h3>'+t[0]+'</h3><p>'+
 function pic(u,sz,fs){sz=sz||40;return '<span class="pic" style="width:'+sz+'px;height:'+sz+'px;font-size:'+(fs||Math.round(sz/2.6))+'px">'+(u&&u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':esc(((u&&u.username)||'?').slice(0,2).toUpperCase()))+'</span>'}
 function shrink(f,max){return new Promise(function(res){if(!/^image\/(png|jpeg|webp)$/.test(f.type)){res(f);return}var im=new Image();im.onload=function(){var r=Math.min(1,max/Math.max(im.width,im.height));if(r==1&&f.size<1500000){res(f);return}var c=document.createElement('canvas');c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext('2d').drawImage(im,0,0,c.width,c.height);var jp=f.type=='image/jpeg';c.toBlob(function(b){res(b?new File([b],f.name.replace(/\.\w+$/,'')+(jp?'.jpg':'.png'),{type:jp?'image/jpeg':'image/png'}):f)},jp?'image/jpeg':'image/png',.88)};im.onerror=function(){res(f)};im.src=URL.createObjectURL(f)})}
 function upImg(f,max){return shrink(f,max).then(function(x){return up(x,'image')})}
+
 function about(){if(!S.det||S.det.app.id!=S.id)return wait();var a=S.det.app,v=S.det.versions.filter(function(x){return x.status=='approved'})[0],by={username:a.owner_name,avatar_url:a.owner_avatar};
 return '<main><button class="back" data-open="'+esc(a.id)+'">'+ic('back')+'Back to app</button><h1>About this app</h1><p class="mu" style="font-size:18px">'+esc(a.name)+'</p>'+(a.summary?'<p style="font-size:19px;font-weight:600">'+esc(a.summary)+'</p>':'')+'<p style="font-size:18px;line-height:1.75;white-space:pre-wrap">'+esc(a.description)+'</p><div>'+a.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div>'+
-'<div class="sec" style="border:0"><h2>Details</h2>'+[['Category',esc(a.category)],['Type',a.origin=='mod'?'Mod':'Original'],['Exclusive',a.is_exclusive?'Not on Google Play':'No'],['Latest version',v?'v'+esc(v.version_name):'–'],['Developer','<button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b></button>'],['Source code',a.source_url?(/^https?:\/\//.test(a.source_url)?'<a href="'+esc(a.source_url)+'" target="_blank" rel="noopener" style="color:var(--tx)">Open link</a>':esc(a.source_url)):'–']].map(function(r){return '<div class="info"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join('')+'</div>'+foot()+'</main>'}
+'<div class="sec" style="border:0"><h2>Details</h2>'+[['Category',esc(a.category)],['Type',a.origin=='mod'?'Mod':'Original'],['Exclusive',a.is_exclusive?'Not on Google Play':'No'],['Latest version',v?'v'+esc(v.version_name):'–'],['Developer','<button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+(a.owner_is_admin?blueCheck:'')+'</button>'],['Source code',a.source_url?(/^https?:\/\//.test(a.source_url)?'<a href="'+esc(a.source_url)+'" target="_blank" rel="noopener" style="color:var(--tx)">Open link</a>':esc(a.source_url)):'–']].map(function(r){return '<div class="info"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join('')+'</div>'+foot()+'</main>'}
 function terms(){return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><h1>Terms of Service</h1><p class="mu">Last updated November 2026</p><div class="terms">'+termsBody()+'</div>'+foot()+'</main>'}
 function gate(){return '<main><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Before you publish</h1><p class="mu" style="font-size:18px">Please read and accept the Terms of Service. You only need to do this once.</p><div class="card pad terms" style="max-height:46vh;overflow:auto">'+termsBody()+'</div><label class="tg"><input type="checkbox" data-k="agree"'+(S.agree?' checked':'')+'><span><b style="font-size:18px">I agree to the Terms of Service</b><br><span class="mu">I will not upload malware or anything harmful or illegal.</span></span></label><button class="btn f" style="margin-top:22px" data-agree>Agree and continue</button></main>'}
 function editprofile(){var u=S.user,shown=S.eclear?null:(S.eprev||u.avatar_url);return '<main style="max-width:520px"><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Edit profile</h1><div class="card pad"><div style="display:flex;align-items:center;gap:18px;margin-bottom:8px">'+pic({username:S.eun,avatar_url:shown},96,30)+'<div><label class="btn o" style="cursor:pointer;height:46px">Change photo<input type="file" id="ap" accept="image/*" hidden></label>'+(shown?'<button class="btn o" style="height:46px;margin-top:8px;color:#f2555a" data-rmavatar>Remove photo</button>':'')+'</div></div><label class="l">Username</label><input type="text" data-k="eun" maxlength="30" value="'+esc(S.eun)+'"><label class="l">About you</label><textarea data-k="ebio" maxlength="300" placeholder="Tell people who you are">'+esc(S.ebio)+'</textarea><label class="tg"><input type="checkbox" data-k="emal"'+(S.emal?' checked':'')+'><span><b style="font-size:18px">Email me about app updates</b><br><span class="mu">Sent to '+esc(u.email)+' when an app you follow gets a new version.</span></span></label><button class="btn f" style="margin-top:22px" data-saveprofile>Save profile</button></div></main>'}
 function bindEp(){var f=$('#ap');if(f)f.onchange=function(){var x=f.files[0];if(x){S.efile=x;S.eprev=URL.createObjectURL(x);S.eclear=0;draw()}}}
 function saveProfile(){if(S.busy)return;if(S.eun.trim().length<2)return toast('Username needs at least 2 characters');S.busy=1;toast('Saving…');var p=Promise.resolve(null);if(S.efile)p=upImg(S.efile,512).then(function(r){return r.key});
  p.then(function(k){var b={username:S.eun.trim(),bio:S.ebio.trim(),email_alerts:!!S.emal};if(k)b.avatar_key=k;else if(S.eclear)b.avatar_key=null;return api('/api/me',{method:'PATCH',body:b})}).then(function(){return api('/api/me')}).then(function(j){S.busy=0;S.user=j.user;store.set('hxu',JSON.stringify(j.user));toast('Profile saved');go('profile')},function(e){S.busy=0;toast(e.message)})}
-function moderation(){if(!S.queue)return wait();return '<main><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Moderation</h1><p class="mu" style="font-size:18px">Download each APK, check it, then approve or reject with a reason.</p>'+(S.queue.length?S.queue.map(function(it,i){var a=it.app,v=it.version;return '<div class="mod"><span class="tagl">'+(it.type=='app'?'NEW APP':'UPDATE')+'</span><div style="display:flex;gap:14px;align-items:center">'+ico(a)+'<div style="min-width:0"><b style="font-size:19px">'+esc(a.name)+'</b><br><span class="mu">by '+esc(it.uploader.username)+' · '+esc(it.uploader.email)+'</span></div></div>'+(v?'<p style="margin:14px 0 4px"><b>v'+esc(v.version_name)+'</b> · '+fmt(v.size)+'</p><a class="btn o f" style="height:46px;margin:6px 0" href="'+esc(v.apk_url)+'" target="_blank" rel="noopener">'+ic('dl')+'Download APK to inspect</a>':'<p class="mu">No APK attached.</p>')+'<p class="mu" style="white-space:pre-wrap;max-height:120px;overflow:auto">'+esc(it.type=='version'&&v&&v.changelog?v.changelog:a.description)+'</p><textarea id="rs'+i+'" placeholder="Reason (required to reject)" style="min-height:70px"></textarea><div style="display:flex;gap:10px;margin-top:10px"><button class="btn" style="flex:1" data-mod="'+i+'|approve">Approve</button><button class="btn o" style="flex:1" data-mod="'+i+'|reject">Reject</button></div></div>'}).join(''):'<p class="mu" style="padding:40px 0;text-align:center">Nothing to review.</p>')+'</main>'}
+
+function moderation(){if(!S.queue)return wait();
+var qapps=S.queue.length?S.queue.map(function(it,i){var a=it.app,v=it.version;return '<div class="mod"><span class="tagl">'+(it.type=='app'?'NEW APP':'UPDATE')+'</span><div style="display:flex;gap:14px;align-items:center">'+ico(a)+'<div style="min-width:0"><b style="font-size:19px">'+esc(a.name)+'</b><br><span class="mu">by '+esc(it.uploader.username)+' · '+esc(it.uploader.email)+'</span></div></div>'+(v?'<p style="margin:14px 0 4px"><b>v'+esc(v.version_name)+'</b> · '+fmt(v.size)+'</p><a class="btn o f" style="height:46px;margin:6px 0" href="'+esc(v.apk_url)+'" target="_blank" rel="noopener">'+ic('dl')+'Download APK to inspect</a>':'<p class="mu">No APK attached.</p>')+'<p class="mu" style="white-space:pre-wrap;max-height:120px;overflow:auto">'+esc(it.type=='version'&&v&&v.changelog?v.changelog:a.description)+'</p><textarea id="rs'+i+'" placeholder="Reason (required to reject)" style="min-height:70px"></textarea><div style="display:flex;gap:10px;margin-top:10px"><button class="btn" style="flex:1" data-mod="'+i+'|approve">Approve</button><button class="btn o" style="flex:1" data-mod="'+i+'|reject">Reject</button></div></div>'}).join(''):'<p class="mu" style="padding:20px 0;text-align:center">No apps or updates in queue.</p>';
+
+var qtick=S.tickets&&S.tickets.length?S.tickets.map(function(tk){return '<div class="mod"><span class="tagl" style="background:#134058;color:#b9dcee">HELP TICKET</span><b style="font-size:18px;display:block">'+esc(tk.subject)+'</b><span class="mu">From: '+esc(tk.name||'User')+' ('+esc(tk.email)+') · '+fd(tk.created_at)+'</span><p style="white-space:pre-wrap;margin:12px 0">'+esc(tk.message)+'</p><button class="btn o f" data-resolveticket="'+tk.id+'">Mark Resolved &amp; Close</button></div>'}).join(''):'<p class="mu" style="padding:20px 0;text-align:center">No pending support messages.</p>';
+
+return '<main><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Moderation</h1><p class="mu" style="font-size:18px">Review submitted apps, updates, and community help tickets.</p><h2 style="margin-top:24px">App Review Queue</h2>'+qapps+'<h2 style="margin-top:34px">Help Center Messages</h2>'+qtick+'</main>'}
+
 function edit(){if(!S.det||S.det.app.id!=S.id||S.editId!=S.id)return wait();return formPage()}
 function formPage(){var ed=!!S.editId,adm=S.user&&S.user.is_admin;return '<main style="padding-bottom:170px"><button class="back" '+(ed?'data-open="'+esc(S.editId)+'"':'data-go="profile"')+'>'+ic('back')+(ed?'Back to app':'Back to profile')+'</button><h1>'+(ed?'Edit app':'Upload app')+'</h1><p class="mu" style="font-size:18px">'+(ed?'Change how your app appears in the store.':'Publish a new app to HEXSTORE.'+(adm?'':' A moderator reviews it before it goes live.'))+'</p>'+
 '<div class="card">'+(ed?'':'<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">App bundle</h2><p class="mu" style="margin-top:0">The APK people download and install (max 100 MB).</p><div id="apkbox"></div></div>')+
@@ -287,7 +370,6 @@ function openInstallSheet(id){
  '<button class="btn o f" data-sheetclose style="margin-top:4px">Close</button>'+
  '</div>';
  showSheet(html);
- var bi=$('#btn-intent');if(bi){bi.onclick=function(){setTimeout(function(){toast('Opening Downloads folder…')},200)}}
 }
 
 function markInstalled(id){var d=DL[id];if(!d)return;INST[id]={c:d.vc,n:d.vn};saveInst();DL[id]=null;hideSheet();toast('Installed ✅');if(S.page=='detail'&&S.det&&S.det.app.id==id)keep(draw)}
@@ -310,7 +392,7 @@ function openUserPopup(uid){
  api('/api/users/'+uid).then(function(d){
   var u=d.user,st=d.stats,mine=S.user&&S.user.id==u.id;
   var html='<div class="sheet-bar"></div>'+
-  '<div style="display:flex;gap:16px;align-items:center;margin-bottom:14px">'+pic(u,64,22)+'<div style="min-width:0"><b style="font-size:22px;display:block">'+esc(u.username)+'</b><span class="mu">Joined '+fd(u.created_at)+'</span></div></div>'+
+  '<div style="display:flex;gap:16px;align-items:center;margin-bottom:14px">'+pic(u,64,22)+'<div style="min-width:0"><b style="font-size:22px;display:flex;align-items:center">'+esc(u.username)+(u.is_admin?blueCheck:'')+'</b><span class="mu">Joined '+fd(u.created_at)+'</span></div></div>'+
   (u.bio?'<p style="margin:0 0 14px;white-space:pre-wrap;font-size:15px">'+esc(u.bio)+'</p>':'')+
   '<div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0 -20px 18px;border-bottom:1px solid var(--ln)">'+[['Apps',st.apps],['Downloads',st.downloads],['Followers',st.followers],['Following',st.following]].map(function(x){return '<div style="padding:10px 2px;font-size:11px"><b style="font-size:18px">'+x[1]+'</b>'+x[0]+'</div>'}).join('')+'</div>'+
   '<div style="display:grid;gap:10px">'+
@@ -335,17 +417,86 @@ function openNewFollowerSheet(n){
  showSheet(html);
 }
 
-function urow(x){return '<button class="row" data-userpopup="'+esc(x.id)+'">'+pic(x,52)+'<span style="flex:1;min-width:0"><b>'+esc(x.username)+'</b>'+(x.bio?'<small class="sum" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(x.bio)+'</small>':'')+'</span></button>'}
+function openHelpSheet(){
+ var html='<div class="sheet-bar"></div>'+
+ '<h2 style="margin:0 0 6px">Help Center</h2>'+
+ '<p class="mu" style="margin:0 0 16px">Describe your issue or feedback. The moderation team will review it.</p>'+
+ '<label class="l" style="margin-top:0">Subject</label><input type="text" id="tk-sub" placeholder="e.g. Question about an app">'+
+ (S.user?'':'<label class="l">Your Email</label><input type="email" id="tk-em" placeholder="your@email.com">')+
+ '<label class="l">Message</label><textarea id="tk-msg" placeholder="Write your message here..." style="min-height:120px"></textarea>'+
+ '<div style="display:grid;gap:10px;margin-top:18px">'+
+ '<button class="btn f" id="btn-submitticket">Submit message</button>'+
+ '<button class="btn o f" data-sheetclose>Cancel</button>'+
+ '</div>';
+ showSheet(html);
+ $('#btn-submitticket').onclick=function(){
+  var sub=$('#tk-sub').value.trim(),msg=$('#tk-msg').value.trim();
+  var em=S.user?S.user.email:($('#tk-em')?$('#tk-em').value.trim():'');
+  if(!sub)return toast('Enter a subject');
+  if(!msg)return toast('Write a message');
+  if(!em||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return toast('Enter a valid email');
+  toast('Sending…');
+  api('/api/support',{method:'POST',body:{subject:sub,message:msg,email:em,name:S.user?S.user.username:'Guest'}}).then(function(){
+   hideSheet();toast('Message sent to moderation ✓');
+  },function(e){toast(e.message)});
+ };
+}
+
+function urow(x){return '<button class="row" data-userpopup="'+esc(x.id)+'">'+pic(x,52)+'<span style="flex:1;min-width:0"><b style="display:flex;align-items:center">'+esc(x.username)+(x.is_admin?blueCheck:'')+'</b>'+(x.bio?'<small class="sum" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(x.bio)+'</small>':'')+'</span></button>'}
+
 function dev(){
  if(!S.dev||S.dev.user.id!=S.id)return wait();
  var d=S.dev,u=d.user,st=d.stats,mine=S.user&&S.user.id==u.id,t=S.dtab,body;
  if(t=='apps')body=d.apps.length?d.apps.map(row).join(''):'<p class="mu" style="text-align:center;padding:40px 0">No published apps yet.</p>';
+ else if(t=='community')body=communityTabBody(d);
  else if(!S.dfol)body='<p class="mu" style="text-align:center;padding:40px 0">Loading…</p>';
  else body=S.dfol.length?S.dfol.map(urow).join(''):'<p class="mu" style="text-align:center;padding:40px 0">'+(t=='followers'?'No followers yet.':'Not following anyone yet.')+'</p>';
- return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><div class="card pad" style="padding:26px"><div style="margin-bottom:18px">'+pic(u,110,36)+'</div><h1 style="margin:0 0 8px;font-size:32px">'+esc(u.username)+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:18px">'+ic('cal')+'Joined '+fd(u.created_at)+'</div>'+
+
+ return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><div class="card pad" style="padding:26px"><div style="margin-bottom:18px">'+pic(u,110,36)+'</div><h1 style="margin:0 0 8px;font-size:32px;display:flex;align-items:center">'+esc(u.username)+(u.is_admin?blueCheck:'')+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:18px">'+ic('cal')+'Joined '+fd(u.created_at)+'</div>'+
  '<div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0 -26px 20px">'+[['Apps',st.apps],['Downloads',st.downloads],['Followers',st.followers],['Following',st.following]].map(function(x){return '<div style="padding:14px 2px;font-size:11px"><b style="font-size:20px" id="st-'+x[0].toLowerCase()+'">'+x[1]+'</b>'+x[0]+'</div>'}).join('')+'</div>'+
  (mine?'<button class="btn o f" data-go="profile">'+ic('user')+'My profile</button>':'<button class="btn f'+(d.is_following?' o':'')+'" id="btn-dev-fol" data-dfollow>'+(d.is_following?'Following ✓':'Follow')+'</button>'+(d.is_following?'<p class="hint" style="text-align:center">Tap again to unfollow.</p>':''))+'</div>'+
- '<div class="tabs" style="gap:18px">'+[['apps','Apps',st.apps],['followers','Followers',st.followers],['following','Following',st.following]].map(function(x){return '<button data-dtab="'+x[0]+'" class="'+(t==x[0]?'on':'')+'" style="font-size:16px">'+x[1]+' <em>'+x[2]+'</em></button>'}).join('')+'</div>'+body+foot()+'</main>'}
+ '<div class="tabs" style="gap:18px">'+[['apps','Apps',st.apps],['community','Community',d.stats.posts||0],['followers','Followers',st.followers],['following','Following',st.following]].map(function(x){return '<button data-dtab="'+x[0]+'" class="'+(t==x[0]?'on':'')+'" style="font-size:16px">'+x[1]+' <em>'+x[2]+'</em></button>'}).join('')+'</div>'+body+foot()+'</main>'}
+
+function communityTabBody(d){
+ var mine=S.user&&S.user.id==d.user.id,eligible=d.can_post||(mine&&(d.stats.apps>0||S.user.is_admin));
+ var comp='';
+ if(eligible&&mine){
+  comp='<div class="card pad" style="margin-bottom:20px"><h3 style="margin:0 0 8px">Create Community Post</h3><textarea id="cp-text" placeholder="Share an update or news with your followers..."></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><label class="btn o" style="height:44px;font-size:14px;cursor:pointer">'+ic('img')+'Add image<input type="file" id="cp-img" accept="image/*" hidden></label><button class="btn g" style="height:44px" id="cp-submit">Post update</button></div><div id="cp-prev" style="margin-top:10px"></div></div>';
+ }else if(!eligible&&mine){
+  comp='<div class="note" style="margin-bottom:20px"><span style="font-size:24px">'+ic('shield')+'</span><div><b>Community Locked</b><br><small>Publish at least 1 app on HEXSTORE to unlock your community page and post updates.</small></div></div>';
+ }
+ if(!S.dposts)return comp+'<p class="mu" style="text-align:center;padding:30px 0">Loading posts…</p>';
+ var list=S.dposts.length?S.dposts.map(function(p){
+  return '<div class="c-post"><div style="display:flex;align-items:center;gap:12px">'+pic(d.user,42)+'<div style="min-width:0;flex:1"><b style="display:flex;align-items:center">'+esc(d.user.username)+(d.user.is_admin?blueCheck:'')+'</b><small class="mu">'+fd(p.created_at)+'</small></div>'+(mine||(S.user&&S.user.is_admin)?'<button class="ib" data-delpost="'+p.id+'" style="color:#f2555a">'+ic('x')+'</button>':'')+'</div><p style="margin:14px 0 6px;white-space:pre-wrap;font-size:17px;line-height:1.6">'+esc(p.content)+'</p>'+(p.image_url?'<img class="c-post-img" src="'+esc(p.image_url)+'">':'')+'<div class="c-actions"><button class="c-btn'+(p.is_liked?' liked':'')+'" data-likepost="'+p.id+'" data-st="'+(p.is_liked?1:0)+'">'+ic('heart')+' <span>'+(p.likes_count||0)+'</span></button></div></div>';
+ }).join(''):'<p class="mu" style="text-align:center;padding:40px 0">No community posts yet.</p>';
+ return comp+list;
+}
+
+function loadCommunityPosts(){
+ var id=S.id;S.dposts=null;draw();
+ api('/api/users/'+id+'/posts').then(function(j){
+  if(S.page=='dev'&&S.id==id){S.dposts=j.posts;if(S.dev)S.dev.can_post=j.can_post;draw();bindCommunityComposer()}
+ },function(e){toast(e.message)});
+}
+
+function bindCommunityComposer(){
+ var f=$('#cp-img'),btn=$('#cp-submit');
+ if(f)f.onchange=function(){
+  var x=f.files[0];if(x){S.cpostFile=x;$('#cp-prev').innerHTML='<span class="pill">'+ic('img')+esc(x.name)+' <button class="ib" id="rm-cp-img" style="width:20px;height:20px;font-size:14px">'+ic('x')+'</button></span>';
+  var rm=$('#rm-cp-img');if(rm)rm.onclick=function(){S.cpostFile=null;$('#cp-prev').innerHTML=''};}
+ };
+ if(btn)btn.onclick=function(){
+  var t=$('#cp-text').value.trim();if(!t)return toast('Write something to post');
+  btn.disabled=true;toast('Posting…');
+  var pr=S.cpostFile?upImg(S.cpostFile,1280).then(function(r){return r.key}):Promise.resolve(null);
+  pr.then(function(imgKey){
+   return api('/api/community/posts',{method:'POST',body:{content:t,image_key:imgKey}});
+  }).then(function(){
+   S.cpostFile=null;toast('Post published ✓');loadCommunityPosts();
+  },function(e){btn.disabled=false;toast(e.message)});
+ };
+}
+
 function loadDfol(){var t=S.dtab,id=S.id;S.dfol=null;draw();api('/api/users/'+id+'/'+t).then(function(j){if(S.dtab==t&&S.id==id&&S.page=='dev'){S.dfol=j.users;draw()}},function(e){toast(e.message)})}
 
 function ready(){return !!(S.apk&&S.icon)}
@@ -362,22 +513,24 @@ function paintUp(){if(!$('#icobox'))return;var ab=$('#apkbox'),ci=S.icon||S.eico
  var fi=$('#fi');if(fi)fi.onchange=function(){var f=fi.files[0];if(f){S.icon={name:f.name,url:URL.createObjectURL(f),file:f};paintUp()}};
  $('#sh').onchange=function(e){Array.prototype.slice.call(e.target.files).forEach(function(f){if(S.eshots.length+S.shots.length<8)S.shots.push({name:f.name,url:URL.createObjectURL(f),file:f})});paintUp()}}
 
-function draw(){if(S.page=='edit'&&S.det&&S.det.app.id==S.id&&S.editId!=S.id)initEdit();var P={home:home,detail:detail,profile:profile,upload:upload,login:login,notif:notif,newver:newver,about:about,terms:terms,edit:edit,editprofile:editprofile,moderation:moderation,dev:dev};app.innerHTML=head()+(P[S.page]||home)();if(S.page=='upload'||S.page=='edit')paintUp();if(S.page=='newver')paintNv();if(S.page=='editprofile')bindEp()}
+function draw(){if(S.page=='edit'&&S.det&&S.det.app.id==S.id&&S.editId!=S.id)initEdit();var P={home:home,detail:detail,profile:profile,upload:upload,login:login,notif:notif,newver:newver,about:about,terms:terms,edit:edit,editprofile:editprofile,moderation:moderation,dev:dev,settings:settings};app.innerHTML=head()+(P[S.page]||home)();if(S.page=='upload'||S.page=='edit')paintUp();if(S.page=='newver')paintNv();if(S.page=='editprofile')bindEp();bindSearchTrigger()}
 function toast(t){var d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2800)}
 
 function go(p,id){if((p=='profile'||p=='upload'||p=='notif'||p=='newver'||p=='edit'||p=='editprofile'||p=='moderation')&&!S.user){S.after=p;p='login'}if(p=='moderation'&&!(S.user&&S.user.is_admin))p='home';
  if(p=='upload'&&S.editId)resetForm();if(p!='edit')S.editId=null;
  S.page=p;S.id=id||null;S.pop=0;S.err='';S.delArm=0;scrollTo(0,0);
- if(p=='notif')S.notes=null;if(p=='home')S.apps=null;if(p=='detail'){S.det=null;S.star=0}if(p=='profile'){S.me=null;S.mine=null;S.fav=null}if(p=='moderation')S.queue=null;if(p=='dev'){S.dev=null;S.dfol=null}draw();fetchPage()}
+ if(p=='notif')S.notes=null;if(p=='home'&&!S.q)S.apps=null;if(p=='detail'){S.det=null;S.star=0}if(p=='profile'){S.me=null;S.mine=null;S.fav=null}if(p=='moderation'){S.queue=null;S.tickets=null}if(p=='dev'){S.dev=null;S.dfol=null;S.dposts=null}draw();fetchPage()}
+
 function fetchPage(){var p=S.page,id=S.id;var done=function(){if(S.page==p&&S.id==id)draw()};
  var fail=function(e){if(/sign in/i.test(e.message)){logout();return}S.err=e.message;done()};
  if(p=='home')api('/api/apps?q='+encodeURIComponent(S.q)).then(function(j){S.apps=j.apps;done()},fail);
  if(p=='detail')api('/api/apps/'+id).then(function(j){S.det=j;done()},fail);
  if(p=='profile')Promise.all([api('/api/me'),api('/api/apps?mine=1'),api('/api/favorites'),S.user.is_admin?api('/api/admin/queue'):Promise.resolve({items:[]})]).then(function(r){S.me=r[0];S.mine=r[1].apps;S.fav=r[2].apps;S.qn=r[3].items.length;done()},fail);
- if(p=='moderation')api('/api/admin/queue').then(function(j){S.queue=j.items;done()},fail);
- if(p=='dev')api('/api/users/'+id).then(function(j){S.dev=j;done();if(S.dtab!='apps'&&S.page=='dev'&&S.id==id)loadDfol()},fail);
+ if(p=='moderation')Promise.all([api('/api/admin/queue'),api('/api/admin/support')]).then(function(r){S.queue=r[0].items;S.tickets=r[1].tickets;done()},fail);
+ if(p=='dev')api('/api/users/'+id).then(function(j){S.dev=j;done();if(S.dtab=='community')loadCommunityPosts();else if(S.dtab!='apps')loadDfol()},fail);
  if(p=='notif')api('/api/notifications').then(function(j){S.notes=j.notifications;S.unread=0;done();if(j.unread)api('/api/notifications/read',{method:'POST',body:{}}).catch(function(){})},fail);
  if((p=='newver'||p=='about'||p=='edit')&&(!S.det||S.det.app.id!=id))api('/api/apps/'+id).then(function(j){S.det=j;done()},fail)}
+
 function logout(){store.del('hx');store.del('hxu');S.user=null;go('home')}
 function auth(){var em=$('#em').value.trim(),pw=$('#pw').value,m=$('#lm'),b=$('#go');m.textContent='';b.disabled=true;
  api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;var n=S.after||'home';S.after='';go(n);poll()},function(e){m.textContent=e.message;b.disabled=false})}
@@ -392,23 +545,56 @@ function submit(status){if(S.busy)return;if(!ready())return toast('Add an APK an
  .then(function(){S.busy=0;resetForm();toast(status=='draft'?'Saved as draft':adm?'Published!':'Submitted! A moderator will review it.');go('detail',K.id)},function(e){S.busy=0;toast(e.message);if($('#dk'))$('#dk').innerHTML=dock()})}
 function keep(f){var y=scrollY;f();scrollTo(0,y)}
 
-document.addEventListener('input',function(e){var t=e.target,k=t.dataset&&t.dataset.k;if(!k)return;S[k]=t.type=='checkbox'?(t.checked?1:0):t.value;if(k=='desc'){var c=$('#cnt');if(c)c.textContent=t.value.length+'/4000'}if(k=='sum'){var sc=$('#scnt');if(sc)sc.textContent=t.value.length+'/50'}if(k=='name'||k=='cat'){var p=$('#pvb');if(p)p.innerHTML=preview()}});
-document.addEventListener('change',function(e){if(e.target.dataset&&e.target.dataset.k=='cat'){S.cat=e.target.value;var p=$('#pvb');if(p)p.innerHTML=preview()}});
-document.addEventListener('keydown',function(e){
- if(e.key=='Enter'&&e.target.id=='q'){
-  var val=e.target.value.trim(),m=val.match(/\/a\/([a-zA-Z0-9_-]+)/);
-  if(m&&m[1]){e.target.value='';S.q='';go('detail',m[1]);return}
-  S.q=val;go('home');
- }else if(e.key=='Enter'&&(e.target.id=='pw'||e.target.id=='em')){auth()}
+/* YouTube Style Search Logic */
+var recentSearches=(function(){try{return JSON.parse(store.get('hx_rec_s')||'[]')}catch(e){return[]}})();
+function saveRecentSearch(w){if(!w)return;recentSearches=recentSearches.filter(function(x){return x!=w});recentSearches.unshift(w);if(recentSearches.length>8)recentSearches.pop();store.set('hx_rec_s',JSON.stringify(recentSearches))}
+function bindSearchTrigger(){var b=$('#open-yt-search');if(b)b.onclick=openYtSearch}
+function openYtSearch(){
+ var o=$('#yt-search'),inp=$('#yt-q');o.classList.add('on');inp.value=S.q||'';inp.focus();renderYtResults(inp.value.trim());
+}
+function closeYtSearch(){$('#yt-search').classList.remove('on')}
+$('#yt-back').onclick=closeYtSearch;
+$('#yt-clear').onclick=function(){$('#yt-q').value='';$('#yt-clear').style.display='none';renderYtResults('')};
+var searchTimer=null;
+$('#yt-q').addEventListener('input',function(e){
+ var v=e.target.value;$('#yt-clear').style.display=v?'grid':'none';
+ clearTimeout(searchTimer);searchTimer=setTimeout(function(){renderYtResults(v.trim())},180);
 });
+$('#yt-q').addEventListener('keydown',function(e){
+ if(e.key=='Enter'){
+  var val=e.target.value.trim();if(!val)return;
+  var m=val.match(/\/a\/([a-zA-Z0-9_-]+)/);
+  if(m&&m[1]){closeYtSearch();go('detail',m[1]);return}
+  saveRecentSearch(val);closeYtSearch();S.q=val;go('home');
+ }
+});
+function renderYtResults(query){
+ var rb=$('#yt-results');if(!query){
+  var h='<div style="font-size:14px;color:var(--mu);margin-bottom:12px;font-weight:700">RECENT SEARCHES</div>';
+  if(!recentSearches.length)h+='<p class="mu">No recent searches.</p>';
+  else h+=recentSearches.map(function(s){return '<button class="yt-item" data-yts="'+esc(s)+'">'+ic('clock')+'<span>'+esc(s)+'</span></button>'}).join('')+'<button class="ulk" id="clear-rec-s" style="margin-top:14px">Clear recent searches</button>';
+  rb.innerHTML=h;
+  var cb=$('#clear-rec-s');if(cb)cb.onclick=function(){recentSearches=[];store.del('hx_rec_s');renderYtResults('')};
+  return;
+ }
+ api('/api/apps?q='+encodeURIComponent(query)).then(function(j){
+  if(!j.apps.length){rb.innerHTML='<p class="mu" style="padding:20px 0;text-align:center">No apps found for “'+esc(query)+'”</p>';return}
+  rb.innerHTML=j.apps.map(function(a){
+   return '<button class="yt-item" data-openapp="'+a.id+'">'+ico(a)+'<span><b>'+esc(a.name)+'</b><br><small class="mu">'+esc(a.category)+' · by '+esc(a.owner_name)+'</small></span>'+ic('search')+'</button>';
+  }).join('');
+ });
+}
 
+/* Event delegation */
 document.addEventListener('click',function(e){
- var t=e.target.closest('[data-go],[data-open],[data-theme],[data-pop],[data-tab],[data-star],[data-fav],[data-or],[data-rm],[data-toast],[data-dl],[data-auth],[data-swap],[data-retry],[data-out],[data-pub],[data-draft],[data-review],[data-follow],[data-submit],[data-del],[data-approve],[data-reject],[data-nv],[data-nvsubmit],[data-about],[data-edit],[data-agree],[data-editprofile],[data-saveprofile],[data-rmavatar],[data-mod],[data-saveedit],[data-rmes],[data-rmns],[data-share],[data-dev],[data-dfollow],[data-dtab],[data-openinstall],[data-installed],[data-dlretry],[data-reinst],[data-userpopup],[data-sheetclose],[data-sheetgo],[data-popupfol],[data-devtab]');
+ var t=e.target.closest('[data-go],[data-open],[data-theme],[data-pop],[data-tab],[data-star],[data-fav],[data-or],[data-rm],[data-toast],[data-dl],[data-auth],[data-swap],[data-retry],[data-out],[data-pub],[data-draft],[data-review],[data-follow],[data-submit],[data-del],[data-nv],[data-nvsubmit],[data-about],[data-edit],[data-agree],[data-editprofile],[data-saveprofile],[data-rmavatar],[data-mod],[data-saveedit],[data-rmes],[data-rmns],[data-share],[data-dev],[data-dfollow],[data-dtab],[data-openinstall],[data-installed],[data-dlretry],[data-reinst],[data-userpopup],[data-sheetclose],[data-sheetgo],[data-popupfol],[data-devtab],[data-openhelp],[data-replayguide],[data-likepost],[data-delpost],[data-resolveticket],[data-yts],[data-openapp]');
  if(!t){if(S.pop){S.pop=0;draw()}return}var d=t.dataset;
  if('pop' in d){S.pop=S.pop?0:1;draw();return}
  if('theme' in d){document.documentElement.dataset.theme=document.documentElement.dataset.theme=='light'?'':'light';return}
  if('go' in d){if(d.go=='notif'){try{Notification.requestPermission()}catch(e){}}go(d.go);return}
  if('open' in d){go('detail',d.open);return}
+ if('openapp' in d){closeYtSearch();go('detail',d.openapp);return}
+ if('yts' in d){closeYtSearch();S.q=d.yts;saveRecentSearch(d.yts);go('home');return}
  if('out' in d){logout();return}
  if('retry' in d){S.err='';draw();fetchPage();return}
  if('swap' in d){S.reg=S.reg?0:1;draw();return}
@@ -419,7 +605,6 @@ document.addEventListener('click',function(e){
  if('rm' in d){S[d.rm]=null;if(S.page=='newver')draw();else paintUp();return}
  if('pub' in d){if(!t.disabled)submit('pending');return}
  if('draft' in d){if(!t.disabled)submit('draft');return}
- if('toast' in d){toast(d.toast);return}
  if('about' in d){go('about',S.det.app.id);return}
  if('edit' in d){go('edit',S.det.app.id);return}
  if('share' in d){share(S.det.app);return}
@@ -444,6 +629,8 @@ document.addEventListener('click',function(e){
  if('sheetclose' in d){hideSheet();return}
  if('sheetgo' in d){hideSheet();S.dtab='apps';go('dev',d.sheetgo);return}
  if('userpopup' in d){openUserPopup(d.userpopup);return}
+ if('openhelp' in d){openHelpSheet();return}
+ if('replayguide' in d){startSplashAndGuide(true);return}
  if('popupfol' in d){
   if(!S.user)return go('login');
   var puid=d.popupfol,nst=d.st!='1';
@@ -457,7 +644,7 @@ document.addEventListener('click',function(e){
  }
  if('dev' in d){S.dtab=d.t||'apps';go('dev',d.dev);return}
  if('devtab' in d){S.dtab=d.devtab;go('dev',d.devid);return}
- if('dtab' in d){S.dtab=d.dtab;if(S.dtab=='apps')draw();else loadDfol();return}
+ if('dtab' in d){S.dtab=d.dtab;if(S.dtab=='community')loadCommunityPosts();else if(S.dtab=='apps')draw();else loadDfol();return}
  if('dfollow' in d){
   if(!S.user)return go('login');var don=!S.dev.is_following;
   api('/api/users/'+S.dev.user.id+'/follow',{method:'POST',body:{on:don}}).then(function(j){
@@ -465,35 +652,91 @@ document.addEventListener('click',function(e){
    if(S.dtab=='followers')loadDfol();else keep(draw);
   },function(e){toast(e.message)});return;
  }
+ if('likepost' in d){
+  if(!S.user)return go('login');
+  var pid=d.likepost,on=d.st!='1';
+  api('/api/community/posts/'+pid+'/like',{method:'POST',body:{on:on}}).then(function(j){
+   d.st=on?'1':'0';t.className='c-btn'+(on?' liked':'');t.querySelector('span').textContent=j.likes;
+  },function(e){toast(e.message)});return;
+ }
+ if('delpost' in d){
+  api('/api/community/posts/'+d.delpost,{method:'DELETE'}).then(function(){toast('Post removed');loadCommunityPosts()},function(e){toast(e.message)});return;
+ }
+ if('resolveticket' in d){
+  api('/api/admin/support/'+d.resolveticket+'/resolve',{method:'POST'}).then(function(){toast('Ticket closed');fetchPage()},function(e){toast(e.message)});return;
+ }
  if('fav' in d){if(!S.user)return go('login');var on=!S.det.favorited;api('/api/apps/'+S.det.app.id+'/favorite',{method:'POST',body:{on:on}}).then(function(){S.det.favorited=on;keep(draw)},function(e){toast(e.message)});return}
  if('review' in d){if(!S.user)return go('login');if(!S.star)return toast('Tap a star to rate');api('/api/apps/'+S.det.app.id+'/reviews',{method:'POST',body:{rating:S.star,comment:$('#rv').value}}).then(function(){toast('Thanks for your review!');return api('/api/apps/'+S.det.app.id)}).then(function(j){S.det=j;S.star=0;keep(draw)},function(e){toast(e.message)});return}
 });
 
-/* PWA App Install Banner */
+/* Interactive Splash & Step-by-Step Tutorial */
+var guideSteps=[
+ {title:'Welcome to HEXSTORE',desc:'Your fast Android marketplace for discovering games, mods, and indie utilities.',ic:'box'},
+ {title:'YouTube-Style Search',desc:'Tap the search bar at any time to get instant suggestions, history, and app search results.',ic:'search'},
+ {title:'Download & Track Updates',desc:'Download APKs directly with live speed stats. Follow apps to get notifications when updates drop.',ic:'dl'},
+ {title:'Creator Communities',desc:'Publishers can create community feeds, share dev updates, and interact directly with followers.',ic:'user'}
+];
+var currGuide=0;
+function startSplashAndGuide(force){
+ if(!force&&store.get('hx_onboarded_v2'))return;
+ var sp=$('#splash');sp.style.display='grid';
+ var un=(S.user&&S.user.username)?('Welcome back, '+S.user.username):'Welcome to HEXSTORE';
+ $('#sp-welcome').textContent=un;
+ setTimeout(function(){
+  sp.style.opacity='0';
+  setTimeout(function(){sp.style.display='none';sp.style.opacity='1';showGuideStep(0)},400);
+ },1500);
+}
+
+function showGuideStep(idx){
+ currGuide=idx;var g=$('#guide');g.style.display='flex';var s=guideSteps[idx];
+ var dots=guideSteps.map(function(_,i){return '<i class="'+(i==idx?'on':'')+'"></i>'}).join('');
+ g.innerHTML='<div class="guide-card">'+
+ '<div class="guide-icon">'+ic(s.ic)+'</div>'+
+ '<h2 style="font-size:22px;margin:0 0 8px">'+esc(s.title)+'</h2>'+
+ '<p class="mu" style="font-size:16px;line-height:1.6;margin:0">'+esc(s.desc)+'</p>'+
+ '<div class="guide-dots">'+dots+'</div>'+
+ '<div style="display:flex;gap:10px">'+
+ '<button class="btn o f" id="guide-skip">Skip</button>'+
+ '<button class="btn g f" id="guide-next">'+(idx===guideSteps.length-1?'Finish':'Next')+'</button>'+
+ '</div></div>';
+ $('#guide-skip').onclick=function(){g.style.display='none';store.set('hx_onboarded_v2','1')};
+ $('#guide-next').onclick=function(){
+  if(idx<guideSteps.length-1)showGuideStep(idx+1);
+  else{g.style.display='none';store.set('hx_onboarded_v2','1');toast('Tutorial completed ✓')}
+ };
+}
+
+/* Android Top Install Banner System */
 var defPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){
  e.preventDefault();defPrompt=e;
  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
  var isWebView=/\bwv\b|WebView/i.test(navigator.userAgent);
- if(!isStandalone&&!isWebView&&!store.get('hx_pwa_dismissed')){
-  var pb=$('#pwa-box');
-  if(pb)pb.innerHTML='<div class="pwa-banner"><div class="ico">'+ic('box')+'</div><div class="tx"><b>Install HEXSTORE</b><small>Get the fast app store on your home screen</small></div><button class="btn g" style="height:38px;padding:0 14px;font-size:14px" id="pwa-btn">Install</button><button class="ib" style="width:34px;height:34px;font-size:18px" id="pwa-close">'+ic('x')+'</button></div>';
-  var b=$('#pwa-btn'),c=$('#pwa-close');
-  if(b)b.onclick=function(){if(defPrompt){defPrompt.prompt();defPrompt=null;if(pb)pb.innerHTML=''}};
-  if(c)c.onclick=function(){store.set('hx_pwa_dismissed','1');if(pb)pb.innerHTML=''};
+ if(!isStandalone&&!isWebView&&!store.get('hx_and_dismissed')){
+  var b=$('#and-banner');if(b)b.classList.add('on');
  }
 });
+$('#and-install').onclick=function(){
+ if(defPrompt){defPrompt.prompt();defPrompt=null}
+ else{window.location.href='/';}
+ $('#and-banner').classList.remove('on');
+};
+$('#and-close').onclick=function(){
+ store.set('hx_and_dismissed','1');$('#and-banner').classList.remove('on');
+};
 
 if('serviceWorker' in navigator){
  window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})});
 }
 
-/* Restore user & routing */
+/* Boot & Init */
 try{var cu=store.get('hxu');if(cu&&store.get('hx'))S.user=JSON.parse(cu)}catch(e){}
 if(S.user)api('/api/me').then(function(j){S.user=j.user;store.set('hxu',JSON.stringify(j.user));draw();poll()},function(e){if(/sign in/i.test(e.message)){store.del('hx');store.del('hxu');S.user=null;draw()}});
 
 var urlP=new URLSearchParams(window.location.search),targetApp=urlP.get('app');
 if(targetApp){go('detail',targetApp)}else{go('home')}
 
+startSplashAndGuide(false);
 setInterval(poll,30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()});
 </script></body></html>
