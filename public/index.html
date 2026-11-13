@@ -120,6 +120,13 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .v-badge{display:inline-flex;align-items:center;justify-content:center;color:var(--blue);margin-left:4px;font-size:1.05em;vertical-align:-1px}
 .prime-badge{display:inline-flex;align-items:center;background:linear-gradient(135deg,#f3c84b,#d97706);color:#000;font-size:11px;font-weight:900;letter-spacing:.05em;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle;box-shadow:0 2px 8px rgba(243,200,75,.35)}
 
+/* Prime star (shown on apps, not on profiles) */
+.pstar{display:inline-flex;align-items:center;margin-left:6px;vertical-align:-3px;filter:drop-shadow(0 0 5px rgba(243,200,75,.6))}
+.pstar svg{width:19px;height:19px}
+.pprime{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#3b2b08,#251a05);border:1px solid #7a560f;color:#ffd666;border-radius:999px;padding:5px 13px 5px 8px;font-size:12px;font-weight:800;letter-spacing:.08em;margin:0 8px 8px 0;box-shadow:0 0 14px rgba(243,200,75,.18)}
+.pprime svg{width:16px;height:16px;filter:drop-shadow(0 0 4px rgba(243,200,75,.7))}
+[data-theme=light] .pprime{background:linear-gradient(135deg,#fff7de,#ffecb3);border-color:#e8c25a;color:#8a5200;box-shadow:none}
+
 /* Splash & Guide */
 .splash{position:fixed;inset:0;background:var(--bg);z-index:200;display:grid;place-items:center;transition:opacity .4s ease}
 .splash-box{text-align:center;animation:sp-in .8s cubic-bezier(0.18,0.89,0.32,1.2)}
@@ -142,6 +149,7 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .c-btn{background:none;border:0;color:var(--mu);display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;padding:6px}
 .c-btn.liked{color:#f2555a}
 </style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#e58f00"/></linearGradient></defs></svg>
 
 <div id="and-banner" class="and-banner">
   <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div>
@@ -181,7 +189,9 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 var P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',heart:'<path d="M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A4.5 4.5 0 0117 18z"/><path d="M12 12v6M9.5 14.5L12 12l2.5 2.5"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="8" cy="9" r="1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',bell:'<path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8M10 21h4"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>'};
 var ic=function(n){return '<svg viewBox="0 0 24 24">'+P[n]+'</svg>'};
 var blueCheck='<span class="v-badge" title="Verified"><svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 14.6l-3.9-3.9 1.41-1.41 2.49 2.48 6.08-6.08 1.41 1.41-7.49 7.5z"/></svg></span>';
-var primeBadge='<span class="prime-badge" title="Prime Developer">PRIME</span>';
+var primeBadge='';
+var primeStar=function(){return '<span class="pstar" title="Prime app — developer reached 500+ downloads"><svg viewBox="0 0 24 24" style="fill:url(#pg);stroke:#b86e00;stroke-width:.9"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span>'};
+var primePill=function(){return '<span class="pprime" title="Developer reached 500+ downloads"><svg viewBox="0 0 24 24" style="fill:url(#pg);stroke:#b86e00;stroke-width:.9"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg>PRIME</span>'};
 
 var API=window.location.origin;
 var G=['#e0552b,#3a1a14','#2e6bd6,#101a3a','#8a3fd1,#1c1030','#1d9e6e,#0b2a20','#d6a02e,#3a2a0a','#c23b6b,#2a0f1c'];
@@ -220,7 +230,6 @@ function getDevBadges(u){
   var dl=+(u.downloads||u.owner_downloads||0);
   var adm=Boolean(u.is_admin||u.owner_is_admin);
   if(adm||fol>=1000)res+=blueCheck;
-  if(adm||dl>=500||fol>=1000)res+=primeBadge;
   return res;
 }
 
@@ -232,7 +241,7 @@ function getFollowersCount(u, raw){
 
 function row(a){
   var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_followers,downloads:a.owner_downloads,is_prime:a.owner_is_prime});
-  return '<button class="row" data-open="'+esc(a.id)+'">'+ico(a)+'<span style="flex:1;min-width:0"><b>'+esc(a.name)+'</b><small class="by">by '+esc(a.owner_name||'')+devBadges+' · '+esc(a.category)+'</small>'+(a.summary?'<small class="sum">'+esc(a.summary)+'</small>':'')+'<small>'+(INST[a.id]?(a.version_code&&a.version_code>INST[a.id].c?'<span class="st" style="color:#e0a82e">Update</span>':'<span class="st" style="color:#4fcb68">Installed ✅</span>')+'<span class="dot">•</span>':'')+(a.rating_count?'<span class="st">★ '+a.rating+'</span><span class="dot">•</span>':'')+'⤓ '+a.downloads+(a.size?' <span class="dot">•</span> '+fmt(a.size):'')+'</small></span>'+(a.status!='published'?'<span class="badge">'+(a.status=='draft'?'DRAFT':a.status=='pending'?'IN REVIEW':'REJECTED')+'</span>':'')+'</button>';
+  return '<button class="row" data-open="'+esc(a.id)+'">'+ico(a)+'<span style="flex:1;min-width:0"><b>'+esc(a.name)+(a.owner_is_prime?primeStar():'')+'</b><small class="by">by '+esc(a.owner_name||'')+devBadges+' · '+esc(a.category)+'</small>'+(a.summary?'<small class="sum">'+esc(a.summary)+'</small>':'')+'<small>'+(INST[a.id]?(a.version_code&&a.version_code>INST[a.id].c?'<span class="st" style="color:#e0a82e">Update</span>':'<span class="st" style="color:#4fcb68">Installed ✅</span>')+'<span class="dot">•</span>':'')+(a.rating_count?'<span class="st">★ '+a.rating+'</span><span class="dot">•</span>':'')+'⤓ '+a.downloads+(a.size?' <span class="dot">•</span> '+fmt(a.size):'')+'</small></span>'+(a.status!='published'?'<span class="badge">'+(a.status=='draft'?'DRAFT':a.status=='pending'?'IN REVIEW':'REJECTED')+'</span>':'')+'</button>';
 }
 
 function head(){
@@ -251,7 +260,7 @@ var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_follower
 var note=a.status=='published'?'':'<div class="note"><span style="font-size:22px">'+ic('eye')+'</span><div><b style="font-size:19px">'+(a.status=='rejected'?'Not approved':a.status=='pending'?'In review':'Draft')+'</b><br>'+(a.status=='rejected'?'Reason: '+esc(a.reject_reason||'No reason given')+'. Edit the app or upload a fixed APK, then submit it again.':a.status=='pending'?'A moderator is checking this app. It goes live once approved.':'Only you can see this app. Submit it for review when you are ready.')+'</div></div>';
 var showV=vs.length>1||(own&&vs.some(function(x){return x.status!='approved'}));
 return '<main><button class="back" data-go="home">'+ic('back')+'Back</button>'+note+
-'<div class="card"><div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px">'+esc(a.name)+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+devBadges+'</button> · '+esc(a.category)+'</div>'+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+
+'<div class="card"><div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px">'+esc(a.name)+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+devBadges+'</button> · '+esc(a.category)+'</div>'+(a.owner_is_prime?primePill():'')+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+
 '<div style="display:flex;gap:10px;margin-top:14px;align-items:flex-start">'+'<div id="dlbox" style="display:flex;flex:1;min-width:0">'+dlBox(a,v)+'</div>'+(d.is_owner?'':'<button class="sq" data-follow style="color:'+(d.following?'var(--ac)':'inherit')+'">'+ic('bell')+'</button>')+'<button class="sq" data-fav style="'+(d.favorited?'color:#f2555a;':'')+'">'+ic('heart')+'</button><button class="sq" data-share>'+ic('share')+'</button></div>'+
 (own?'<div style="display:grid;gap:10px;margin-top:14px"><button class="btn o f" data-nv>'+ic('up')+'Upload new version</button><button class="btn o f" data-edit>'+ic('edit')+'Edit app</button>'+(a.status=='draft'||a.status=='rejected'?'<button class="btn o f" data-submit>Submit for review</button>':'')+'<button class="btn o f" data-del style="color:#f2555a">'+(S.delArm?'Tap again to delete':'Delete app')+'</button></div>':'')+
 (d.is_owner?'':'<p class="hint" style="margin:12px 0 0">'+(d.following?'You will be notified about new versions.':'Tap the bell to get notified about new versions.')+'</p>')+'</div>'+
@@ -275,7 +284,7 @@ return '<main><div class="card pad" style="padding:26px"><div style="margin-bott
 function settings(){
 return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><h1>Settings</h1><p class="mu">Support, Creator info &amp; Tour</p>'+
 '<div class="card pad" style="margin-bottom:16px"><h2 style="font-size:22px;margin-bottom:6px">Help Center</h2><p class="mu" style="margin:0 0 16px">Need help, have feedback, or found an issue? Send a direct message to our moderation team.</p><button class="btn f" data-openhelp>'+ic('help')+'Contact Support</button></div>'+
-'<div class="card pad" style="margin-bottom:16px"><h2 style="font-size:22px;margin-bottom:6px">App Creator</h2><div style="display:flex;align-items:center;gap:14px;margin:16px 0"><span class="pic" style="width:60px;height:60px;font-size:24px;background:linear-gradient(135deg,#43c25c,#27913f)">MD</span><div><b style="font-size:20px;display:flex;align-items:center">mrdakroma '+blueCheck+primeBadge+'</b><span class="mu">Creator &amp; Lead Engineer</span></div></div><p class="mu" style="line-height:1.6">HEXSTORE is crafted and maintained by <b>mrdakroma</b>. Built as an open, fast marketplace for independent Android developers and community creators.</p></div>'+
+'<div class="card pad" style="margin-bottom:16px"><h2 style="font-size:22px;margin-bottom:6px">App Creator</h2><div style="display:flex;align-items:center;gap:14px;margin:16px 0"><span class="pic" style="width:60px;height:60px;font-size:24px;background:linear-gradient(135deg,#43c25c,#27913f)">MD</span><div><b style="font-size:20px;display:flex;align-items:center">mrdakroma '+blueCheck+'</b><span class="mu">Creator &amp; Lead Engineer</span></div></div><p class="mu" style="line-height:1.6">HEXSTORE is crafted and maintained by <b>mrdakroma</b>. Built as an open, fast marketplace for independent Android developers and community creators.</p></div>'+
 '<div class="card pad"><h2 style="font-size:22px;margin-bottom:6px">Guide &amp; Tour</h2><p class="mu" style="margin:0 0 16px">Want to see the intro animation and feature guide again?</p><button class="btn o f" data-replayguide>'+ic('box')+'Replay Welcome Tutorial</button></div>'+foot()+'</main>';
 }
 
@@ -734,7 +743,7 @@ var guideSteps=[
   {title:'Welcome to HEXSTORE',desc:'Your fast Android marketplace for discovering games, mods, and indie utilities.',ic:'box'},
   {title:'YouTube-Style Search',desc:'Tap the search bar to get instant search suggestions, history, and real-time app results.',ic:'search'},
   {title:'Live Downloads & Updates',desc:'Download APKs directly with live speed stats. Follow apps to get notifications when updates arrive.',ic:'dl'},
-  {title:'Creator Communities & Prime',desc:'Developers get Prime and Verified badges, post dev updates, and interact directly with followers.',ic:'user'}
+  {title:'Creator Communities & Prime',desc:'Apps from developers with 500+ downloads get a gold Prime star. Reach 1,000 followers to earn the blue check.',ic:'user'}
 ];
 function startSplashAndGuide(force){
   if(!force&&store.get('hx_onboarded_v2'))return;
