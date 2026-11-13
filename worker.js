@@ -12,6 +12,19 @@ const sd=s=>{try{return decodeURIComponent(s)}catch(e){return ''}};
 
 const PACKAGE_NAME='com.hexstore.app';
 
+// ---- Rate limits (login, register, uploads) ----
+const ipOf=req=>req.headers.get('CF-Connecting-IP')||'unknown';
+async function limited(env,key,max,win,now){
+  const r=await q(env,'select fails,window_start from login_attempts where k=?',key).first();
+  return Boolean(r&&now-r.window_start<win&&r.fails>=max);
+}
+async function bump(env,key,win,now){
+  await q(env,'insert into login_attempts(k,fails,window_start) values(?1,1,?2) on conflict(k) do update set fails=case when ?2-window_start>=?3 then 1 else fails+1 end,window_start=case when ?2-window_start>=?3 then ?2 else window_start end',key,now,win).run();
+}
+async function clearKey(env,key){await q(env,'delete from login_attempts where k=?',key).run()}
+const TOO_MANY='Too many tries. Please wait a few minutes and try again.';
+
+
 async function hashPw(pw,saltHex){
   const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']);
   return hex(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:unhex(saltHex),iterations:100000},k,256));
@@ -53,7 +66,7 @@ const shape=(a,base)=>({
   owner_is_admin:Boolean(a.owner_is_admin),
   owner_followers:+(a.owner_followers||0)+(a.owner_is_admin?256789:0),
   owner_downloads:+(a.owner_downloads||0),
-  owner_is_prime:Boolean(a.owner_is_admin||(a.owner_downloads>=500)||(a.owner_followers>=1000))
+  owner_is_prime:Boolean(a.owner_is_admin||(a.owner_downloads>=500))
 });
 const mine=(key,id)=>!key||String(key).startsWith(id+'/');
 const clip=(s,n)=>String(s==null?'':s).trim().slice(0,n);
@@ -146,22 +159,27 @@ async function api(req,env,url,path,ctx){
   let r;
 
   if(path==='/api/register'&&m==='POST'){
-    const email=clip(body.email,120).toLowerCase(),pw=String(body.password||'');
+    const email=clip(body.email,120).toLowerCase(),pw=String(body.password||''),kR='r:'+ipOf(req);
+    if(await limited(env,kR,5,36e5,now))throw new E(429,'Too many new accounts from this network. Try again later.');
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))throw new E(400,'Enter a valid email.');
     if(pw.length<6)throw new E(400,'Password must be at least 6 characters.');
     if(await q(env,'select 1 x from users where email=?',email).first())throw new E(409,'That email already has an account. Sign in instead.');
     const first=(await q(env,'select count(*) n from users').first()).n===0;
+    await bump(env,kR,36e5,now);
     const id=uid(),salt=hex(crypto.getRandomValues(new Uint8Array(16)));
     const name=clip(body.username,30)||email.split('@')[0].slice(0,30);
     await q(env,'insert into users(id,email,pass_hash,username,is_admin,created_at) values(?,?,?,?,?,?)',id,email,salt+':'+await hashPw(pw,salt),name,first?1:0,now).run();
     return J({token:await mint(env,id),user:pub({id,email,username:name,bio:'',is_admin:first?1:0,email_alerts:1},base)});
   }
   if(path==='/api/login'&&m==='POST'){
-    const email=clip(body.email,120).toLowerCase();
+    const email=clip(body.email,120).toLowerCase(),ip=ipOf(req),kE='l:'+email+'|'+ip,kI='i:'+ip,W=15*60*1000;
+    if(await limited(env,kE,5,W,now)||await limited(env,kI,30,W,now))throw new E(429,TOO_MANY);
+    const fail=async()=>{await bump(env,kE,W,now);await bump(env,kI,W,now);await q(env,'delete from login_attempts where window_start<?',now-864e5).run();throw new E(401,'Wrong email or password.')};
     const u=await q(env,'select * from users where email=?',email).first();
-    if(!u)throw new E(401,'Wrong email or password.');
+    if(!u)await fail();
     const [salt,h]=u.pass_hash.split(':');
-    if(await hashPw(String(body.password||''),salt)!==h)throw new E(401,'Wrong email or password.');
+    if(await hashPw(String(body.password||''),salt)!==h)await fail();
+    await clearKey(env,kE);
     return J({token:await mint(env,u.id),user:pub(u,base)});
   }
   if(path==='/api/me'&&m==='GET'){
@@ -218,7 +236,7 @@ async function api(req,env,url,path,ctx){
     const rows=(await q(env,SEL+" where a.status='published' and a.owner_id=? order by a.updated_at desc limit 100",r[1]).all()).results;
     let is_following=false;
     if(me)is_following=Boolean(await q(env,'select 1 x from dev_follows where follower_id=? and dev_id=?',me.id,r[1]).first());
-    const isPrime=Boolean(u.is_admin||(s.downloads>=500)||(s.followers>=1000));
+    const isPrime=Boolean(u.is_admin||(s.downloads>=500));
     return J({user:{id:u.id,username:u.username,bio:u.bio||'',is_admin:Boolean(u.is_admin),created_at:u.created_at,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null},stats:s,is_following,is_prime:isPrime,can_post:s.apps>0||Boolean(u.is_admin),apps:rows.map(a=>shape(a,base))});
   }
   if((r=path.match(/^\/api\/users\/([\w-]+)\/(followers|following)$/))&&m==='GET'){
@@ -303,6 +321,13 @@ async function api(req,env,url,path,ctx){
       if(len>5*1024*1024)throw new E(413,'Image is over the 5 MB limit.');
       ext={'image/png':'.png','image/jpeg':'.jpg','image/webp':'.webp','image/gif':'.gif'}[type];
     }else throw new E(400,'Unknown upload kind.');
+    if(!me.is_admin){
+      const day=(await q(env,"select coalesce(sum(case when asset like '%.apk' then 1 else 0 end),0) apks,coalesce(sum(case when asset like '%.apk' then 0 else 1 end),0) imgs from files where owner_id=? and created_at>?",me.id,now-864e5).first());
+      if(kind==='apk'&&day.apks>=10)throw new E(429,'Upload limit reached: 10 APKs per day. Try again tomorrow.');
+      if(kind==='image'&&day.imgs>=40)throw new E(429,'Upload limit reached: 40 images per day. Try again tomorrow.');
+      const tot=(await q(env,'select coalesce(sum(size),0) s from files where owner_id=?',me.id).first()).s;
+      if(tot+len>1024*1024*1024)throw new E(413,'Storage limit reached (1 GB). Delete old apps or files first.');
+    }
     const key=me.id+'/'+uid()+ext;
     const rel=await release(env);
     const asset=uid().slice(0,8)+'-'+(name.replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'file')+ext;
