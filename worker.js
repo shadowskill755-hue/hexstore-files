@@ -77,6 +77,14 @@ async function delFile(env,key){
   const f=await q(env,'select asset_id from files where key=?',key).first();
   if(f){try{await gh(env,'DELETE','/releases/assets/'+f.asset_id)}catch(e){}await q(env,'delete from files where key=?',key).run()}
 }
+async function retireOld(env,appId){
+  try{
+    const latest=await q(env,"select version_code from versions where app_id=? and status='approved' and apk_key<>'' order by version_code desc limit 1",appId).first();
+    if(!latest)return;
+    const olds=(await q(env,"select id,apk_key from versions where app_id=? and status='approved' and apk_key<>'' and version_code<?",appId,latest.version_code).all()).results;
+    for(const o of olds){await delFile(env,o.apk_key);await q(env,"update versions set apk_key='' where id=?",o.id).run()}
+  }catch(e){}
+}
 async function tell(env,userId,appId,vid,title,body){
   await q(env,'insert into notifications(id,user_id,app_id,version_id,title,body,created_at) values(?,?,?,?,?,?,?)',uid(),userId,appId,vid||null,title,body,Date.now()).run();
 }
@@ -97,8 +105,8 @@ async function announce(env,ctx,base,a,ver){
   const prior=(await q(env,"select count(*) n from versions where app_id=? and status='approved' and id<>?",a.id,ver.id).first()).n;
   if(a.status!=='published'||!prior)return;
   const title=a.name+' updated to v'+ver.version_name,body=ver.changelog||'A new version is available.';
-  await q(env,"insert into notifications(id,user_id,app_id,version_id,title,body,created_at) select lower(hex(randomblob(16))),f.user_id,?1,?2,?3,?4,?5 from follows f where f.app_id=?1 and f.user_id<>?6",a.id,ver.id,title,body,Date.now(),a.owner_id).run();
-  const rs=(await q(env,'select u.email from follows f join users u on u.id=f.user_id where f.app_id=? and u.email_alerts=1 and f.user_id<>? limit 100',a.id,a.owner_id).all()).results;
+  await q(env,"insert into notifications(id,user_id,app_id,version_id,title,body,created_at) select lower(hex(randomblob(16))),f.user_id,?1,?2,?3,?4,?5 from (select user_id from follows where app_id=?1 union select user_id from installs where app_id=?1) f where f.user_id<>?6",a.id,ver.id,title,body,Date.now(),a.owner_id).run();
+  const rs=(await q(env,'select u.email from (select user_id from follows where app_id=?1 union select user_id from installs where app_id=?1) f join users u on u.id=f.user_id where u.email_alerts=1 and f.user_id<>?2 limit 100',a.id,a.owner_id).all()).results;
   const link=base+'/a/'+a.id;
   const html='<div style="font-family:system-ui,sans-serif;max-width:480px;margin:auto;background:#111216;color:#fff;border-radius:16px;padding:24px"><h2 style="margin:0 0 6px">'+esc(a.name)+'</h2><p style="color:#9a9aa4;margin:0 0 16px">Version '+esc(ver.version_name)+' is available</p><p style="white-space:pre-wrap">'+esc(body)+'</p><p><a href="'+link+'" style="display:inline-block;background:#e4e4e7;color:#111;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600">Open &amp; download</a></p></div>';
   const job=Promise.all(rs.map(r=>mail(env,r.email,title,html)));
@@ -283,6 +291,7 @@ async function api(req,env,url,path,ctx){
     if(img&&!mine(img,me.id))throw new E(400,'Invalid image.');
     const id=uid();
     await q(env,'insert into community_posts(id,user_id,content,image_key,created_at) values(?,?,?,?,?)',id,me.id,content,img,now).run();
+    await q(env,"insert into notifications(id,user_id,from_user,title,body,created_at) select lower(hex(randomblob(16))),f.follower_id,?1,?2,?3,?4 from dev_follows f where f.dev_id=?1 limit 5000",me.id,'📢 '+me.username+' posted in their community',content.slice(0,100),now).run();
     return J({id,ok:true});
   }
   if((r=path.match(/^\/api\/community\/posts\/([\w-]+)$/))&&m==='DELETE'){
@@ -343,6 +352,8 @@ async function api(req,env,url,path,ctx){
     else if(p.get('status')==='pending'){need();if(!me.is_admin)throw new E(403,'Admins only.');where="a.status='pending'"}
     else where="a.status='published'";
     if(text){where+=' and (a.name like ? or a.category like ? or a.summary like ?)';b.push('%'+text+'%','%'+text+'%','%'+text+'%')}
+    const cat=clip(p.get('cat'),40);
+    if(cat&&cat!=='All'){where+=' and a.category=?';b.push(cat)}
     const rows=(await q(env,SEL+' where '+where+' order by a.updated_at desc limit 100',...b).all()).results;
     return J({apps:rows.map(a=>shape(a,base))});
   }
@@ -357,6 +368,7 @@ async function api(req,env,url,path,ctx){
     if(!draft&&!['original','mod'].includes(body.origin))throw new E(400,'Choose Original or Mod.');
     if(!mine(body.icon_key,me.id))throw new E(400,'Invalid icon.');
     const shots=(Array.isArray(body.shots)?body.shots:[]).filter(k=>mine(k,me.id)).slice(0,8);
+    if(!draft&&shots.length<1)throw new E(400,'Add at least 1 screenshot.');
     const id=uid(),status=draft?'draft':(me.is_admin?'published':'pending');
     await q(env,'insert into apps(id,owner_id,name,category,description,summary,origin,source_url,is_exclusive,tags,icon_key,shots,status,created_at,updated_at) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
     id,me.id,name,cat,desc,sum,body.origin||null,clip(body.source_url,200)||null,body.is_exclusive?1:0,JSON.stringify((Array.isArray(body.tags)?body.tags:[]).map(t=>clip(t,24)).slice(0,8)),body.icon_key||null,JSON.stringify(shots),status,now,now).run();
@@ -369,8 +381,8 @@ async function api(req,env,url,path,ctx){
     const owner=Boolean(me&&me.id===a.owner_id),admin=Boolean(me&&me.is_admin);
     if(m==='GET'){
       if(!(a.status==='published'||owner||admin))throw new E(404,'App not found');
-      const vs=(await q(env,(owner||admin)?'select * from versions where app_id=? order by version_code desc':"select * from versions where app_id=? and status='approved' order by version_code desc",id).all()).results.map(v=>({...v,apk_url:base+'/files/'+v.apk_key}));
-      const rv=(await q(env,'select r.rating,r.comment,r.created_at,u.username,u.avatar_key,u.is_admin from reviews r join users u on u.id=r.user_id where r.app_id=? order by r.created_at desc limit 30',id).all()).results.map(x=>({rating:x.rating,comment:x.comment,created_at:x.created_at,username:x.username,is_admin:Boolean(x.is_admin),avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}));
+      const vs=(await q(env,(owner||admin)?'select * from versions where app_id=? order by version_code desc':"select * from versions where app_id=? and status='approved' order by version_code desc",id).all()).results.map(v=>({...v,apk_url:v.apk_key?base+'/files/'+v.apk_key:''}));
+      const rv=(await q(env,'select r.id,r.rating,r.comment,r.created_at,r.reply,r.reply_at,u.username,u.avatar_key,u.is_admin from reviews r join users u on u.id=r.user_id where r.app_id=? order by r.created_at desc limit 100',id).all()).results.map(x=>({id:x.id,reply:x.reply||'',reply_at:x.reply_at||null,rating:x.rating,comment:x.comment,created_at:x.created_at,username:x.username,is_admin:Boolean(x.is_admin),avatar_url:x.avatar_key?base+'/files/'+x.avatar_key:null}));
       const dist=(await q(env,'select rating,count(*) n from reviews where app_id=? group by rating',id).all()).results;
       let following=false,favorited=false,my_review=null;
       if(me){
@@ -397,9 +409,13 @@ async function api(req,env,url,path,ctx){
         if(admin&&['draft','pending','published','rejected'].includes(body.status))f.status=body.status;
         else if(owner&&['draft','pending'].includes(body.status)&&a.status!=='published')f.status=(body.status==='pending'&&admin)?'published':body.status;
       }
+      if(f.status&&f.status!==a.status&&['pending','published'].includes(f.status)){
+        const nowShots=f.shots!==undefined?JSON.parse(f.shots):JSON.parse(a.shots||'[]');
+        if(nowShots.length<1)throw new E(400,'Add at least 1 screenshot first.');
+      }
       const keys=Object.keys(f);
       if(keys.length){await q(env,'update apps set '+keys.map(k=>k+'=?').join(',')+',updated_at=? where id=?',...keys.map(k=>f[k]),now,id).run()}
-      if(f.status==='published')await q(env,"update versions set status='approved' where app_id=? and status='pending'",id).run();
+      if(f.status==='published'){await q(env,"update versions set status='approved' where app_id=? and status='pending'",id).run();await retireOld(env,id)}
       return J({ok:true});
     }
     if(m==='DELETE'){
@@ -422,7 +438,7 @@ async function api(req,env,url,path,ctx){
     const vid=uid(),log=clip(body.changelog,2000),st=me.is_admin?'approved':'pending';
     await q(env,'insert into versions(id,app_id,version_name,version_code,changelog,apk_key,size,status,created_at) values(?,?,?,?,?,?,?,?,?)',vid,a.id,vn,code,log,body.apk_key,+body.size||0,st,now).run();
     await q(env,'update apps set updated_at=? where id=?',now,a.id).run();
-    if(st==='approved')await announce(env,ctx,base,a,{id:vid,version_name:vn,changelog:log});
+    if(st==='approved'){await announce(env,ctx,base,a,{id:vid,version_name:vn,changelog:log});await retireOld(env,a.id)}
     else await alertAdmins(env,ctx,a,{id:vid,version_name:vn},me.username);
     return J({id:vid,version_code:code,status:st});
   }
@@ -448,6 +464,31 @@ async function api(req,env,url,path,ctx){
     if(!(rating>=1&&rating<=5))throw new E(400,'Tap a star to rate.');
     await q(env,'insert into reviews(id,app_id,user_id,rating,comment,created_at) values(?,?,?,?,?,?) on conflict(app_id,user_id) do update set rating=excluded.rating,comment=excluded.comment,created_at=excluded.created_at',uid(),r[1],me.id,rating,clip(body.comment,1000),now).run();
     return J({ok:true});
+  }
+  if((r=path.match(/^\/api\/reviews\/([\w-]+)\/reply$/))&&m==='POST'){
+    need();
+    const rv=await q(env,'select r.id,r.user_id,r.app_id,r.reply,a.owner_id,a.name from reviews r join apps a on a.id=r.app_id where r.id=?',r[1]).first();
+    if(!rv)throw new E(404,'Review not found');
+    if(rv.owner_id!==me.id)throw new E(403,'Only the developer of this app can reply.');
+    const txt=clip(body.reply,500);
+    if(!txt){await q(env,'update reviews set reply=null,reply_at=null where id=?',rv.id).run();return J({ok:true,removed:true})}
+    await q(env,'update reviews set reply=?,reply_at=? where id=?',txt,now,rv.id).run();
+    if(!rv.reply&&rv.user_id!==me.id)await tell(env,rv.user_id,rv.app_id,null,rv.name+': developer replied','Tap to read the reply to your review.');
+    return J({ok:true});
+  }
+  if(path==='/api/installs'&&m==='POST'){
+    need();
+    const items=(Array.isArray(body.items)?body.items:[body]).slice(0,50);
+    for(const it of items){
+      const aid=String((it&&it.app_id)||'');
+      if(!aid)continue;
+      if(!await q(env,'select 1 x from apps where id=?',aid).first())continue;
+      await q(env,'insert into installs(user_id,app_id,version_code,version_name,updated_at) values(?1,?2,?3,?4,?5) on conflict(user_id,app_id) do update set version_name=case when excluded.version_code>=installs.version_code then excluded.version_name else installs.version_name end,version_code=max(installs.version_code,excluded.version_code),updated_at=?5',me.id,aid,Math.max(0,Math.floor(+it.version_code||0)),clip(it.version_name,30),now).run();
+    }
+    return J({ok:true});
+  }
+  if((r=path.match(/^\/api\/installs\/([\w-]+)$/))&&m==='DELETE'){
+    need();await q(env,'delete from installs where user_id=? and app_id=?',me.id,r[1]).run();return J({ok:true});
   }
   if(path==='/api/favorites'&&m==='GET'){
     need();
@@ -484,6 +525,7 @@ async function api(req,env,url,path,ctx){
         if(lv){
           await q(env,"update versions set status='approved' where id=?",lv.id).run();
           await q(env,"update versions set status='rejected',reject_reason='Replaced by newer version.' where app_id=? and status='pending'",a.id).run();
+          await retireOld(env,a.id);
         }
         await tell(env,a.owner_id,a.id,null,a.name+' is live!','Your app was approved and is in the store.');
       }else{
@@ -498,6 +540,7 @@ async function api(req,env,url,path,ctx){
         await q(env,'update apps set updated_at=? where id=?',now,a.id).run();
         await tell(env,a.owner_id,a.id,v.id,a.name+' v'+v.version_name+' approved','Update is live and followers notified.');
         await announce(env,ctx,base,a,{id:v.id,version_name:v.version_name,changelog:v.changelog});
+        await retireOld(env,a.id);
       }else{
         await q(env,"update versions set status='rejected',reject_reason=? where id=?",reason,v.id).run();
         await tell(env,a.owner_id,a.id,v.id,a.name+' v'+v.version_name+' not approved','Reason: '+reason);
@@ -510,6 +553,9 @@ async function api(req,env,url,path,ctx){
     const rows=(await q(env,'select * from notifications where user_id=? order by created_at desc limit 50',me.id).all()).results;
     const un=(await q(env,'select count(*) n from notifications where user_id=? and is_read=0',me.id).first()).n;
     return J({notifications:rows,unread:un});
+  }
+  if(path==='/api/notifications'&&m==='DELETE'){
+    need();await q(env,'delete from notifications where user_id=?',me.id).run();return J({ok:true});
   }
   if(path==='/api/notifications/read'&&m==='POST'){
     need();
@@ -526,11 +572,16 @@ async function sharePage(env,url,id){
   const v=await q(env,"select * from versions where app_id=? and status='approved' order by version_code desc limit 1",id).first();
   const icon=a.icon_key?base+'/files/'+a.icon_key:'';
   const desc=esc(a.summary||String(a.description).slice(0,160));
-  const hexApkUrl=env.HEXSTORE_APK_URL||(base+'/?app='+encodeURIComponent(id));
+  let apkUrl=env.HEXSTORE_APK_URL||'';
+  if(!apkUrl){
+    const hx=await q(env,"select v.apk_key from versions v join apps a on a.id=v.app_id where a.status='published' and v.status='approved' and v.apk_key<>'' and lower(a.name)='hexstore' order by v.version_code desc limit 1").first();
+    if(hx)apkUrl=base+'/files/'+hx.apk_key+'?dl=1';
+  }
+  const hexApkUrl=apkUrl||(base+'/?app='+encodeURIComponent(id));
   const webFallback=base+'/?app='+encodeURIComponent(id);
   const intentUrl='intent://hexstore/app/'+encodeURIComponent(id)+'#Intent;scheme=hexstore;package='+PACKAGE_NAME+';S.browser_fallback_url='+encodeURIComponent(webFallback)+';end';
 
-  const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>'+esc(a.name)+' — HEXSTORE</title><meta name="description" content="'+desc+'"><meta property="og:title" content="'+esc(a.name)+' — on HEXSTORE"><meta property="og:description" content="'+desc+'"><meta property="og:url" content="'+base+'/a/'+esc(id)+'">'+(icon?'<meta property="og:image" content="'+esc(icon)+'">':'')+'<meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#35a64c"><style>*{box-sizing:border-box}body{margin:0;background:#0a0a0c;color:#f4f4f5;font:16px/1.5 system-ui,sans-serif}main{max-width:560px;margin:auto;padding:32px 18px 60px}.top{display:flex;align-items:center;gap:10px;color:#9a9aa4;font-weight:700;margin-bottom:26px}.top i{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#43c25c,#27913f);display:inline-block}.card{background:#17171b;border:1px solid #2b2b31;border-radius:24px;padding:26px}.ic{width:112px;height:112px;border-radius:26px;object-fit:cover;background:#222227;display:block}h1{font-size:32px;margin:20px 0 4px}.mu{color:#9a9aa4}.btn{display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;text-decoration:none;font-weight:700;border-radius:14px;padding:16px 20px;font-size:17px;box-shadow:0 6px 20px #43c25c33}.btn.o{background:transparent;color:#f4f4f5;border:1px solid #2b2b31;box-shadow:none;margin-top:12px;font-weight:600}.st{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #2b2b31;margin:24px -26px 0;padding-top:16px;text-align:center;font-size:12px;color:#9a9aa4;text-transform:uppercase}.st b{display:block;font-size:20px;color:#f4f4f5;text-transform:none}h2{font-size:20px;margin:30px 0 8px}p{margin:0 0 10px;white-space:pre-wrap}.and-banner{position:fixed;top:10px;left:12px;right:12px;max-width:540px;margin:auto;z-index:100;background:#111216;border:1px solid #245a33;border-radius:20px;padding:12px 14px;box-shadow:0 12px 35px #000c;display:flex;align-items:center;gap:12px}.and-banner .ico{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;display:grid;place-items:center;font-size:22px;flex:none}.and-banner .tx{flex:1;min-width:0}.and-banner b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.and-banner small{color:#9a9aa4;font-size:13px;display:block}.and-banner .b-inst{background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;border:0;border-radius:10px;padding:8px 14px;font-weight:700;font-size:13px;text-decoration:none}.and-banner .b-cls{background:none;border:0;color:#f4f4f5;font-size:18px;padding:4px;cursor:pointer}</style></head><body><div class="and-banner" id="ab"><div class="ico">📦</div><div class="tx"><b>Install HEXSTORE</b><small>Get the official app to download</small></div><a class="b-inst" href="'+esc(hexApkUrl)+'">Install</a><button class="b-cls" onclick="document.getElementById(\'ab\').style.display=\'none\'">✕</button></div><main style="padding-top:70px"><div class="top"><i></i>HEXSTORE</div><div class="card">'+(icon?'<img class="ic" src="'+esc(icon)+'" alt="">':'<div class="ic"></div>')+'<h1>'+esc(a.name)+'</h1>'+(a.summary?'<p style="font-size:17px;margin:0 0 8px">'+esc(a.summary)+'</p>':'')+'<p class="mu">by '+esc(a.owner_name)+' · '+esc(a.category)+'</p><div style="margin-top:22px"><a class="btn" href="'+esc(hexApkUrl)+'">'+(env.HEXSTORE_APK_URL?'Install HEXSTORE to view this app':'Open HEXSTORE')+'</a><a class="btn o" href="'+esc(intentUrl)+'">Already installed? Open in HEXSTORE</a></div><div class="st"><div><b>'+(a.rating||'–')+'</b>Rating</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fsize(v.size):'–')+'</b>Size</div></div></div>'+(v?'<h2>What’s new in v'+esc(v.version_name)+'</h2><p>'+esc(v.changelog||'Initial release')+'</p>':'')+'<h2>About this app</h2><p>'+esc(a.description)+'</p></main></body></html>';
+  const html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>'+esc(a.name)+' — HEXSTORE</title><meta name="description" content="'+desc+'"><meta property="og:title" content="'+esc(a.name)+' — on HEXSTORE"><meta property="og:description" content="'+desc+'"><meta property="og:url" content="'+base+'/a/'+esc(id)+'">'+(icon?'<meta property="og:image" content="'+esc(icon)+'">':'')+'<meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#35a64c"><style>*{box-sizing:border-box}body{margin:0;background:#0a0a0c;color:#f4f4f5;font:16px/1.5 system-ui,sans-serif}main{max-width:560px;margin:auto;padding:32px 18px 60px}.top{display:flex;align-items:center;gap:10px;color:#9a9aa4;font-weight:700;margin-bottom:26px}.top i{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#43c25c,#27913f);display:inline-block}.card{background:#17171b;border:1px solid #2b2b31;border-radius:24px;padding:26px}.ic{width:112px;height:112px;border-radius:26px;object-fit:cover;background:#222227;display:block}h1{font-size:32px;margin:20px 0 4px}.mu{color:#9a9aa4}.btn{display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;text-decoration:none;font-weight:700;border-radius:14px;padding:16px 20px;font-size:17px;box-shadow:0 6px 20px #43c25c33}.btn.o{background:transparent;color:#f4f4f5;border:1px solid #2b2b31;box-shadow:none;margin-top:12px;font-weight:600}.st{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #2b2b31;margin:24px -26px 0;padding-top:16px;text-align:center;font-size:12px;color:#9a9aa4;text-transform:uppercase}.st b{display:block;font-size:20px;color:#f4f4f5;text-transform:none}h2{font-size:20px;margin:30px 0 8px}p{margin:0 0 10px;white-space:pre-wrap}.and-banner{position:fixed;top:10px;left:12px;right:12px;max-width:540px;margin:auto;z-index:100;background:#111216;border:1px solid #245a33;border-radius:20px;padding:12px 14px;box-shadow:0 12px 35px #000c;display:flex;align-items:center;gap:12px}.and-banner .ico{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;display:grid;place-items:center;font-size:22px;flex:none}.and-banner .tx{flex:1;min-width:0}.and-banner b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.and-banner small{color:#9a9aa4;font-size:13px;display:block}.and-banner .b-inst{background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;border:0;border-radius:10px;padding:8px 14px;font-weight:700;font-size:13px;text-decoration:none}.and-banner .b-cls{background:none;border:0;color:#f4f4f5;font-size:18px;padding:4px;cursor:pointer}</style></head><body>'+(apkUrl?'<div class="and-banner" id="ab"><div class="ico">📦</div><div class="tx"><b>Install HEXSTORE</b><small>Get the official app to download</small></div><a class="b-inst" href="'+esc(apkUrl)+'" download="HEXSTORE.apk">Install</a><button class="b-cls" onclick="document.getElementById(\'ab\').style.display=\'none\'">✕</button></div>':'')+'<main style="padding-top:'+(apkUrl?'70':'32')+'px"><div class="top"><i></i>HEXSTORE</div><div class="card">'+(icon?'<img class="ic" src="'+esc(icon)+'" alt="">':'<div class="ic"></div>')+'<h1>'+esc(a.name)+'</h1>'+(a.summary?'<p style="font-size:17px;margin:0 0 8px">'+esc(a.summary)+'</p>':'')+'<p class="mu">by '+esc(a.owner_name)+' · '+esc(a.category)+'</p><div style="margin-top:22px"><a class="btn" href="'+esc(hexApkUrl)+'"'+(apkUrl?' download="HEXSTORE.apk"':'')+'>'+(apkUrl?'Install HEXSTORE to view this app':'Open HEXSTORE')+'</a><a class="btn o" href="'+esc(intentUrl)+'">Already installed? Open in HEXSTORE</a>'+(apkUrl?'<p style="text-align:center;margin:16px 0 0"><a href="'+esc(webFallback)+'" style="color:#9a9aa4;text-decoration:underline">Not now, continue in browser</a></p>':'')+'</div><div class="st"><div><b>'+(a.rating||'–')+'</b>Rating</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fsize(v.size):'–')+'</b>Size</div></div></div>'+(v?'<h2>What’s new in v'+esc(v.version_name)+'</h2><p>'+esc(v.changelog||'Initial release')+'</p>':'')+'<h2>About this app</h2><p>'+esc(a.description)+'</p></main></body></html>';
   return new Response(html,{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'public, max-age=300'}});
 }
 function fsize(b){b=+b||0;return b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB'}
