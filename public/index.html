@@ -150,9 +150,8 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 /* Prime star (shown on apps, not on profiles) */
 .pstar{display:inline-flex;align-items:center;margin-left:6px;vertical-align:-3px;filter:drop-shadow(0 0 5px rgba(243,200,75,.6))}
 .pstar svg{width:19px;height:19px}
-.pprime{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#3b2b08,#251a05);border:1px solid #7a560f;color:#ffd666;border-radius:999px;padding:5px 13px 5px 8px;font-size:12px;font-weight:800;letter-spacing:.08em;margin:0 8px 8px 0;box-shadow:0 0 14px rgba(243,200,75,.18)}
-.pprime svg{width:16px;height:16px;filter:drop-shadow(0 0 4px rgba(243,200,75,.7))}
-[data-theme=light] .pprime{background:linear-gradient(135deg,#fff7de,#ffecb3);border-color:#e8c25a;color:#8a5200;box-shadow:none}
+.pprime{display:inline-flex;align-items:center;justify-content:center;height:40px;margin:0 10px 8px 0;vertical-align:middle}
+.pprime svg{width:30px;height:30px;filter:drop-shadow(0 0 6px rgba(243,200,75,.7))}
 
 /* Screenshot cropper */
 .seg{display:flex;gap:8px;margin:0 0 12px}
@@ -187,6 +186,23 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .c-actions{display:flex;align-items:center;gap:18px;margin-top:14px;border-top:1px solid var(--ln);padding-top:10px}
 .c-btn{background:none;border:0;color:var(--mu);display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;padding:6px}
 .c-btn.liked{color:#f2555a}
+
+/* v2 additions */
+.cats{display:flex;gap:10px;overflow-x:auto;margin:0 -16px 6px;padding:2px 16px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cats::-webkit-scrollbar{display:none}
+.chip{flex:none;height:40px;padding:0 18px;border-radius:999px;border:1px solid var(--ln);background:transparent;color:var(--tx);font-weight:600;font-size:15px;white-space:nowrap}
+.chip.on{background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;border-color:transparent}
+.prog.upd i{background:repeating-linear-gradient(135deg,#43c25c 0 14px,#2f9f48 14px 28px);background-size:40px 40px;animation:stripe 1s linear infinite}
+@keyframes stripe{to{background-position:40px 0}}
+.rrep{margin:10px 0 2px;padding:10px 12px;border-left:3px solid var(--ac);background:var(--sf2);border-radius:0 12px 12px 0;opacity:.75}
+.rrep-h{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ac);margin-bottom:4px}
+.rrep-t{color:var(--mu);font-size:15px;white-space:pre-wrap;filter:blur(.35px)}
+.viewer{position:fixed;left:0;right:0;top:0;bottom:0;z-index:220;background:#000;display:none;user-select:none;-webkit-user-select:none}
+.viewer.on{display:block}
+.vstage{position:absolute;left:0;right:0;top:0;bottom:0;overflow:hidden;touch-action:none}
+#vimg{position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;max-width:none;transform-origin:center center;will-change:transform;-webkit-user-drag:none;opacity:0}
+.vclose{position:absolute;top:calc(env(safe-area-inset-top) + 12px);right:12px;width:46px;height:46px;border-radius:50%;background:#000a;border:1px solid #fff3;color:#fff;font-size:22px;display:grid;place-items:center;z-index:2;padding:0}
+.vcnt{position:absolute;top:calc(env(safe-area-inset-top) + 22px);left:16px;color:#fff;font-weight:700;z-index:2;text-shadow:0 1px 4px #000}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#e58f00"/></linearGradient></defs></svg>
 
@@ -221,20 +237,21 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 
 <div id="guide" class="guide" style="display:none"></div>
 <div id="app"></div>
+<div id="viewer" class="viewer"><div id="vstage" class="vstage"><img id="vimg" alt="" draggable="false"></div><div id="vcnt" class="vcnt"></div><button class="vclose" id="vclose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 <div id="sheet-bd" class="sheet-bd"></div>
 <div id="sheet" class="sheet"></div>
 
 <script>
-var P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',heart:'<path d="M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A4.5 4.5 0 0117 18z"/><path d="M12 12v6M9.5 14.5L12 12l2.5 2.5"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="8" cy="9" r="1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',bell:'<path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8M10 21h4"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>'};
+var P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',heart:'<path d="M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A4.5 4.5 0 0117 18z"/><path d="M12 12v6M9.5 14.5L12 12l2.5 2.5"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="8" cy="9" r="1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',bell:'<path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8M10 21h4"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',reply:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 016 6v3"/>'};
 var ic=function(n){return '<svg viewBox="0 0 24 24">'+P[n]+'</svg>'};
 var blueCheck='<span class="v-badge" title="Verified"><svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 14.6l-3.9-3.9 1.41-1.41 2.49 2.48 6.08-6.08 1.41 1.41-7.49 7.5z"/></svg></span>';
 var primeBadge='';
 var primeStar=function(){return '<span class="pstar" title="Prime app — developer reached 500+ downloads"><svg viewBox="0 0 24 24" style="fill:url(#pg);stroke:#b86e00;stroke-width:.9"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span>'};
-var primePill=function(){return '<span class="pprime" title="Developer reached 500+ downloads"><svg viewBox="0 0 24 24" style="fill:url(#pg);stroke:#b86e00;stroke-width:.9"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg>PRIME</span>'};
+var primePill=function(){return '<span class="pprime" title="Developer reached 500+ downloads"><svg viewBox="0 0 24 24" style="fill:url(#pg);stroke:#b86e00;stroke-width:.9"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span>'};
 
 var API=window.location.origin;
 var G=['#e0552b,#3a1a14','#2e6bd6,#101a3a','#8a3fd1,#1c1030','#1d9e6e,#0b2a20','#d6a02e,#3a2a0a','#c23b6b,#2a0f1c'];
-var S={page:'home',id:null,pop:0,tab:'apps',reg:0,after:'',origin:'',apk:null,icon:null,shots:[],name:'',cat:'Games',desc:'',log:'',ver:'1.0',src:'',excl:0,star:0,q:'',user:null,apps:null,det:null,mine:null,me:null,fav:null,err:'',busy:0,unread:0,notes:null,pending:null,delArm:0,nver:'',nlog:'',napk:null,sum:'',editId:null,eicon:null,eshots:[],agree:0,queue:null,qn:0,eun:'',ebio:'',emal:1,efile:null,eprev:null,eclear:0,dev:null,dtab:'apps',dfol:null,dposts:null,cpostFile:null,tickets:null};
+var S={page:'home',id:null,pop:0,tab:'apps',reg:0,after:'',origin:'',apk:null,icon:null,shots:[],name:'',cat:'Games',desc:'',log:'',ver:'1.0',src:'',excl:0,star:0,q:'',user:null,apps:null,det:null,mine:null,me:null,fav:null,err:'',busy:0,unread:0,notes:null,pending:null,delArm:0,nver:'',nlog:'',napk:null,sum:'',editId:null,eicon:null,eshots:[],agree:0,queue:null,qn:0,eun:'',ebio:'',emal:1,efile:null,eprev:null,eclear:0,dev:null,dtab:'apps',dfol:null,dposts:null,cpostFile:null,tickets:null,hcat:'All',allVer:0,clrArm:0,catX:0};
 var $=function(s){return document.querySelector(s)},app=$('#app');
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
@@ -242,6 +259,10 @@ var fmt=function(b){b=+b||0;return b>=1048576?(b/1048576).toFixed(2)+' MB':Math.
 var fd=function(t){return new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})};
 var DL={},INST=(function(){try{return JSON.parse(store.get('hxi')||'{}')||{}}catch(e){return{}}})();
 var saveInst=function(){store.set('hxi',JSON.stringify(INST))};
+var PEND=(function(){try{return JSON.parse(store.get('hxp')||'{}')||{}}catch(e){return{}}})();
+var savePend=function(){store.set('hxp',JSON.stringify(PEND))};
+function pushInstall(id){if(!S.user||!INST[id])return;api('/api/installs',{method:'POST',body:{app_id:id,version_code:INST[id].c,version_name:INST[id].n}}).catch(function(){})}
+function syncInstalls(){if(!S.user)return;var push=[];Object.keys(INST).forEach(function(k){push.push({app_id:k,version_code:INST[k].c,version_name:INST[k].n})});if(push.length)api('/api/installs',{method:'POST',body:{items:push.slice(0,50)}}).catch(function(){})}
 
 // Theme preference
 var savedTheme=store.get('hx_theme')||'';
@@ -301,7 +322,9 @@ function head(){
 
 function foot(){return '<div class="foot"><nav><a data-go="home">Home</a><a data-go="upload">Publish your app</a><a data-go="settings">Settings &amp; Help</a><a data-go="terms">Terms</a>'+(S.user?'<a data-go="profile">Profile</a>':'<a data-go="login">Sign in</a>')+'</nav><p>© 2026 HEXSTORE — Creator: <b>mrdakroma</b></p></div>'}
 function wait(){return '<main>'+(S.err?'<p class="mu" style="padding:60px 0;text-align:center">'+esc(S.err)+'<br><br><button class="btn" data-retry>Try again</button></p>':'<div class="sk" style="height:34px;width:60%;margin:20px 0"></div>'+[1,2,3,4].map(function(){return '<div style="display:flex;gap:16px;padding:14px 4px"><div class="sk" style="width:56px;height:56px"></div><div style="flex:1"><div class="sk" style="height:18px;width:50%;margin-bottom:10px"></div><div class="sk" style="height:14px;width:35%"></div></div></div>'}).join(''))+'</main>'}
-function home(){if(!S.apps)return wait();return '<main><h1>'+(S.q?'Results':'Discover apps')+'</h1><p class="mu">'+(S.q?esc(S.q):'Games, tools, and indie apps on HEXSTORE.')+'</p>'+(S.apps.length?S.apps.map(row).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No apps found.</p>')+foot()+'</main>'}
+var CATS=['All','Games','Tools','Education','Productivity','Entertainment','Other'];
+function catBar(){return '<div class="cats">'+CATS.map(function(c){return '<button class="chip'+(S.hcat==c?' on':'')+'" data-cat="'+c+'">'+c+'</button>'}).join('')+'</div>'}
+function home(){if(!S.apps)return wait().replace('<main>','<main>'+catBar());return '<main>'+catBar()+'<h1>'+(S.q?'Results':'Discover apps')+'</h1><p class="mu">'+(S.q?esc(S.q):'Games, tools, and indie apps on HEXSTORE.')+'</p>'+(S.apps.length?S.apps.map(row).join(''):'<p class="mu" style="padding:40px 0;text-align:center">'+(S.hcat!='All'?'No apps in '+esc(S.hcat)+' yet.':'No apps found.')+'</p>')+foot()+'</main>'}
 function login(){var r=S.reg;return '<main style="max-width:480px"><h1>'+(r?'Create account':'Sign in')+'</h1><p class="mu">'+(r?'Join HEXSTORE to publish apps and get update alerts.':'Welcome back.')+'</p><div class="card pad"><label class="l" style="margin-top:0">Email</label><input type="email" id="em" autocapitalize="off" autocomplete="email"><label class="l">Password</label><input type="password" id="pw" autocomplete="'+(r?'new-password':'current-password')+'">'+(r?'<label class="l">Username (optional)</label><input type="text" id="un">':'')+'<p class="hint" id="lm" style="color:#f2555a;min-height:22px"></p><button class="btn f" id="go" data-auth>'+(r?'Create account':'Sign in')+'</button><button class="btn o f" style="margin-top:12px" data-swap>'+(r?'I already have an account':'Create a new account')+'</button></div></main>'}
 
 function detail(){if(!S.det)return wait();var d=S.det,a=d.app,vs=d.versions,own=d.is_owner||(S.user&&S.user.is_admin),v=vs.filter(function(x){return x.status=='approved'})[0],dist={};d.dist.forEach(function(x){dist[x.rating]=x.n});
@@ -309,21 +332,29 @@ var by={username:a.owner_name,avatar_url:a.owner_avatar},desc=a.description,shor
 var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_followers,downloads:a.owner_downloads,is_prime:a.owner_is_prime});
 var note=a.status=='published'?'':'<div class="note"><span style="font-size:22px">'+ic('eye')+'</span><div><b style="font-size:19px">'+(a.status=='rejected'?'Not approved':a.status=='pending'?'In review':'Draft')+'</b><br>'+(a.status=='rejected'?'Reason: '+esc(a.reject_reason||'No reason given')+'. Edit the app or upload a fixed APK, then submit it again.':a.status=='pending'?'A moderator is checking this app. It goes live once approved.':'Only you can see this app. Submit it for review when you are ready.')+'</div></div>';
 var showV=vs.length>1||(own&&vs.some(function(x){return x.status!='approved'}));
+var vIdx=v?vs.indexOf(v):-1,vsShow=S.allVer?vs:vs.slice(0,vIdx<0?1:vIdx+1);
 return '<main><button class="back" data-go="home">'+ic('back')+'Back</button>'+note+
 '<div class="card"><div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px">'+esc(a.name)+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+devBadges+'</button> · '+esc(a.category)+'</div>'+(a.owner_is_prime?primePill():'')+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+
-'<div style="display:flex;gap:10px;margin-top:14px;align-items:flex-start">'+'<div id="dlbox" style="display:flex;flex:1;min-width:0">'+dlBox(a,v)+'</div>'+(d.is_owner?'':'<button class="sq" data-follow style="color:'+(d.following?'var(--ac)':'inherit')+'">'+ic('bell')+'</button>')+'<button class="sq" data-fav style="'+(d.favorited?'color:#f2555a;':'')+'">'+ic('heart')+'</button><button class="sq" data-share>'+ic('share')+'</button></div>'+
+'<div style="margin-top:14px"><div id="dlbox" style="display:flex;width:100%">'+dlBox(a,v)+'</div><div style="display:flex;gap:10px;margin-top:10px">'+(d.is_owner?'':'<button class="sq" data-follow style="flex:1;width:auto;color:'+(d.following?'var(--ac)':'inherit')+'">'+ic('bell')+'</button>')+'<button class="sq" data-fav style="flex:1;width:auto;'+(d.favorited?'color:#f2555a;':'')+'">'+ic('heart')+'</button><button class="sq" data-share style="flex:1;width:auto">'+ic('share')+'</button></div></div>'+
 (own?'<div style="display:grid;gap:10px;margin-top:14px"><button class="btn o f" data-nv>'+ic('up')+'Upload new version</button><button class="btn o f" data-edit>'+ic('edit')+'Edit app</button>'+(a.status=='draft'||a.status=='rejected'?'<button class="btn o f" data-submit>Submit for review</button>':'')+'<button class="btn o f" data-del style="color:#f2555a">'+(S.delArm?'Tap again to delete':'Delete app')+'</button></div>':'')+
 (d.is_owner?'':'<p class="hint" style="margin:12px 0 0">'+(d.following?'You will be notified about new versions.':'Tap the bell to get notified about new versions.')+'</p>')+'</div>'+
 '<div class="stats"><div><b>'+(a.rating||'–')+'</b>'+(a.rating_count?a.rating_count+' review'+(a.rating_count>1?'s':''):'No reviews')+'</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fmt(v.size):'–')+'</b>Size</div></div></div>'+
-(a.shots.length?'<div class="sec"><h2>Screenshots</h2><div class="shots">'+a.shots.map(function(u){return '<div><img src="'+esc(u)+'" alt=""></div>'}).join('')+'</div></div>':'')+
+(a.shots.length?'<div class="sec"><h2>Screenshots</h2><div class="shots">'+a.shots.map(function(u,i){return '<div data-shot="'+i+'" style="cursor:zoom-in"><img src="'+esc(u)+'" alt=""></div>'}).join('')+'</div></div>':'')+
 '<div class="sec"><h2>About this app</h2>'+(a.summary?'<p style="font-size:18px;font-weight:600;margin:0 0 8px">'+esc(a.summary)+'</p>':'')+'<p style="font-size:18px;line-height:1.7;margin:0 0 4px;white-space:pre-wrap">'+esc(short)+'</p><button class="view" data-about>View</button><div style="margin-top:8px">'+a.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div></div>'+
 (v?'<div class="sec"><h2>What\'s new</h2><p><span class="ver">v'+esc(v.version_name)+'</span><span class="mu">· '+fd(v.created_at)+'</span></p><p style="font-size:18px;line-height:1.7;white-space:pre-wrap">'+esc(v.changelog||'Initial release')+'</p></div>'+
 '<div class="sec"><h2>About this version</h2>'+[['tag','Version',esc(v.version_name)+' ('+v.version_code+')'],['box','Size',fmt(v.size)],['dl','Downloads',v.downloads],['cal','Updated',fd(v.created_at)]].map(function(r){return '<div class="info"><span>'+ic(r[0])+r[1]+'</span><b>'+r[2]+'</b></div>'}).join('')+'</div>':'')+
-(showV?'<div class="sec"><h2>Versions</h2>'+vs.map(function(x){var ok=x.status=='approved';return '<'+(ok?'button class="pm row" data-dl="'+x.id+'"':'div class="pm"')+' style="padding:13px 0"><span><i style="width:10px;height:10px;border-radius:50%;background:'+(ok?((v&&x.id==v.id)?'var(--ac)':'var(--mu)'):'#e0a82e')+'"></i><b>v'+esc(x.version_name)+'</b>'+(ok?'':'<span class="badge" style="font-size:11px;padding:4px 10px">'+(x.status=='pending'?'IN REVIEW':'REJECTED')+'</span>')+'</span><span>'+(ok?'⤓ '+x.downloads:'')+'</span></'+(ok?'button':'div')+'>'+(x.status=='rejected'&&x.reject_reason?'<p class="hint" style="margin:0 0 8px">Reason: '+esc(x.reject_reason)+'</p>':'')}).join('')+'</div>':'')+
+(showV?'<div class="sec"><h2>Versions</h2>'+vsShow.map(function(x){var ok=x.status=='approved'&&x.apk_key,old=x.status=='approved'&&!x.apk_key,gr=x.status=='approved';return '<'+(ok?'button class="pm row" data-dl="'+x.id+'"':'div class="pm"')+' style="padding:13px 0"><span style="min-width:0"><i style="width:10px;height:10px;border-radius:50%;flex:none;background:'+(gr?((v&&x.id==v.id)?'var(--ac)':'var(--mu)'):'#e0a82e')+'"></i><b style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50vw">v'+esc(x.version_name)+'</b>'+(gr?'':'<span class="badge" style="font-size:11px;padding:4px 10px">'+(x.status=='pending'?'IN REVIEW':'REJECTED')+'</span>')+'</span><span>'+(gr?'⤓ '+x.downloads:'')+'</span></'+(ok?'button':'div')+'>'+(x.status=='rejected'&&x.reject_reason?'<p class="hint" style="margin:0 0 8px">Reason: '+esc(x.reject_reason)+'</p>':'')}).join('')+(vs.length>vsShow.length||S.allVer?'<button class="btn o f" style="margin-top:12px" data-allver>'+(S.allVer?'Show less':'View all versions ('+vs.length+')')+'</button>':'')+'</div>':'')+
 '<div class="sec" style="border:0"><h2>Ratings &amp; reviews</h2><div style="text-align:center"><div style="font-size:54px;font-weight:800">'+(a.rating||'—')+'</div><p class="mu">'+a.rating_count+' ratings</p></div>'+[5,4,3,2,1].map(function(n){var c=dist[n]||0,w=a.rating_count?Math.round(c/a.rating_count*100):0;return '<div class="bar"><span>'+n+'</span><i style="background:linear-gradient(90deg,#f3c84b '+w+'%,var(--sf2) '+w+'%)"></i><span>'+c+'</span></div>'}).join('')+
-d.reviews.map(function(r){return '<div style="padding:16px 0;border-top:1px solid var(--ln);display:flex;gap:12px">'+pic(r,40)+'<div style="min-width:0"><b style="display:flex;align-items:center">'+esc(r.username)+(r.is_admin?blueCheck:'')+'</b> <span style="color:#f3c84b">'+'★'.repeat(r.rating)+'</span><br><span class="mu" style="white-space:pre-wrap">'+esc(r.comment)+'</span></div></div>'}).join('')+
+d.reviews.slice(0,3).map(function(r){return revHtml(r,d.is_owner)}).join('')+(d.reviews.length>3?'<button class="btn o f" style="margin-top:14px" data-allrev>View all reviews ('+a.rating_count+')</button>':'')+
 '<h3 style="margin-top:30px">Write a review</h3><div class="stars">'+[1,2,3,4,5].map(function(n){return '<button data-star="'+n+'" class="'+(S.star>=n?'on':'')+'">'+(S.star>=n?'★':'☆')+'</button>'}).join('')+'</div><p class="mu">Tap a star to rate this app</p><textarea id="rv" placeholder="Share your experience…"></textarea><div style="text-align:right;margin-top:14px"><button class="btn" data-review>Submit review</button></div></div>'+foot()+'</main>'}
 
+function revHtml(r,own){return '<div style="padding:16px 0;border-top:1px solid var(--ln);display:flex;gap:12px">'+pic(r,40)+'<div style="min-width:0;flex:1"><b style="display:flex;align-items:center">'+esc(r.username)+(r.is_admin?blueCheck:'')+'</b> <span style="color:#f3c84b">'+'★'.repeat(r.rating)+'</span><br><span class="mu" style="white-space:pre-wrap">'+esc(r.comment)+'</span>'+(r.reply?'<div class="rrep"><div class="rrep-h">'+ic('reply')+'<b>Developer reply</b></div><div class="rrep-t">'+esc(r.reply)+'</div></div>':'')+(own?'<div><button class="ulk" data-reply="'+esc(r.id)+'" style="padding:8px 0">'+(r.reply?'Edit reply':'Reply')+'</button></div>':'')+'</div></div>'}
+function allreviews(){if(!S.det||S.det.app.id!=S.id)return wait();var d=S.det,a=d.app;return '<main><button class="back" data-open="'+esc(a.id)+'">'+ic('back')+'Back to app</button><h1>Reviews</h1><p class="mu" style="font-size:18px">'+esc(a.name)+' · '+(a.rating||'–')+' ★ · '+a.rating_count+' ratings</p>'+(d.reviews.length?d.reviews.map(function(r){return revHtml(r,d.is_owner)}).join(''):'<p class="mu" style="padding:30px 0;text-align:center">No reviews yet.</p>')+foot()+'</main>'}
+function openReplySheet(rid){var r=null;((S.det&&S.det.reviews)||[]).forEach(function(x){if(x.id==rid)r=x});if(!r)return;
+ showSheet('<div class="sheet-bar"></div><h2 style="margin:0 0 6px">Reply to '+esc(r.username)+'</h2><p class="mu" style="margin:0 0 12px;white-space:pre-wrap;max-height:90px;overflow:auto">'+esc(r.comment||('Rated '+r.rating+' stars'))+'</p><textarea id="rp-txt" maxlength="500" placeholder="Write your reply…" style="min-height:110px">'+esc(r.reply||'')+'</textarea><div style="display:grid;gap:10px;margin-top:16px"><button class="btn g f" id="rp-save">Save reply</button>'+(r.reply?'<button class="btn o f" id="rp-del" style="color:#f2555a">Remove reply</button>':'')+'<button class="btn o f" data-sheetclose>Cancel</button></div>');
+ var send=function(txt){api('/api/reviews/'+rid+'/reply',{method:'POST',body:{reply:txt}}).then(function(){return api('/api/apps/'+S.det.app.id)}).then(function(j){S.det=j;hideSheet();toast(txt?'Reply saved':'Reply removed');keep(draw)},function(e){toast(e.message)})};
+ $('#rp-save').onclick=function(){var t=$('#rp-txt').value.trim();if(!t)return toast('Write a reply first');send(t)};
+ var dl=$('#rp-del');if(dl)dl.onclick=function(){send('')}}
 function profile(){if(!S.me)return wait();var u=S.me.user,st=S.me.stats,list=S.tab=='fav'?S.fav:S.mine;
 var devBadges=getDevBadges(u);
 var folDisplay=getFollowersCount(u, st.followers);
@@ -338,7 +369,7 @@ return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><h1
 '<div class="card pad"><h2 style="font-size:22px;margin-bottom:6px">Guide &amp; Tour</h2><p class="mu" style="margin:0 0 16px">Want to see the intro animation and feature guide again?</p><button class="btn o f" data-replayguide>'+ic('box')+'Replay Welcome Tutorial</button></div>'+foot()+'</main>';
 }
 
-function notif(){if(!S.notes)return wait();return '<main><h1>Notifications</h1>'+(S.notes.length?S.notes.map(function(n){return '<button class="row" '+(n.from_user?'data-userpopup="'+esc(n.from_user)+'"':'data-open="'+esc(n.app_id)+'"')+' style="'+(n.is_read?'':'background:var(--sf);border-radius:16px;padding:14px;margin:6px 0;')+'"><span class="ico" style="background:var(--sf2);color:var(--ac);font-size:26px">'+ic(n.from_user?'user':'bell')+'</span><span style="flex:1;min-width:0"><b style="font-size:17px">'+esc(n.title)+'</b><small style="display:block">'+esc(n.body)+'</small><small>'+fd(n.created_at)+'</small></span></button>'}).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No notifications yet.<br>Open an app and tap the bell to follow it.</p>')+foot()+'</main>'}
+function notif(){if(!S.notes)return wait();return '<main><h1>Notifications</h1>'+(S.notes.length?'<div style="display:flex;justify-content:flex-end;margin:0 0 8px"><button class="btn o" data-clrnotif style="height:42px;padding:0 16px;font-size:15px">'+(S.clrArm?'Tap again to clear all':'Clear all')+'</button></div>':'')+(S.notes.length?S.notes.map(function(n){return '<button class="row" '+(n.from_user?(n.title.indexOf('📢')==0?'data-pcomm="':'data-userpopup="')+esc(n.from_user)+'"':(n.title.indexOf('📩')==0?'data-go="moderation"':'data-open="'+esc(n.app_id)+'"'))+' style="'+(n.is_read?'':'background:var(--sf);border-radius:16px;padding:14px;margin:6px 0;')+'"><span class="ico" style="background:var(--sf2);color:var(--ac);font-size:26px">'+ic(n.from_user?'user':'bell')+'</span><span style="flex:1;min-width:0"><b style="font-size:17px">'+esc(n.title)+'</b><small style="display:block">'+esc(n.body)+'</small><small>'+fd(n.created_at)+'</small></span></button>'}).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No notifications yet.<br>Open an app and tap the bell to follow it.</p>')+foot()+'</main>'}
 
 function newver(){if(!S.det||S.det.app.id!=S.id)return wait();var a=S.det.app,v=S.det.versions[0];return '<main style="padding-bottom:150px"><button class="back" data-open="'+esc(a.id)+'">'+ic('back')+'Back to app</button><h1>New version</h1><p class="mu" style="font-size:18px">'+esc(a.name)+(v?' · current v'+esc(v.version_name):'')+'</p><div class="card pad"><h2 style="font-size:22px">New APK</h2><div id="nvbox"></div><label class="l">Version <span class="req">*</span></label><input type="text" data-k="nver" placeholder="e.g. 1.1" value="'+esc(S.nver)+'"><label class="l">What\'s new</label><textarea data-k="nlog" placeholder="What changed in this version?">'+esc(S.nlog)+'</textarea><p class="hint">'+(a.status=='published'?'Everyone following this app will be notified.':'This app is not published yet, so nobody is notified.')+'</p></div></main><div class="dock"><p id="nvm">'+(S.napk?'Ready to upload.':'Choose the new APK to continue.')+'</p><div><button class="btn f" data-nvsubmit '+(S.napk?'':'disabled')+'>Upload &amp; notify followers</button></div></div>'}
 function paintNv(){var b=$('#nvbox');if(!b)return;b.innerHTML=S.napk?'<div class="file">'+ic('box').replace('<svg','<svg style="font-size:44px"')+'<div style="flex:1;min-width:0"><b style="word-break:break-all">'+esc(S.napk.name)+'</b><span class="mu">'+fmt(S.napk.size)+'</span></div><button class="ib" data-rm="napk">'+ic('x')+'</button></div>':'<label class="drop">'+ic('cloud')+'<b>Choose new APK</b>Android package (.apk), max 100 MB<input type="file" id="fn" accept=".apk,application/vnd.android.package-archive" hidden></label>';var f=$('#fn');if(f)f.onchange=function(){var x=f.files[0];if(x){if(!/\.apk$/i.test(x.name))return toast('Choose an .apk file');S.napk={name:x.name,size:x.size,file:x};draw()}}}
@@ -355,7 +386,7 @@ function poll(){
   if(t&&t.id!==seen){
    store.set('hx_lastn',t.id);
    if(pollInit&&!t.is_read){
-    if(t.from_user&&!$('#sheet').classList.contains('on'))openNewFollowerSheet(t);
+    if(t.from_user&&/started following/.test(t.title)&&!$('#sheet').classList.contains('on'))openNewFollowerSheet(t);
     else toast('🔔 '+t.title);
     try{if(window.Notification&&Notification.permission=='granted')new Notification(t.title,{body:t.body})}catch(e){}
    }
@@ -411,11 +442,11 @@ function formPage(){var ed=!!S.editId,adm=S.user&&S.user.is_admin;return '<main 
 (ed?'':'<label class="l">What\'s new</label><textarea data-k="log" placeholder="Changes in this version (optional)">'+esc(S.log)+'</textarea>')+
 '<label class="l">Source code URL</label><input type="url" data-k="src" placeholder="https://github.com/… (optional)" value="'+esc(S.src)+'"><p class="hint">Add a link if your app is open-source.</p>'+
 '<label class="tg"><input type="checkbox" data-k="excl"'+(S.excl?' checked':'')+'><span><b style="font-size:18px">Exclusive</b><br><span class="mu">The app isn\'t available on Google Play.</span></span></label></div>'+
-'<div class="pad" style="border-top:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Screenshots</h2><p class="mu" style="margin-top:0">Optional, up to 8. You can crop each one: vertical for apps, horizontal for games. Tap ✕ to remove.</p><label class="drop">'+ic('img')+'<b>Add screenshots</b>PNG or JPG<input type="file" id="sh" accept="image/*" multiple hidden></label><div class="shots" id="shl" style="margin-top:14px"></div></div></div>'+
+'<div class="pad" style="border-top:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Screenshots <span class="req">*</span></h2><p class="mu" style="margin-top:0">Add at least 1, up to 8. You can crop each one: vertical for apps, horizontal for games. Tap ✕ to remove.</p><label class="drop">'+ic('img')+'<b>Add screenshots</b>PNG or JPG<input type="file" id="sh" accept="image/*" multiple hidden></label><div class="shots" id="shl" style="margin-top:14px"></div></div></div>'+
 '<div class="card pad"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:22px">Preview</h2><span class="badge" style="background:var(--sf2);border:0;font-weight:600;letter-spacing:0">Store view</span></div><div id="pvb" style="margin-top:18px"></div><p class="mu" style="text-align:center;margin:16px 0 0">This is how your app will appear to users</p></div>'+foot()+'</main><div id="dk"></div>'}
 function resetForm(){S.editId=null;S.name=S.sum=S.cat=S.desc=S.log=S.src=S.origin='';S.cat='Games';S.excl=0;S.ver='1.0';S.apk=S.icon=S.eicon=null;S.shots=[];S.eshots=[]}
 function initEdit(){var a=S.det.app;S.editId=a.id;S.name=a.name;S.sum=a.summary||'';S.cat=a.category;S.desc=a.description;S.src=a.source_url||'';S.excl=a.is_exclusive?1:0;S.origin=a.origin||'';S.apk=S.icon=null;S.shots=[];S.eicon=a.icon_key?{key:a.icon_key,url:a.icon_url,name:'Current icon'}:null;S.eshots=a.shot_keys.map(function(k,i){return{key:k,url:a.shots[i]}})}
-function saveEdit(){if(S.busy)return;var a=S.det.app;if(!S.cat)return toast('Choose a category');if(!S.icon&&!S.eicon)return toast('Add an icon');if(a.status!='draft'&&S.desc.trim().length<100)return toast('Description needs 100+ characters');
+function saveEdit(){if(S.busy)return;var a=S.det.app;if(!S.cat)return toast('Choose a category');if(!S.icon&&!S.eicon)return toast('Add an icon');if(a.status!='draft'&&S.desc.trim().length<100)return toast('Description needs 100+ characters');if(a.status!='draft'&&!(S.shots.length+S.eshots.length))return toast('Add at least 1 screenshot');
  S.busy=1;var say=function(t){$('#dk').innerHTML=dock(t)},K={shots:[]},p=Promise.resolve();
  if(S.icon)p=p.then(function(){say('Uploading icon…');return upImg(S.icon.file,512)}).then(function(r){K.icon=r.key});
  S.shots.forEach(function(x,i){p=p.then(function(){say('Uploading screenshot '+(i+1)+'…');return upImg(x.file,1280)}).then(function(r){K.shots.push(r.key)})});
@@ -423,18 +454,19 @@ function saveEdit(){if(S.busy)return;var a=S.det.app;if(!S.cat)return toast('Cho
 function share(a){var u=API+'/a/'+a.id;if(navigator.share){navigator.share({title:a.name+' on HEXSTORE',text:a.summary||'Download '+a.name,url:u}).catch(function(){});return}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(function(){toast('Link copied: '+u)},function(){toast(u)});else toast(u)}
 
 function latestV(){return S.det&&S.det.versions.filter(function(x){return x.status=='approved'})[0]}
+function dlStat(d){var pc=d.total?Math.min(100,Math.round(d.loaded/d.total*100)):0;return{w:d.total?pc:35,txt:d.total?(d.upd?'Updating… ':'')+pc+'%':(d.upd?'Updating…':'Downloading…'),sub:(d.upd?'Updating · ':'')+fmt(d.loaded)+(d.total?' / '+fmt(d.total):'')+(d.speed>0?' · '+fmt(d.speed)+'/s':'')}}
 function dlBox(a,v){
- var d=DL[a.id],ins=INST[a.id];
+ var d=DL[a.id],ins=INST[a.id],pe=PEND[a.id];
  if(!v)return '<button class="btn" style="flex:1" disabled>No APK yet</button>';
- if(d&&d.st=='dl'){var pc=d.total?Math.min(100,Math.round(d.loaded/d.total*100)):0;
-  return '<div class="dlb"><div class="prog"><i style="width:'+(d.total?pc:35)+'%"></i><span>'+(d.total?pc+'%':'Downloading…')+'</span></div><div class="ds">'+(d.upd?'Updating · ':'')+fmt(d.loaded)+(d.total?' / '+fmt(d.total):'')+(d.speed>0?' · '+fmt(d.speed)+'/s':'')+'</div></div>'}
+ if(d&&d.st=='dl'){var s=dlStat(d);
+  return '<div class="dlb"><div class="prog'+(d.upd?' upd':'')+'"><i style="width:'+s.w+'%"></i><span>'+s.txt+'</span></div><div class="ds">'+s.sub+'</div></div>'}
  if(d&&(d.st=='ready'||d.st=='ask')){
-  return '<div class="dlb"><button class="btn g f pulse" data-openinstall="'+a.id+'">'+ic('box')+(d.upd?'Install update':'Install')+'</button>'+(d.st=='ready'?'<div class="ds" style="font-size:14px;color:var(--mu);margin-top:4px">Android will ask you to install it. If it doesn\'t, tap Install again.</div>':'')+'</div>'}
+  return '<div class="dlb"><button class="btn g f pulse" data-openinstall="'+a.id+'">'+ic('box')+(d.upd?'Install update':'Install')+'</button>'+(d.st=='ready'?'<div class="ds" style="font-size:14px;color:var(--mu);margin-top:4px">'+(d.upd?'Android will ask “Do you want to update this app?” Tap Update.':'Android will ask you to install it. If it doesn\'t, tap Install again.')+'</div>':'')+'</div>'}
  if(ins&&ins.c>=v.version_code)return '<div class="dlb"><button class="btn ok f" disabled>Installed ✅</button><button class="ulk" data-reinst="'+a.id+'">Not installed? Download again</button></div>';
- if(ins)return '<button class="btn g" style="flex:1;padding:0 12px" data-dl="'+v.id+'">'+ic('dl')+'Update to v'+esc(v.version_name)+'</button>';
+ if(pe&&pe.vc>=v.version_code&&Date.now()-(pe.t||0)<2592e5)return '<div class="dlb"><button class="btn ok f" data-installed="'+a.id+'">I installed it ✅</button><button class="ulk" data-reinst="'+a.id+'">Not installed? Download again</button></div>';
+ if(ins)return '<button class="btn g" style="flex:1;padding:0 12px" data-dl="'+v.id+'">'+ic('dl')+'Update</button>';
  return '<button class="btn" style="flex:1;padding:0 12px" data-dl="'+v.id+'"><span class="dl-i">'+ic('dl')+'</span>Download APK</button>'}
-function paintDl(id){var b=$('#dlbox');if(b&&S.page=='detail'&&S.det&&S.det.app.id==id)b.innerHTML=dlBox(S.det.app,latestV())}
-
+function paintDl(id){var b=$('#dlbox');if(b&&S.page=='detail'&&S.det&&S.det.app.id==id){var d=DL[id],pr=b.querySelector('.prog');if(d&&d.st=='dl'&&pr&&pr.firstChild){var s=dlStat(d);pr.firstChild.style.width=s.w+'%';pr.querySelector('span').textContent=s.txt;var ds=b.querySelector('.ds');if(ds)ds.textContent=s.sub;return}b.innerHTML=dlBox(S.det.app,latestV())}}
 function startDl(a,v){
  var id=a.id;if(DL[id]&&DL[id].st=='dl')return;
  var d=DL[id]={st:'dl',loaded:0,total:+v.size||0,speed:0,vid:v.id,vk:v.apk_key,vc:v.version_code,vn:v.version_name,name:a.name,upd:!!INST[id],tl:Date.now(),ll:0};
@@ -455,10 +487,32 @@ function startDl(a,v){
  .then(function(b){d.blob=b;d.st='ready';d.loaded=b.size;d.total=b.size;paintDl(id);toast('Download complete ✓ Tap Install')},
   function(e){DL[id]=null;paintDl(id);toast(/Failed to fetch|NetworkError|Load failed/i.test(e.message)?'Download interrupted. Check your internet and try again.':e.message)})}
 
+var DLINTS=[
+ 'intent:#Intent;action=android.intent.action.VIEW_DOWNLOADS;package=com.google.android.apps.nbu.files;end',
+ 'intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.google.android.apps.nbu.files;end',
+ 'intent:#Intent;action=android.intent.action.VIEW_DOWNLOADS;end'];
+var dlOpening=0;
+function openDownloads(){
+ if(dlOpening)return;dlOpening=1;
+ var gone=false,i=0,tm=null;
+ var left=function(){gone=true},vis=function(){if(document.hidden)gone=true};
+ document.addEventListener('visibilitychange',vis);window.addEventListener('pagehide',left);window.addEventListener('blur',left);
+ var finish=function(){clearTimeout(tm);document.removeEventListener('visibilitychange',vis);window.removeEventListener('pagehide',left);window.removeEventListener('blur',left);dlOpening=0};
+ var step=function(){
+  if(gone){finish();return}
+  if(i>=DLINTS.length){finish();toast('Open your Files app, then Downloads');return}
+  var a=document.createElement('a');a.href=DLINTS[i++];a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(function(){a.remove()},300);
+  tm=setTimeout(step,1000);
+ };
+ step();
+}
 function openInstallSheet(id){
  var d=DL[id];if(!d)return;
  var a=(S.det&&S.det.app.id==id)?S.det.app:{name:d.name};
  d.st='ask';paintDl(id);
+ PEND[id]={vc:d.vc,vn:d.vn,t:Date.now()};savePend();
+ var upd=!!d.upd;
  var apkFileName=(d.name||'app').replace(/[^\w.-]+/g,'_')+'-v'+d.vn+'.apk';
  if(d.blob){
   d.saved=true;
@@ -468,23 +522,21 @@ function openInstallSheet(id){
  }
  var html='<div class="sheet-bar"></div>'+
  '<div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">'+ico(a)+'<div style="min-width:0"><b style="font-size:20px;display:block">'+esc(a.name)+'</b><span class="mu">v'+esc(d.vn)+' · '+fmt(d.total)+'</span></div></div>'+
- '<h2 style="font-size:20px;margin:12px 0 6px">Install '+esc(a.name)+'</h2>'+
+ '<h2 style="font-size:20px;margin:12px 0 6px">'+(upd?'Update ':'Install ')+esc(a.name)+'</h2>'+
  '<ul class="steps">'+
  '<li><i>1</i><span>Tap <b>Open</b> on the Android “Download complete” notification.</span></li>'+
  '<li><i>2</i><span>Or open your <b>Files</b> app &rarr; <b>Downloads</b> &rarr; tap <b>'+esc(apkFileName)+'</b>.</span></li>'+
- '<li><i>3</i><span>If Android asks, allow installs from this source, then tap <b>Install</b>.</span></li>'+
+ '<li><i>3</i><span>'+(upd?'Android will ask “Do you want to update this app?” Tap <b>Update</b>.':'If Android asks, allow installs from this source, then tap <b>Install</b>.')+'</span></li>'+
  '</ul>'+
  '<div style="display:grid;gap:10px;margin-top:18px">'+
- '<a class="btn g f" href="intent:#Intent;action=android.intent.action.VIEW_DOWNLOADS;end" id="btn-intent">'+ic('box')+'Open Downloads</a>'+
+ '<button class="btn g f" data-opendl>'+ic('box')+'Open Downloads</button>'+
  '<button class="btn ok f" data-installed="'+id+'">I installed it ✅</button>'+
  '<button class="ulk" data-dlretry="'+id+'">Nothing happened? Tap here to download directly</button>'+
  '<button class="btn o f" data-sheetclose style="margin-top:4px">Close</button>'+
  '</div>';
  showSheet(html);
- var bi=$('#btn-intent');if(bi)bi.onclick=function(){setTimeout(function(){if(!document.hidden)toast('Open your Files app, then Downloads')},900)};
 }
-
-function markInstalled(id){var d=DL[id];if(!d)return;INST[id]={c:d.vc,n:d.vn};saveInst();DL[id]=null;hideSheet();toast('Installed ✅');if(S.page=='detail'&&S.det&&S.det.app.id==id)keep(draw)}
+function markInstalled(id){var d=DL[id]||PEND[id];if(!d)return;INST[id]={c:d.vc,n:d.vn};saveInst();delete PEND[id];savePend();DL[id]=null;hideSheet();toast('Installed ✅');pushInstall(id);if(S.page=='detail'&&S.det&&S.det.app.id==id)keep(draw)}
 function retryDirect(id){var d=DL[id];if(d&&d.vk)window.location.href=API+'/files/'+d.vk+'?dl=1'}
 
 function showSheet(html){
@@ -619,7 +671,7 @@ function bindCommunityComposer(){
 function loadDfol(){var t=S.dtab,id=S.id;S.dfol=null;draw();api('/api/users/'+id+'/'+t).then(function(j){if(S.dtab==t&&S.id==id&&S.page=='dev'){S.dfol=j.users;draw()}},function(e){toast(e.message)})}
 
 function ready(){return Boolean(S.apk&&S.icon)}
-function dock(t){if(S.editId)return '<div class="dock"><p>'+(t||'Editing '+esc(S.name||'app'))+'</p><div><button class="btn o" data-open="'+esc(S.editId)+'">Cancel</button><button class="btn" data-saveedit '+(S.busy?'disabled':'')+'>Save changes</button></div></div>';var adm=S.user&&S.user.is_admin;return '<div class="dock"><p>'+(t||(ready()?(adm?'Ready to publish.':'Ready to submit. A moderator reviews it before it goes live.'):'Add an APK and an icon to continue.'))+'</p><div><button class="btn o" data-draft '+(S.busy?'disabled':'')+'>Save as draft</button><button class="btn" data-pub '+(ready()&&!S.busy?'':'disabled')+'>'+(adm?'Publish':'Submit for review')+'</button></div></div>'}
+function dock(t){if(S.editId)return '<div class="dock"><p>'+(t||'Editing '+esc(S.name||'app'))+'</p><div><button class="btn o" data-open="'+esc(S.editId)+'">Cancel</button><button class="btn" data-saveedit '+(S.busy?'disabled':'')+'>Save changes</button></div></div>';var adm=S.user&&S.user.is_admin;return '<div class="dock"><p>'+(t||(ready()?(S.shots.length?(adm?'Ready to publish.':'Ready to submit. A moderator reviews it before it goes live.'):'Add at least 1 screenshot to publish.'):'Add an APK and an icon to continue.'))+'</p><div><button class="btn o" data-draft '+(S.busy?'disabled':'')+'>Save as draft</button><button class="btn" data-pub '+(ready()&&S.shots.length&&!S.busy?'':'disabled')+'>'+(adm?'Publish':'Submit for review')+'</button></div></div>'}
 function preview(){var n=S.name||(S.apk?S.apk.name.replace(/\.apk$/i,''):'Your app'),i=S.icon||S.eicon;return '<div class="pv"><div class="ico" style="width:96px;height:96px;border-radius:24px;background:var(--sf2);color:var(--mu)">'+(i?'<img src="'+esc(i.url)+'">':ic('box').replace('<svg','<svg style="font-size:44px"'))+'</div><div style="min-width:0"><b style="font-size:22px">'+esc(n)+'</b>'+(S.sum?'<div style="margin-top:2px">'+esc(S.sum)+'</div>':'')+'<div class="mu">'+(S.user?'by '+esc(S.user.username)+' · ':'')+esc(S.cat)+'</div></div></div>'}
 function upload(){if(!S.user)return wait();if(!S.user.tos)return gate();return formPage()}
 function paintUp(){if(!$('#icobox'))return;var ab=$('#apkbox'),ci=S.icon||S.eicon;
@@ -632,30 +684,30 @@ function paintUp(){if(!$('#icobox'))return;var ab=$('#apkbox'),ci=S.icon||S.eico
   var fi=$('#fi');if(fi)fi.onchange=function(){var f=fi.files[0];if(f){S.icon={name:f.name,url:URL.createObjectURL(f),file:f};paintUp()}};
   $('#sh').onchange=function(e){var fs=Array.prototype.slice.call(e.target.files);e.target.value='';startCrop(fs)}}
 
-function draw(){if(S.page=='edit'&&S.det&&S.det.app.id==S.id&&S.editId!=S.id)initEdit();var P={home:home,detail:detail,profile:profile,upload:upload,login:login,notif:notif,newver:newver,about:about,terms:terms,edit:edit,editprofile:editprofile,moderation:moderation,dev:dev,settings:settings};app.innerHTML=head()+(P[S.page]||home)();if(S.page=='upload'||S.page=='edit')paintUp();if(S.page=='newver')paintNv();if(S.page=='editprofile')bindEp();bindSearchTrigger()}
+function draw(){if(S.page=='edit'&&S.det&&S.det.app.id==S.id&&S.editId!=S.id)initEdit();var P={home:home,detail:detail,profile:profile,upload:upload,login:login,notif:notif,newver:newver,about:about,terms:terms,edit:edit,editprofile:editprofile,moderation:moderation,dev:dev,settings:settings,allreviews:allreviews};app.innerHTML=head()+(P[S.page]||home)();if(S.page=='upload'||S.page=='edit')paintUp();if(S.page=='newver')paintNv();if(S.page=='editprofile')bindEp();bindSearchTrigger();var cs=$('.cats');if(cs)cs.scrollLeft=S.catX||0}
 function toast(t){var d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2800)}
 
 function go(p,id){if((p=='profile'||p=='upload'||p=='notif'||p=='newver'||p=='edit'||p=='editprofile'||p=='moderation')&&!S.user){S.after=p;p='login'}if(p=='moderation'&&!(S.user&&S.user.is_admin))p='home';
   if(p=='upload'&&S.editId)resetForm();if(p!='edit')S.editId=null;
-  S.page=p;S.id=id||null;S.pop=0;S.err='';S.delArm=0;scrollTo(0,0);
-  if(p=='notif')S.notes=null;if(p=='home'&&!S.q)S.apps=null;if(p=='detail'){S.det=null;S.star=0}if(p=='profile'){S.me=null;S.mine=null;S.fav=null}if(p=='moderation'){S.queue=null;S.tickets=null}if(p=='dev'){S.dev=null;S.dfol=null;S.dposts=null}draw();fetchPage()}
+  S.page=p;S.id=id||null;S.pop=0;S.err='';S.delArm=0;S.clrArm=0;scrollTo(0,0);
+  if(p=='notif')S.notes=null;if(p=='home'&&!S.q)S.apps=null;if(p=='detail'){S.det=null;S.star=0;S.allVer=0}if(p=='profile'){S.me=null;S.mine=null;S.fav=null}if(p=='moderation'){S.queue=null;S.tickets=null}if(p=='dev'){S.dev=null;S.dfol=null;S.dposts=null}draw();fetchPage()}
 
 function fetchPage(){var p=S.page,id=S.id;var done=function(){if(S.page==p&&S.id==id)draw()};
   var fail=function(e){if(/sign in/i.test(e.message)){logout();return}S.err=e.message;done()};
-  if(p=='home')api('/api/apps?q='+encodeURIComponent(S.q)).then(function(j){S.apps=j.apps;done()},fail);
+  if(p=='home'){var hc=S.hcat,hq=S.q;api('/api/apps?q='+encodeURIComponent(S.q)+'&cat='+encodeURIComponent(S.hcat)).then(function(j){if(S.hcat!=hc||S.q!=hq)return;S.apps=j.apps;done()},fail)}
   if(p=='detail')api('/api/apps/'+id).then(function(j){S.det=j;done()},fail);
   if(p=='profile')Promise.all([api('/api/me'),api('/api/apps?mine=1'),api('/api/favorites'),S.user.is_admin?api('/api/admin/queue'):Promise.resolve({items:[]})]).then(function(r){S.me=r[0];S.mine=r[1].apps;S.fav=r[2].apps;S.qn=r[3].items.length;done()},fail);
   if(p=='moderation')Promise.all([api('/api/admin/queue'),api('/api/admin/support')]).then(function(r){S.queue=r[0].items;S.tickets=r[1].tickets;done()},fail);
   if(p=='dev')api('/api/users/'+id).then(function(j){S.dev=j;done();if(S.dtab=='community')loadCommunityPosts();else if(S.dtab!='apps')loadDfol()},fail);
   if(p=='notif')api('/api/notifications').then(function(j){S.notes=j.notifications;S.unread=0;done();if(j.unread)api('/api/notifications/read',{method:'POST',body:{}}).catch(function(){})},fail);
-  if((p=='newver'||p=='about'||p=='edit')&&(!S.det||S.det.app.id!=id))api('/api/apps/'+id).then(function(j){S.det=j;done()},fail)}
+  if((p=='newver'||p=='about'||p=='edit'||p=='allreviews')&&(!S.det||S.det.app.id!=id))api('/api/apps/'+id).then(function(j){S.det=j;done()},fail)}
 
 function logout(){store.del('hx');store.del('hxu');S.user=null;go('home')}
 function auth(){var em=$('#em').value.trim(),pw=$('#pw').value,m=$('#lm'),b=$('#go');m.textContent='';b.disabled=true;
-  api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;var n=S.after||'home';S.after='';go(n);poll()},function(e){m.textContent=e.message;b.disabled=false})}
+  api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;var n=S.after||'home';S.after='';go(n);poll();syncInstalls()},function(e){m.textContent=e.message;b.disabled=false})}
 function submit(status){if(S.busy)return;if(!ready())return toast('Add an APK and an icon first');
   if(!S.cat)return toast('Choose a category');if(!S.ver.trim())return toast('Enter a version, for example 1.0');
-  if(status!='draft'){if(S.desc.trim().length<100)return toast('Description needs 100+ characters (now '+S.desc.trim().length+')');if(!S.origin)return toast('Choose Original or Mod')}
+  if(status!='draft'){if(S.desc.trim().length<100)return toast('Description needs 100+ characters (now '+S.desc.trim().length+')');if(!S.origin)return toast('Choose Original or Mod');if(!S.shots.length)return toast('Add at least 1 screenshot')}
   S.busy=1;var last='Uploading APK',say=function(t){last=t;$('#dk').innerHTML=dock(t)};say('Uploading APK… 0%');var K={shots:[]},adm=S.user&&S.user.is_admin;
   up(S.apk.file,'apk',function(p){say('Uploading APK… '+p+'%')}).then(function(r){K.apk=r;say('Uploading icon…');return upImg(S.icon.file,512)}).then(function(r){K.icon=r;
     return S.shots.reduce(function(pr,x,i){return pr.then(function(){say('Uploading screenshot '+(i+1)+'/'+S.shots.length+'…');return upImg(x.file,1280).then(function(r){K.shots.push(r.key)})})},Promise.resolve())})
@@ -684,7 +736,7 @@ $('#yt-q').addEventListener('keydown',function(e){
     var val=e.target.value.trim();if(!val){closeYtSearch();S.q='';go('home');return}
     var m=val.match(/\/a\/([a-zA-Z0-9_-]+)/);
     if(m&&m[1]){closeYtSearch();go('detail',m[1]);return}
-    saveRecentSearch(val);closeYtSearch();S.q=val;go('home');
+    saveRecentSearch(val);closeYtSearch();S.q=val;S.hcat='All';go('home');
   }
 });
 function renderYtResults(query){
@@ -699,7 +751,7 @@ function renderYtResults(query){
   api('/api/apps?q='+encodeURIComponent(query)).then(function(j){
     if(!j.apps.length){rb.innerHTML='<p class="mu" style="padding:20px 0;text-align:center">No apps found for “'+esc(query)+'”</p>';return}
     rb.innerHTML=j.apps.map(function(a){
-      return '<button class="yt-item" data-openapp="'+a.id+'">'+ico(a)+'<span><b>'+esc(a.name)+'</b><br><small class="mu">'+esc(a.category)+' · by '+esc(a.owner_name)+'</small></span>'+ic('search')+'</button>';
+      return '<button class="yt-item" data-openapp="'+a.id+'" data-nm="'+esc(a.name)+'">'+ico(a)+'<span><b>'+esc(a.name)+'</b><br><small class="mu">'+esc(a.category)+' · by '+esc(a.owner_name)+'</small></span>'+ic('search')+'</button>';
     }).join('');
   });
 }
@@ -824,16 +876,72 @@ function onField(e){
 document.addEventListener('input',onField);
 document.addEventListener('change',onField);
 
+/* Screenshot viewer (pinch zoom, pan, swipe) */
+var VW={list:[],i:0,s:1,x:0,y:0,p:{},lc:null,ld:0,sx:0,sy:0,t0:0,mv:0,lt:0};
+function vRel(cx,cy){var r=$('#vstage').getBoundingClientRect();return{x:cx-(r.left+r.width/2),y:cy-(r.top+r.height/2)}}
+function vFit(){var im=$('#vimg'),st=$('#vstage');if(!im.naturalWidth)return;var k=Math.min(st.clientWidth/im.naturalWidth,st.clientHeight/im.naturalHeight);im.style.width=Math.round(im.naturalWidth*k)+'px';im.style.height=Math.round(im.naturalHeight*k)+'px';im.style.opacity='1'}
+function vPaint(reset){var im=$('#vimg');if(reset){im.style.opacity='0';im.style.width='';im.style.height='';im.src=VW.list[VW.i];$('#vcnt').textContent=(VW.i+1)+' / '+VW.list.length;if(im.complete&&im.naturalWidth)vFit()}im.style.transform='translate('+VW.x+'px,'+VW.y+'px) scale('+VW.s+')'}
+function vClamp(){var st=$('#vstage'),im=$('#vimg'),w=im.offsetWidth*VW.s,h=im.offsetHeight*VW.s,mx=Math.max(0,(w-st.clientWidth)/2),my=Math.max(0,(h-st.clientHeight)/2);VW.x=Math.min(mx,Math.max(-mx,VW.x));VW.y=Math.min(my,Math.max(-my,VW.y))}
+function vAnim(){var im=$('#vimg');im.style.transition='transform .2s ease';setTimeout(function(){im.style.transition=''},230)}
+function openShots(list,i){if(!list||!list.length)return;VW.list=list;VW.i=i||0;VW.s=1;VW.x=0;VW.y=0;VW.p={};VW.ld=0;$('#viewer').classList.add('on');document.body.style.overflow='hidden';vPaint(true)}
+function closeShots(){$('#viewer').classList.remove('on');document.body.style.overflow='';VW.p={};VW.ld=0}
+(function(){
+ var st=$('#vstage'),im=$('#vimg');
+ im.onload=function(){vFit();vPaint()};
+ $('#vclose').onclick=closeShots;
+ window.addEventListener('resize',function(){if($('#viewer').classList.contains('on')){vFit();vClamp();vPaint()}});
+ st.addEventListener('pointerdown',function(e){
+  e.preventDefault();try{st.setPointerCapture(e.pointerId)}catch(_){}
+  VW.p[e.pointerId]={x:e.clientX,y:e.clientY};
+  var ids=Object.keys(VW.p);
+  if(ids.length==1){VW.sx=e.clientX;VW.sy=e.clientY;VW.t0=Date.now();VW.mv=0}
+  else if(ids.length==2){var a=VW.p[ids[0]],b=VW.p[ids[1]];VW.ld=Math.hypot(a.x-b.x,a.y-b.y);VW.lc=vRel((a.x+b.x)/2,(a.y+b.y)/2);VW.mv=1}
+ });
+ st.addEventListener('pointermove',function(e){
+  var p=VW.p[e.pointerId];if(!p)return;
+  var ids=Object.keys(VW.p);
+  if(ids.length>=2){
+   p.x=e.clientX;p.y=e.clientY;
+   var a=VW.p[ids[0]],b=VW.p[ids[1]],d=Math.hypot(a.x-b.x,a.y-b.y),c=vRel((a.x+b.x)/2,(a.y+b.y)/2);
+   if(VW.ld>0&&VW.lc){var ns=Math.min(5,Math.max(1,VW.s*d/VW.ld)),k=ns/VW.s;VW.x=c.x-(VW.lc.x-VW.x)*k;VW.y=c.y-(VW.lc.y-VW.y)*k;VW.s=ns}
+   VW.ld=d;VW.lc=c;VW.mv=1;vClamp();vPaint();return;
+  }
+  var mx=e.clientX-p.x,my=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;
+  if(Math.hypot(e.clientX-VW.sx,e.clientY-VW.sy)>8)VW.mv=1;
+  VW.x+=mx;VW.y+=my;if(VW.s>1)vClamp();vPaint();
+ });
+ var up=function(e){
+  if(!VW.p[e.pointerId])return;
+  delete VW.p[e.pointerId];VW.ld=0;
+  if(Object.keys(VW.p).length>0)return;
+  var now=Date.now();
+  if(!VW.mv&&now-VW.t0<300){
+   if(now-VW.lt<320){var c=vRel(e.clientX,e.clientY),ns=VW.s>1?1:2.5,k=ns/VW.s;VW.x=c.x-(c.x-VW.x)*k;VW.y=c.y-(c.y-VW.y)*k;VW.s=ns;vClamp();vAnim();vPaint();VW.lt=0}
+   else VW.lt=now;
+   return;
+  }
+  if(VW.s<=1.02){
+   VW.s=1;
+   if(Math.abs(VW.y)>130&&Math.abs(VW.y)>Math.abs(VW.x)){closeShots();return}
+   if(VW.x<-60&&VW.i<VW.list.length-1){VW.i++;VW.x=0;VW.y=0;vPaint(true);return}
+   if(VW.x>60&&VW.i>0){VW.i--;VW.x=0;VW.y=0;vPaint(true);return}
+   VW.x=0;VW.y=0;vAnim();vPaint();return;
+  }
+  vClamp();vPaint();
+ };
+ st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+})();
+
 /* Event delegation */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-go],[data-open],[data-theme],[data-pop],[data-tab],[data-star],[data-fav],[data-or],[data-rm],[data-toast],[data-dl],[data-auth],[data-swap],[data-retry],[data-out],[data-pub],[data-draft],[data-review],[data-follow],[data-submit],[data-del],[data-nv],[data-nvsubmit],[data-about],[data-edit],[data-agree],[data-editprofile],[data-saveprofile],[data-rmavatar],[data-mod],[data-saveedit],[data-rmes],[data-rmns],[data-share],[data-dev],[data-dfollow],[data-dtab],[data-openinstall],[data-installed],[data-dlretry],[data-reinst],[data-userpopup],[data-sheetclose],[data-sheetgo],[data-popupfol],[data-devtab],[data-openhelp],[data-replayguide],[data-likepost],[data-delpost],[data-resolveticket],[data-yts],[data-openapp]');
+  var t=e.target.closest('[data-go],[data-open],[data-theme],[data-pop],[data-tab],[data-star],[data-fav],[data-or],[data-rm],[data-toast],[data-dl],[data-auth],[data-swap],[data-retry],[data-out],[data-pub],[data-draft],[data-review],[data-follow],[data-submit],[data-del],[data-nv],[data-nvsubmit],[data-about],[data-edit],[data-agree],[data-editprofile],[data-saveprofile],[data-rmavatar],[data-mod],[data-saveedit],[data-rmes],[data-rmns],[data-share],[data-dev],[data-dfollow],[data-dtab],[data-openinstall],[data-installed],[data-dlretry],[data-reinst],[data-userpopup],[data-sheetclose],[data-sheetgo],[data-popupfol],[data-devtab],[data-openhelp],[data-replayguide],[data-likepost],[data-delpost],[data-resolveticket],[data-yts],[data-openapp],[data-shot],[data-reply],[data-allrev],[data-allver],[data-opendl],[data-cat],[data-clrnotif],[data-pcomm]');
   if(!t){if(S.pop){S.pop=0;draw()}return}var d=t.dataset;
   if('pop' in d){S.pop=S.pop?0:1;draw();return}
   if('theme' in d){toggleTheme();return}
-  if('go' in d){if(d.go=='home'&&t.classList.contains('logo'))S.q='';if(d.go=='notif'){try{Notification.requestPermission()}catch(e){}}go(d.go);return}
+  if('go' in d){if(d.go=='home'&&t.classList.contains('logo')){S.q='';S.hcat='All'}if(d.go=='notif'){try{Notification.requestPermission()}catch(e){}}go(d.go);return}
   if('open' in d){go('detail',d.open);return}
-  if('openapp' in d){closeYtSearch();go('detail',d.openapp);return}
-  if('yts' in d){closeYtSearch();S.q=d.yts;saveRecentSearch(d.yts);go('home');return}
+  if('openapp' in d){saveRecentSearch(d.nm||'');closeYtSearch();go('detail',d.openapp);return}
+  if('yts' in d){closeYtSearch();S.q=d.yts;S.hcat='All';saveRecentSearch(d.yts);go('home');return}
   if('out' in d){logout();return}
   if('retry' in d){S.err='';draw();fetchPage();return}
   if('swap' in d){S.reg=S.reg?0:1;draw();return}
@@ -858,13 +966,13 @@ document.addEventListener('click',function(e){
   if('nv' in d){go('newver',S.det.app.id);return}
   if('nvsubmit' in d){nvSubmit();return}
   if('follow' in d){if(!S.user)return go('login');var on=!S.det.following;api('/api/apps/'+S.det.app.id+'/follow',{method:'POST',body:{on:on}}).then(function(){S.det.following=on;toast(on?'You will get update alerts':'Alerts turned off');keep(draw)},function(e){toast(e.message)});return}
-  if('submit' in d){api('/api/apps/'+S.det.app.id,{method:'PATCH',body:{status:'pending'}}).then(function(){toast('Submitted for review');go('detail',S.det.app.id)},function(e){toast(e.message)});return}
+  if('submit' in d){if(!S.det.app.shots.length)return toast('Add at least 1 screenshot first. Tap Edit app.');api('/api/apps/'+S.det.app.id,{method:'PATCH',body:{status:'pending'}}).then(function(){toast('Submitted for review');go('detail',S.det.app.id)},function(e){toast(e.message)});return}
   if('del' in d){if(!S.delArm){S.delArm=1;keep(draw);toast('Tap Delete again to confirm');return}api('/api/apps/'+S.det.app.id,{method:'DELETE'}).then(function(){toast('App deleted');go('profile')},function(e){toast(e.message)});return}
   if('dl' in d){var v=S.det.versions.filter(function(x){return x.id==d.dl})[0];if(v)startDl(S.det.app,v);return}
   if('openinstall' in d){openInstallSheet(d.openinstall);return}
   if('installed' in d){markInstalled(d.installed);return}
   if('dlretry' in d){retryDirect(d.dlretry);return}
-  if('reinst' in d){delete INST[d.reinst];saveInst();keep(draw);return}
+  if('reinst' in d){delete INST[d.reinst];saveInst();delete PEND[d.reinst];savePend();if(S.user)api('/api/installs/'+d.reinst,{method:'DELETE'}).catch(function(){});keep(draw);return}
   if('sheetclose' in d){hideSheet();return}
   if('sheetgo' in d){hideSheet();S.dtab='apps';go('dev',d.sheetgo);return}
   if('userpopup' in d){openUserPopup(d.userpopup);return}
@@ -904,6 +1012,14 @@ document.addEventListener('click',function(e){
   if('resolveticket' in d){
     api('/api/admin/support/'+d.resolveticket+'/resolve',{method:'POST'}).then(function(){toast('Ticket closed');fetchPage()},function(e){toast(e.message)});return;
   }
+  if('shot' in d){openShots(S.det.app.shots,+d.shot);return}
+  if('reply' in d){openReplySheet(d.reply);return}
+  if('allrev' in d){go('allreviews',S.det.app.id);return}
+  if('allver' in d){keep(function(){S.allVer=S.allVer?0:1;draw()});return}
+  if('opendl' in d){openDownloads();return}
+  if('cat' in d){var cs=$('.cats');S.catX=cs?cs.scrollLeft:0;S.hcat=d.cat;S.apps=null;draw();fetchPage();return}
+  if('pcomm' in d){S.dtab='community';go('dev',d.pcomm);return}
+  if('clrnotif' in d){if(!S.clrArm){S.clrArm=1;draw();toast('Tap Clear all again to confirm');return}api('/api/notifications',{method:'DELETE'}).then(function(){S.notes=[];S.unread=0;S.clrArm=0;toast('Notifications cleared');draw()},function(e){S.clrArm=0;toast(e.message);draw()});return}
   if('fav' in d){if(!S.user)return go('login');var on=!S.det.favorited;api('/api/apps/'+S.det.app.id+'/favorite',{method:'POST',body:{on:on}}).then(function(){S.det.favorited=on;keep(draw)},function(e){toast(e.message)});return}
   if('review' in d){if(!S.user)return go('login');if(!S.star)return toast('Tap a star to rate');api('/api/apps/'+S.det.app.id+'/reviews',{method:'POST',body:{rating:S.star,comment:$('#rv').value}}).then(function(){toast('Thanks for your review!');return api('/api/apps/'+S.det.app.id)}).then(function(j){S.det=j;S.star=0;keep(draw)},function(e){toast(e.message)});return}
 });
@@ -970,7 +1086,7 @@ if('serviceWorker' in navigator){
 
 /* Boot & Init */
 try{var cu=store.get('hxu');if(cu&&store.get('hx'))S.user=JSON.parse(cu)}catch(e){}
-if(S.user)api('/api/me').then(function(j){S.user=j.user;store.set('hxu',JSON.stringify(j.user));draw();poll()},function(e){if(/sign in/i.test(e.message)){store.del('hx');store.del('hxu');S.user=null;draw()}});
+if(S.user)api('/api/me').then(function(j){S.user=j.user;store.set('hxu',JSON.stringify(j.user));draw();poll();syncInstalls()},function(e){if(/sign in/i.test(e.message)){store.del('hx');store.del('hxu');S.user=null;draw()}});
 
 var urlP=new URLSearchParams(window.location.search),targetApp=urlP.get('app');
 if(targetApp&&/^[\w-]+$/.test(targetApp)){go('detail',targetApp)}else{go('home')}
