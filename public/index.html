@@ -40,7 +40,7 @@ h1{font-size:34px;letter-spacing:-.02em;margin:18px 0 8px}h2{font-size:25px;marg
 .stats div:last-child{border:0}.stats b{display:block;font-size:24px;color:var(--tx)}
 .note{background:var(--bl);border:1px solid var(--bl2);border-radius:16px;padding:16px 18px;display:flex;gap:14px;margin-top:10px}
 .shots{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}
-.shots>div{flex:0 0 300px;height:170px;border-radius:18px;border:1px solid var(--ln);scroll-snap-align:start;background-size:cover}
+.shots>div{flex:0 0 auto;height:230px;border-radius:18px;border:1px solid var(--ln);scroll-snap-align:start;overflow:hidden;background:var(--sf2)}.shots img{height:100%;width:auto;display:block}
 .tag{display:inline-block;background:var(--sf2);border-radius:999px;padding:9px 16px;margin:0 8px 8px 0;font-weight:600}
 .ver{display:inline-block;border:1px solid var(--ln);border-radius:10px;padding:4px 12px;font-family:ui-monospace,monospace;margin-right:10px}
 .info{display:flex;justify-content:space-between;gap:16px;padding:15px 0;align-items:center}.info span{color:var(--mu);display:flex;gap:14px;align-items:center}.info b{text-align:right}
@@ -126,6 +126,18 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .pprime{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#3b2b08,#251a05);border:1px solid #7a560f;color:#ffd666;border-radius:999px;padding:5px 13px 5px 8px;font-size:12px;font-weight:800;letter-spacing:.08em;margin:0 8px 8px 0;box-shadow:0 0 14px rgba(243,200,75,.18)}
 .pprime svg{width:16px;height:16px;filter:drop-shadow(0 0 4px rgba(243,200,75,.7))}
 [data-theme=light] .pprime{background:linear-gradient(135deg,#fff7de,#ffecb3);border-color:#e8c25a;color:#8a5200;box-shadow:none}
+
+/* Screenshot cropper */
+.seg{display:flex;gap:8px;margin:0 0 12px}
+.seg button{flex:1;height:44px;border-radius:13px;border:1px solid var(--ln);background:transparent;color:var(--tx);font-weight:600}
+.seg button.on{background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;border-color:transparent}
+.crop-wrap{display:flex;justify-content:center;margin-bottom:14px}
+.crop-stage{position:relative;touch-action:none;user-select:none;-webkit-user-select:none;background:#000;border-radius:12px;overflow:hidden}
+.crop-stage img{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;display:block}
+.crop-box{position:absolute;border:2px solid #43c25c;box-shadow:0 0 0 9999px rgba(0,0,0,.62);cursor:move;touch-action:none}
+.crop-box i{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:#43c25c;border:3px solid #fff;touch-action:none}
+.crop-box i::after{content:"";position:absolute;left:-12px;top:-12px;right:-12px;bottom:-12px}
+.crop-box.lk i.sd{display:none}
 
 /* Splash & Guide */
 .splash{position:fixed;inset:0;background:var(--bg);z-index:200;display:grid;place-items:center;transition:opacity .4s ease}
@@ -265,7 +277,7 @@ return '<main><button class="back" data-go="home">'+ic('back')+'Back</button>'+n
 (own?'<div style="display:grid;gap:10px;margin-top:14px"><button class="btn o f" data-nv>'+ic('up')+'Upload new version</button><button class="btn o f" data-edit>'+ic('edit')+'Edit app</button>'+(a.status=='draft'||a.status=='rejected'?'<button class="btn o f" data-submit>Submit for review</button>':'')+'<button class="btn o f" data-del style="color:#f2555a">'+(S.delArm?'Tap again to delete':'Delete app')+'</button></div>':'')+
 (d.is_owner?'':'<p class="hint" style="margin:12px 0 0">'+(d.following?'You will be notified about new versions.':'Tap the bell to get notified about new versions.')+'</p>')+'</div>'+
 '<div class="stats"><div><b>'+(a.rating||'–')+'</b>'+(a.rating_count?a.rating_count+' review'+(a.rating_count>1?'s':''):'No reviews')+'</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fmt(v.size):'–')+'</b>Size</div></div></div>'+
-(a.shots.length?'<div class="sec"><h2>Screenshots</h2><div class="shots">'+a.shots.map(function(u){return '<div style="background-image:url('+esc(u)+')"></div>'}).join('')+'</div></div>':'')+
+(a.shots.length?'<div class="sec"><h2>Screenshots</h2><div class="shots">'+a.shots.map(function(u){return '<div><img src="'+esc(u)+'" alt=""></div>'}).join('')+'</div></div>':'')+
 '<div class="sec"><h2>About this app</h2>'+(a.summary?'<p style="font-size:18px;font-weight:600;margin:0 0 8px">'+esc(a.summary)+'</p>':'')+'<p style="font-size:18px;line-height:1.7;margin:0 0 4px;white-space:pre-wrap">'+esc(short)+'</p><button class="view" data-about>View</button><div style="margin-top:8px">'+a.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div></div>'+
 (v?'<div class="sec"><h2>What\'s new</h2><p><span class="ver">v'+esc(v.version_name)+'</span><span class="mu">· '+fd(v.created_at)+'</span></p><p style="font-size:18px;line-height:1.7;white-space:pre-wrap">'+esc(v.changelog||'Initial release')+'</p></div>'+
 '<div class="sec"><h2>About this version</h2>'+[['tag','Version',esc(v.version_name)+' ('+v.version_code+')'],['box','Size',fmt(v.size)],['dl','Downloads',v.downloads],['cal','Updated',fd(v.created_at)]].map(function(r){return '<div class="info"><span>'+ic(r[0])+r[1]+'</span><b>'+r[2]+'</b></div>'}).join('')+'</div>':'')+
@@ -361,7 +373,7 @@ function formPage(){var ed=!!S.editId,adm=S.user&&S.user.is_admin;return '<main 
 (ed?'':'<label class="l">What\'s new</label><textarea data-k="log" placeholder="Changes in this version (optional)">'+esc(S.log)+'</textarea>')+
 '<label class="l">Source code URL</label><input type="url" data-k="src" placeholder="https://github.com/… (optional)" value="'+esc(S.src)+'"><p class="hint">Add a link if your app is open-source.</p>'+
 '<label class="tg"><input type="checkbox" data-k="excl"'+(S.excl?' checked':'')+'><span><b style="font-size:18px">Exclusive</b><br><span class="mu">The app isn\'t available on Google Play.</span></span></label></div>'+
-'<div class="pad" style="border-top:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Screenshots</h2><p class="mu" style="margin-top:0">Optional, up to 8. Tap ✕ to remove one.</p><label class="drop">'+ic('img')+'<b>Add screenshots</b>PNG or JPG<input type="file" id="sh" accept="image/*" multiple hidden></label><div class="shots" id="shl" style="margin-top:14px"></div></div></div>'+
+'<div class="pad" style="border-top:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Screenshots</h2><p class="mu" style="margin-top:0">Optional, up to 8. You can crop each one: vertical for apps, horizontal for games. Tap ✕ to remove.</p><label class="drop">'+ic('img')+'<b>Add screenshots</b>PNG or JPG<input type="file" id="sh" accept="image/*" multiple hidden></label><div class="shots" id="shl" style="margin-top:14px"></div></div></div>'+
 '<div class="card pad"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:22px">Preview</h2><span class="badge" style="background:var(--sf2);border:0;font-weight:600;letter-spacing:0">Store view</span></div><div id="pvb" style="margin-top:18px"></div><p class="mu" style="text-align:center;margin:16px 0 0">This is how your app will appear to users</p></div>'+foot()+'</main><div id="dk"></div>'}
 function resetForm(){S.editId=null;S.name=S.sum=S.cat=S.desc=S.log=S.src=S.origin='';S.excl=0;S.ver='1.0';S.apk=S.icon=S.eicon=null;S.shots=[];S.eshots=[]}
 function initEdit(){var a=S.det.app;S.editId=a.id;S.name=a.name;S.sum=a.summary||'';S.cat=a.category;S.desc=a.description;S.src=a.source_url||'';S.excl=a.is_exclusive?1:0;S.origin=a.origin||'';S.apk=S.icon=null;S.shots=[];S.eicon=a.icon_key?{key:a.icon_key,url:a.icon_url,name:'Current icon'}:null;S.eshots=a.shot_keys.map(function(k,i){return{key:k,url:a.shots[i]}})}
@@ -576,11 +588,11 @@ function paintUp(){if(!$('#icobox'))return;var ab=$('#apkbox'),ci=S.icon||S.eico
   if(ab)ab.innerHTML=S.apk?'<div class="file">'+ic('box').replace('<svg','<svg style="font-size:44px"')+'<div style="flex:1;min-width:0"><b style="font-size:19px;word-break:break-all">'+esc(S.apk.name)+'</b><span class="mu">'+fmt(S.apk.size)+'</span></div><button class="ib" data-rm="apk">'+ic('x')+'</button></div>':'<label class="drop">'+ic('cloud')+'<b>Choose APK</b>Android package (.apk)<input type="file" id="fa" accept=".apk,application/vnd.android.package-archive" hidden></label>';
   $('#icobox').innerHTML=ci?'<div class="file"><div class="ico" style="width:64px;height:64px"><img src="'+esc(ci.url)+'"></div><div style="flex:1;min-width:0"><b style="word-break:break-all">'+esc(ci.name)+'</b></div><button class="ib" data-rm="'+(S.icon?'icon':'eicon')+'">'+ic('x')+'</button></div>':'<label class="drop">'+ic('img')+'<b>Upload icon</b>PNG or JPG — square works best<input type="file" id="fi" accept="image/*" hidden></label>';
   document.querySelectorAll('[data-or]').forEach(function(o){o.className='opt'+(o.dataset.or==S.origin?' on':'')});
-  $('#shl').innerHTML=S.eshots.map(function(x,i){return '<div style="background-image:url('+esc(x.url)+')"><button class="xb" data-rmes="'+i+'">'+ic('x')+'</button></div>'}).concat(S.shots.map(function(x,i){return '<div style="background-image:url('+esc(x.url)+')"><button class="xb" data-rmns="'+i+'">'+ic('x')+'</button></div>'})).join('');
+  $('#shl').innerHTML=S.eshots.map(function(x,i){return '<div><img src="'+esc(x.url)+'" alt=""><button class="xb" data-rmes="'+i+'">'+ic('x')+'</button></div>'}).concat(S.shots.map(function(x,i){return '<div><img src="'+esc(x.url)+'" alt=""><button class="xb" data-rmns="'+i+'">'+ic('x')+'</button></div>'})).join('');
   $('#pvb').innerHTML=preview();$('#dk').innerHTML=dock();
   var fa=$('#fa');if(fa)fa.onchange=function(){var f=fa.files[0];if(f){if(!/\.apk$/i.test(f.name))return toast('Choose an .apk file');S.apk={name:f.name,size:f.size,file:f};paintUp()}};
   var fi=$('#fi');if(fi)fi.onchange=function(){var f=fi.files[0];if(f){S.icon={name:f.name,url:URL.createObjectURL(f),file:f};paintUp()}};
-  $('#sh').onchange=function(e){Array.prototype.slice.call(e.target.files).forEach(function(f){if(S.eshots.length+S.shots.length<8)S.shots.push({name:f.name,url:URL.createObjectURL(f),file:f})});paintUp()}}
+  $('#sh').onchange=function(e){var fs=Array.prototype.slice.call(e.target.files);e.target.value='';startCrop(fs)}}
 
 function draw(){if(S.page=='edit'&&S.det&&S.det.app.id==S.id&&S.editId!=S.id)initEdit();var P={home:home,detail:detail,profile:profile,upload:upload,login:login,notif:notif,newver:newver,about:about,terms:terms,edit:edit,editprofile:editprofile,moderation:moderation,dev:dev,settings:settings};app.innerHTML=head()+(P[S.page]||home)();if(S.page=='upload'||S.page=='edit')paintUp();if(S.page=='newver')paintNv();if(S.page=='editprofile')bindEp();bindSearchTrigger()}
 function toast(t){var d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2800)}
@@ -652,6 +664,112 @@ function renderYtResults(query){
       return '<button class="yt-item" data-openapp="'+a.id+'">'+ico(a)+'<span><b>'+esc(a.name)+'</b><br><small class="mu">'+esc(a.category)+' · by '+esc(a.owner_name)+'</small></span>'+ic('search')+'</button>';
     }).join('');
   });
+}
+
+/* Screenshot cropper */
+var CR=null;
+function startCrop(files){
+  var room=8-S.eshots.length-S.shots.length;
+  S.cropQ=files.filter(function(f){return /^image\//.test(f.type)}).slice(0,Math.max(0,room));
+  S.cropTotal=S.cropQ.length;S.cropN=0;
+  if(!S.cropQ.length){if(files.length)toast('You can add up to 8 screenshots');return}
+  nextCrop();
+}
+function nextCrop(){
+  var f=S.cropQ&&S.cropQ.shift();
+  if(!f){hideSheet();CR=null;paintUp();return}
+  S.cropN++;
+  var url=URL.createObjectURL(f),im=new Image();
+  im.onload=function(){openCrop(f,im,url)};
+  im.onerror=function(){URL.revokeObjectURL(url);toast('Could not open '+f.name);nextCrop()};
+  im.src=url;
+}
+function openCrop(f,im,url){
+  var aw=Math.min(window.innerWidth,580)-40,ah=Math.round(window.innerHeight*.42);
+  var k=Math.min(aw/im.naturalWidth,ah/im.naturalHeight);
+  CR={f:f,im:im,url:url,nw:im.naturalWidth,nh:im.naturalHeight,dw:Math.max(60,Math.round(im.naturalWidth*k)),dh:Math.max(60,Math.round(im.naturalHeight*k)),mode:im.naturalWidth>im.naturalHeight?'h':'v',busy:0};
+  var hs=['nw','n','ne','e','se','s','sw','w'],pos={nw:[0,0],n:[50,0],ne:[100,0],e:[100,50],se:[100,100],s:[50,100],sw:[0,100],w:[0,50]};
+  var handles=hs.map(function(n){return '<i data-h="'+n+'" class="'+(n.length==1?'sd':'')+'" style="left:'+pos[n][0]+'%;top:'+pos[n][1]+'%"></i>'}).join('');
+  showSheet('<div class="sheet-bar"></div><h2 style="margin:0 0 4px;font-size:20px">Crop screenshot</h2><p class="hint" style="margin:0 0 12px">'+S.cropN+' of '+S.cropTotal+' · Pick a shape, then drag the corners or the box.</p>'+
+   '<div class="seg"><button data-cm="v">Vertical</button><button data-cm="h">Horizontal</button><button data-cm="f">Free</button></div>'+
+   '<div class="crop-wrap"><div class="crop-stage" style="width:'+CR.dw+'px;height:'+CR.dh+'px"><img src="'+url+'" alt=""><div class="crop-box" id="cb">'+handles+'</div></div></div>'+
+   '<div style="display:grid;gap:10px"><button class="btn g f" id="crop-ok">Add screenshot</button><button class="btn o f" id="crop-skip">Use full image</button><button class="btn o f" id="crop-cancel">Cancel</button></div>');
+  Array.prototype.forEach.call(document.querySelectorAll('.seg button'),function(b){b.onclick=function(){cropMode(b.dataset.cm)}});
+  cropDrag($('#cb'),'move');
+  Array.prototype.forEach.call(document.querySelectorAll('#cb i'),function(el){cropDrag(el,el.dataset.h)});
+  $('#crop-ok').onclick=cropDone;$('#crop-skip').onclick=cropSkip;$('#crop-cancel').onclick=cropCancel;
+  cropMode(CR.mode);
+}
+function cropMode(m){
+  CR.mode=m;CR.ratio=m=='v'?9/16:(m=='h'?16/9:0);
+  cropFit();
+  var cb=$('#cb');if(cb)cb.classList.toggle('lk',!!CR.ratio);
+  Array.prototype.forEach.call(document.querySelectorAll('.seg button'),function(b){b.className=b.dataset.cm==m?'on':''});
+  cropPaint();
+}
+function cropFit(){
+  var dw=CR.dw,dh=CR.dh,r=CR.ratio,w,h;
+  if(!r){w=dw*.9;h=dh*.9}else{w=dw*.9;h=w/r;if(h>dh*.9){h=dh*.9;w=h*r}}
+  CR.w=w;CR.h=h;CR.x=(dw-w)/2;CR.y=(dh-h)/2;
+}
+function cropPaint(){
+  var b=$('#cb');if(!b||!CR)return;
+  b.style.left=CR.x+'px';b.style.top=CR.y+'px';b.style.width=CR.w+'px';b.style.height=CR.h+'px';
+}
+function cropMove(kind,st,dx,dy){
+  var dw=CR.dw,dh=CR.dh,MIN=44;
+  if(kind=='move'){CR.x=Math.min(Math.max(0,st.x+dx),dw-st.w);CR.y=Math.min(Math.max(0,st.y+dy),dh-st.h);return}
+  var hw=kind.indexOf('w')>-1,he=kind.indexOf('e')>-1,hn=kind.indexOf('n')>-1,hs=kind.indexOf('s')>-1;
+  if(!CR.ratio){
+    var l=st.x,t=st.y,r=st.x+st.w,b=st.y+st.h;
+    if(hw)l=Math.min(Math.max(0,st.x+dx),r-MIN);
+    if(he)r=Math.max(Math.min(dw,st.x+st.w+dx),l+MIN);
+    if(hn)t=Math.min(Math.max(0,st.y+dy),b-MIN);
+    if(hs)b=Math.max(Math.min(dh,st.y+st.h+dy),t+MIN);
+    CR.x=l;CR.y=t;CR.w=r-l;CR.h=b-t;return;
+  }
+  if(kind.length!=2)return;
+  var R=CR.ratio,ax=hw?st.x+st.w:st.x,ay=hn?st.y+st.h:st.y;
+  var nw1=hw?st.w-dx:st.w+dx,nh2=hn?st.h-dy:st.h+dy,nw2=nh2*R;
+  var nw=Math.abs(nw1-st.w)>=Math.abs(nw2-st.w)?nw1:nw2;
+  var maxW=Math.min(hw?ax:dw-ax,(hn?ay:dh-ay)*R);
+  nw=Math.min(nw,maxW);nw=Math.max(Math.min(MIN,maxW),nw);
+  var nh=nw/R;
+  CR.w=nw;CR.h=nh;CR.x=hw?ax-nw:ax;CR.y=hn?ay-nh:ay;
+}
+function cropDrag(el,kind){
+  el.addEventListener('pointerdown',function(e){
+    e.preventDefault();e.stopPropagation();
+    var st={px:e.clientX,py:e.clientY,x:CR.x,y:CR.y,w:CR.w,h:CR.h};
+    try{el.setPointerCapture(e.pointerId)}catch(_){}
+    var mv=function(ev){cropMove(kind,st,ev.clientX-st.px,ev.clientY-st.py);cropPaint()};
+    var up=function(){el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up)};
+    el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+  });
+}
+function cropDone(){
+  if(!CR||CR.busy)return;CR.busy=1;
+  var s=CR.dw/CR.nw,sx=Math.max(0,CR.x/s),sy=Math.max(0,CR.y/s),sw=CR.w/s,sh=CR.h/s;
+  sw=Math.min(sw,CR.nw-sx);sh=Math.min(sh,CR.nh-sy);
+  var k=Math.min(1,1280/Math.max(sw,sh)),cv=document.createElement('canvas');
+  cv.width=Math.max(1,Math.round(sw*k));cv.height=Math.max(1,Math.round(sh*k));
+  cv.getContext('2d').drawImage(CR.im,sx,sy,sw,sh,0,0,cv.width,cv.height);
+  cv.toBlob(function(b){
+    if(!b){toast('Could not crop. Using the full image.');CR.busy=0;return cropSkip()}
+    var nf=new File([b],'shot-'+Date.now()+'-'+S.cropN+'.jpg',{type:'image/jpeg'});
+    URL.revokeObjectURL(CR.url);
+    S.shots.push({name:nf.name,url:URL.createObjectURL(nf),file:nf});
+    nextCrop();
+  },'image/jpeg',.9);
+}
+function cropSkip(){
+  if(!CR)return;var f=CR.f;URL.revokeObjectURL(CR.url);
+  S.shots.push({name:f.name,url:URL.createObjectURL(f),file:f});
+  nextCrop();
+}
+function cropCancel(){
+  if(CR)URL.revokeObjectURL(CR.url);
+  S.cropQ=[];CR=null;hideSheet();paintUp();
 }
 
 /* Save form fields (data-k) into S as the user types or picks */
@@ -746,79 +864,4 @@ document.addEventListener('click',function(e){
     api('/api/community/posts/'+d.delpost,{method:'DELETE'}).then(function(){toast('Post removed');loadCommunityPosts()},function(e){toast(e.message)});return;
   }
   if('resolveticket' in d){
-    api('/api/admin/support/'+d.resolveticket+'/resolve',{method:'POST'}).then(function(){toast('Ticket closed');fetchPage()},function(e){toast(e.message)});return;
-  }
-  if('fav' in d){if(!S.user)return go('login');var on=!S.det.favorited;api('/api/apps/'+S.det.app.id+'/favorite',{method:'POST',body:{on:on}}).then(function(){S.det.favorited=on;keep(draw)},function(e){toast(e.message)});return}
-  if('review' in d){if(!S.user)return go('login');if(!S.star)return toast('Tap a star to rate');api('/api/apps/'+S.det.app.id+'/reviews',{method:'POST',body:{rating:S.star,comment:$('#rv').value}}).then(function(){toast('Thanks for your review!');return api('/api/apps/'+S.det.app.id)}).then(function(j){S.det=j;S.star=0;keep(draw)},function(e){toast(e.message)});return}
-});
-
-/* Tutorial & Guide */
-var guideSteps=[
-  {title:'Welcome to HEXSTORE',desc:'Your fast Android marketplace for discovering games, mods, and indie utilities.',ic:'box'},
-  {title:'YouTube-Style Search',desc:'Tap the search bar to get instant search suggestions, history, and real-time app results.',ic:'search'},
-  {title:'Live Downloads & Updates',desc:'Download APKs directly with live speed stats. Follow apps to get notifications when updates arrive.',ic:'dl'},
-  {title:'Creator Communities & Prime',desc:'Apps from developers with 500+ downloads get a gold Prime star. Reach 1,000 followers to earn the blue check.',ic:'user'}
-];
-function startSplashAndGuide(force){
-  if(!force&&store.get('hx_onboarded_v2'))return;
-  var sp=$('#splash');sp.style.display='grid';
-  var un=(S.user&&S.user.username)?('Welcome back, '+S.user.username):'Welcome to HEXSTORE';
-  $('#sp-welcome').textContent=un;
-  setTimeout(function(){
-    sp.style.opacity='0';
-    setTimeout(function(){sp.style.display='none';sp.style.opacity='1';showGuideStep(0)},400);
-  },1500);
-}
-
-function showGuideStep(idx){
-  var g=$('#guide');g.style.display='flex';var s=guideSteps[idx];
-  var dots=guideSteps.map(function(_,i){return '<i class="'+(i==idx?'on':'')+'"></i>'}).join('');
-  g.innerHTML='<div class="guide-card">'+
-  '<div class="guide-icon">'+ic(s.ic)+'</div>'+
-  '<h2 style="font-size:22px;margin:0 0 8px">'+esc(s.title)+'</h2>'+
-  '<p class="mu" style="font-size:16px;line-height:1.6;margin:0">'+esc(s.desc)+'</p>'+
-  '<div class="guide-dots">'+dots+'</div>'+
-  '<div style="display:flex;gap:10px">'+
-  '<button class="btn o f" id="guide-skip">Skip</button>'+
-  '<button class="btn g f" id="guide-next">'+(idx===guideSteps.length-1?'Finish':'Next')+'</button>'+
-  '</div></div>';
-  $('#guide-skip').onclick=function(){g.style.display='none';store.set('hx_onboarded_v2','1')};
-  $('#guide-next').onclick=function(){
-    if(idx<guideSteps.length-1)showGuideStep(idx+1);
-    else{g.style.display='none';store.set('hx_onboarded_v2','1');toast('Tutorial completed ✓')}
-  };
-}
-
-/* Android Top Install Banner */
-var defPrompt=null;
-window.addEventListener('beforeinstallprompt',function(e){
-  e.preventDefault();defPrompt=e;
-  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
-  var isWebView=/\bwv\b|WebView/i.test(navigator.userAgent);
-  if(!isStandalone&&!isWebView&&!store.get('hx_and_dismissed')){
-    var b=$('#and-banner');if(b)b.classList.add('on');
-  }
-});
-$('#and-install').onclick=function(){
-  if(defPrompt){defPrompt.prompt();defPrompt=null}
-  else{window.location.href='/';}
-  $('#and-banner').classList.remove('on');
-};
-$('#and-close').onclick=function(){
-  store.set('hx_and_dismissed','1');$('#and-banner').classList.remove('on');
-};
-
-if('serviceWorker' in navigator){
-  window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})});
-}
-
-/* Boot & Init */
-try{var cu=store.get('hxu');if(cu&&store.get('hx'))S.user=JSON.parse(cu)}catch(e){}
-if(S.user)api('/api/me').then(function(j){S.user=j.user;store.set('hxu',JSON.stringify(j.user));draw();poll()},function(e){if(/sign in/i.test(e.message)){store.del('hx');store.del('hxu');S.user=null;draw()}});
-
-var urlP=new URLSearchParams(window.location.search),targetApp=urlP.get('app');
-if(targetApp&&/^[\w-]+$/.test(targetApp)){go('detail',targetApp)}else{go('home')}
-
-startSplashAndGuide(false);
-setInterval(poll,30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()});
-</script></body></html>
+    api('/api/admin/support/'+d.resolveticket+'/resolve',{method:'POST'}).then(function(){toast('Ticket closed');fetchPage()},function(e){toast(e
