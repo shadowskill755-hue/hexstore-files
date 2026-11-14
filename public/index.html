@@ -654,6 +654,20 @@ function renderYtResults(query){
   });
 }
 
+/* Save form fields (data-k) into S as the user types or picks */
+function onField(e){
+  var t=e.target,k=t&&t.dataset&&t.dataset.k;if(!k)return;
+  var v=t.type=='checkbox'?(t.checked?1:0):t.value;S[k]=v;
+  if(k=='desc'){var c=$('#cnt');if(c)c.textContent=v.length+'/4000'}
+  if(k=='sum'){var c2=$('#scnt');if(c2)c2.textContent=v.length+'/50'}
+  if(S.page=='upload'||S.page=='edit'){
+    var pv=$('#pvb');if(pv)pv.innerHTML=preview();
+    var dk=$('#dk');if(dk&&!S.busy)dk.innerHTML=dock();
+  }
+}
+document.addEventListener('input',onField);
+document.addEventListener('change',onField);
+
 /* Event delegation */
 document.addEventListener('click',function(e){
   var t=e.target.closest('[data-go],[data-open],[data-theme],[data-pop],[data-tab],[data-star],[data-fav],[data-or],[data-rm],[data-toast],[data-dl],[data-auth],[data-swap],[data-retry],[data-out],[data-pub],[data-draft],[data-review],[data-follow],[data-submit],[data-del],[data-nv],[data-nvsubmit],[data-about],[data-edit],[data-agree],[data-editprofile],[data-saveprofile],[data-rmavatar],[data-mod],[data-saveedit],[data-rmes],[data-rmns],[data-share],[data-dev],[data-dfollow],[data-dtab],[data-openinstall],[data-installed],[data-dlretry],[data-reinst],[data-userpopup],[data-sheetclose],[data-sheetgo],[data-popupfol],[data-devtab],[data-openhelp],[data-replayguide],[data-likepost],[data-delpost],[data-resolveticket],[data-yts],[data-openapp]');
