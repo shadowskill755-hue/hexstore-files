@@ -1,5 +1,32 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
+<script>
+/* Safety screen: shows the error instead of a black page */
+(function(){
+ function appEmpty(){var a=document.getElementById('app');return !a||!a.children.length}
+ function resetCache(){
+  var p=[];
+  try{if(navigator.serviceWorker)p.push(navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}))}catch(e){}
+  try{if(window.caches)p.push(caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}))}catch(e){}
+  Promise.all(p).then(function(){location.reload()},function(){location.reload()});
+ }
+ function show(msg){
+  if(document.getElementById('hx-err')||!document.body)return;
+  var d=document.createElement('div');d.id='hx-err';
+  d.style.cssText='position:fixed;left:0;right:0;top:0;bottom:0;z-index:9999;background:#0a0a0c;color:#f4f4f5;font:16px/1.5 system-ui,sans-serif;padding:24px;display:flex;flex-direction:column;justify-content:center;gap:12px;box-sizing:border-box';
+  var t=document.createElement('b');t.style.fontSize='22px';t.textContent='HEXSTORE could not start';
+  var m=document.createElement('span');m.style.cssText='color:#9a9aa4;word-break:break-word;font-size:14px';m.textContent=String(msg||'Unknown problem');
+  var b1=document.createElement('button'),b2=document.createElement('button');
+  var st='height:52px;border-radius:13px;font:inherit;font-weight:700;border:1px solid #2b2b31;';
+  b1.style.cssText=st+'background:linear-gradient(135deg,#43c25c,#27913f);color:#fff;border:0';b1.textContent='Reload';b1.onclick=function(){location.reload()};
+  b2.style.cssText=st+'background:transparent;color:#f4f4f5';b2.textContent='Reset app cache';b2.onclick=resetCache;
+  d.appendChild(t);d.appendChild(m);d.appendChild(b1);d.appendChild(b2);document.body.appendChild(d);
+ }
+ window.addEventListener('error',function(e){setTimeout(function(){if(appEmpty())show((e&&e.message)||'Script error')},50)});
+ window.addEventListener('unhandledrejection',function(e){setTimeout(function(){if(appEmpty())show((e&&e.reason&&e.reason.message)||'Startup problem')},50)});
+ setTimeout(function(){if(appEmpty())show('The app did not finish loading.')},8000);
+})();
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#35a64c">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -864,4 +891,80 @@ document.addEventListener('click',function(e){
     api('/api/community/posts/'+d.delpost,{method:'DELETE'}).then(function(){toast('Post removed');loadCommunityPosts()},function(e){toast(e.message)});return;
   }
   if('resolveticket' in d){
-    api('/api/admin/support/'+d.resolveticket+'/resolve',{method:'POST'}).then(function(){toast('Ticket closed');fetchPage()},function(e){toast(e
+    api('/api/admin/support/'+d.resolveticket+'/resolve',{method:'POST'}).then(function(){toast('Ticket closed');fetchPage()},function(e){toast(e.message)});return;
+  }
+  if('fav' in d){if(!S.user)return go('login');var on=!S.det.favorited;api('/api/apps/'+S.det.app.id+'/favorite',{method:'POST',body:{on:on}}).then(function(){S.det.favorited=on;keep(draw)},function(e){toast(e.message)});return}
+  if('review' in d){if(!S.user)return go('login');if(!S.star)return toast('Tap a star to rate');api('/api/apps/'+S.det.app.id+'/reviews',{method:'POST',body:{rating:S.star,comment:$('#rv').value}}).then(function(){toast('Thanks for your review!');return api('/api/apps/'+S.det.app.id)}).then(function(j){S.det=j;S.star=0;keep(draw)},function(e){toast(e.message)});return}
+});
+
+/* Tutorial & Guide */
+var guideSteps=[
+  {title:'Welcome to HEXSTORE',desc:'Your fast Android marketplace for discovering games, mods, and indie utilities.',ic:'box'},
+  {title:'YouTube-Style Search',desc:'Tap the search bar to get instant search suggestions, history, and real-time app results.',ic:'search'},
+  {title:'Live Downloads & Updates',desc:'Download APKs directly with live speed stats. Follow apps to get notifications when updates arrive.',ic:'dl'},
+  {title:'Creator Communities & Prime',desc:'Apps from developers with 500+ downloads get a gold Prime star. Reach 1,000 followers to earn the blue check.',ic:'user'}
+];
+function startSplashAndGuide(force){
+  if(!force&&store.get('hx_onboarded_v2'))return;
+  var sp=$('#splash');sp.style.display='grid';
+  var un=(S.user&&S.user.username)?('Welcome back, '+S.user.username):'Welcome to HEXSTORE';
+  $('#sp-welcome').textContent=un;
+  setTimeout(function(){
+    sp.style.opacity='0';
+    setTimeout(function(){sp.style.display='none';sp.style.opacity='1';showGuideStep(0)},400);
+  },1500);
+}
+
+function showGuideStep(idx){
+  var g=$('#guide');g.style.display='flex';var s=guideSteps[idx];
+  var dots=guideSteps.map(function(_,i){return '<i class="'+(i==idx?'on':'')+'"></i>'}).join('');
+  g.innerHTML='<div class="guide-card">'+
+  '<div class="guide-icon">'+ic(s.ic)+'</div>'+
+  '<h2 style="font-size:22px;margin:0 0 8px">'+esc(s.title)+'</h2>'+
+  '<p class="mu" style="font-size:16px;line-height:1.6;margin:0">'+esc(s.desc)+'</p>'+
+  '<div class="guide-dots">'+dots+'</div>'+
+  '<div style="display:flex;gap:10px">'+
+  '<button class="btn o f" id="guide-skip">Skip</button>'+
+  '<button class="btn g f" id="guide-next">'+(idx===guideSteps.length-1?'Finish':'Next')+'</button>'+
+  '</div></div>';
+  $('#guide-skip').onclick=function(){g.style.display='none';store.set('hx_onboarded_v2','1')};
+  $('#guide-next').onclick=function(){
+    if(idx<guideSteps.length-1)showGuideStep(idx+1);
+    else{g.style.display='none';store.set('hx_onboarded_v2','1');toast('Tutorial completed ✓')}
+  };
+}
+
+/* Android Top Install Banner */
+var defPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();defPrompt=e;
+  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  var isWebView=/\bwv\b|WebView/i.test(navigator.userAgent);
+  if(!isStandalone&&!isWebView&&!store.get('hx_and_dismissed')){
+    var b=$('#and-banner');if(b)b.classList.add('on');
+  }
+});
+$('#and-install').onclick=function(){
+  if(defPrompt){defPrompt.prompt();defPrompt=null}
+  else{window.location.href='/';}
+  $('#and-banner').classList.remove('on');
+};
+$('#and-close').onclick=function(){
+  store.set('hx_and_dismissed','1');$('#and-banner').classList.remove('on');
+};
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})});
+}
+
+/* Boot & Init */
+try{var cu=store.get('hxu');if(cu&&store.get('hx'))S.user=JSON.parse(cu)}catch(e){}
+if(S.user)api('/api/me').then(function(j){S.user=j.user;store.set('hxu',JSON.stringify(j.user));draw();poll()},function(e){if(/sign in/i.test(e.message)){store.del('hx');store.del('hxu');S.user=null;draw()}});
+
+var urlP=new URLSearchParams(window.location.search),targetApp=urlP.get('app');
+if(targetApp&&/^[\w-]+$/.test(targetApp)){go('detail',targetApp)}else{go('home')}
+
+startSplashAndGuide(false);
+setInterval(poll,30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()});
+</script></body></html>
+
