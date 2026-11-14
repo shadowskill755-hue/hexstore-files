@@ -234,7 +234,7 @@ var primePill=function(){return '<span class="pprime" title="Developer reached 5
 
 var API=window.location.origin;
 var G=['#e0552b,#3a1a14','#2e6bd6,#101a3a','#8a3fd1,#1c1030','#1d9e6e,#0b2a20','#d6a02e,#3a2a0a','#c23b6b,#2a0f1c'];
-var S={page:'home',id:null,pop:0,tab:'apps',reg:0,after:'',origin:'',apk:null,icon:null,shots:[],name:'',cat:'',desc:'',log:'',ver:'1.0',src:'',excl:0,star:0,q:'',user:null,apps:null,det:null,mine:null,me:null,fav:null,err:'',busy:0,unread:0,notes:null,pending:null,delArm:0,nver:'',nlog:'',napk:null,sum:'',editId:null,eicon:null,eshots:[],agree:0,queue:null,qn:0,eun:'',ebio:'',emal:1,efile:null,eprev:null,eclear:0,dev:null,dtab:'apps',dfol:null,dposts:null,cpostFile:null,tickets:null};
+var S={page:'home',id:null,pop:0,tab:'apps',reg:0,after:'',origin:'',apk:null,icon:null,shots:[],name:'',cat:'Games',desc:'',log:'',ver:'1.0',src:'',excl:0,star:0,q:'',user:null,apps:null,det:null,mine:null,me:null,fav:null,err:'',busy:0,unread:0,notes:null,pending:null,delArm:0,nver:'',nlog:'',napk:null,sum:'',editId:null,eicon:null,eshots:[],agree:0,queue:null,qn:0,eun:'',ebio:'',emal:1,efile:null,eprev:null,eclear:0,dev:null,dtab:'apps',dfol:null,dposts:null,cpostFile:null,tickets:null};
 var $=function(s){return document.querySelector(s)},app=$('#app');
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
@@ -256,10 +256,21 @@ function toggleTheme(){
 
 function api(path,o){o=o||{};var h={};var t=store.get('hx');if(t)h.Authorization='Bearer '+t;var b;if(o.body){h['Content-Type']='application/json';b=JSON.stringify(o.body)}
  return fetch(API+path,{method:o.method||'GET',headers:h,body:b}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok)throw new Error(j.error||'Request failed ('+r.status+')');return j})},function(){throw new Error('Cannot reach the server. Check your internet.')})}
-function up(f,kind,cb){return new Promise(function(res,rej){var x=new XMLHttpRequest();x.open('POST',API+'/api/upload?kind='+kind);x.setRequestHeader('Authorization','Bearer '+store.get('hx'));x.setRequestHeader('X-Filename',encodeURIComponent(f.name));if(kind=='image')x.setRequestHeader('Content-Type',f.type);
- x.upload.onprogress=function(e){if(cb&&e.lengthComputable)cb(Math.round(e.loaded/e.total*100))};
- x.onload=function(){var j={};try{j=JSON.parse(x.responseText)}catch(e){}x.status==200?res(j):rej(new Error(j.error||'Upload failed ('+x.status+')'))};
- x.onerror=function(){rej(new Error('Cannot reach the server. Check your internet.'))};x.send(f)})}
+function up(f,kind,cb){
+ var tries=0;
+ function once(){return new Promise(function(res,rej){
+  var x=new XMLHttpRequest();x.open('POST',API+'/api/upload?kind='+kind);
+  x.setRequestHeader('Authorization','Bearer '+store.get('hx'));x.setRequestHeader('X-Filename',encodeURIComponent(f.name));
+  if(kind=='image')x.setRequestHeader('Content-Type',f.type);
+  x.upload.onprogress=function(e){if(cb&&e.lengthComputable)cb(Math.round(e.loaded/e.total*100))};
+  x.onload=function(){var j={};try{j=JSON.parse(x.responseText)}catch(e){}x.status==200?res(j):rej(new Error(j.error||'Upload failed ('+x.status+')'))};
+  x.onerror=function(){var er=new Error(navigator.onLine===false?'You are offline. Connect to the internet and try again.':'The upload connection dropped. Turn off VPN, use a steady connection, and try again.');er.net=1;rej(er)};
+  x.ontimeout=x.onerror;x.send(f)})}
+ function run(){return once().catch(function(e){
+  if(e.net&&navigator.onLine!==false&&tries<2){tries++;if(cb)cb(0);return new Promise(function(r){setTimeout(r,1500*tries)}).then(run)}
+  throw e})}
+ return run();
+}
 
 function ico(a,big){var st=big?'width:112px;height:112px;border-radius:26px;font-size:30px;':'';if(a.icon_url)return '<div class="ico" style="'+st+'"><img src="'+esc(a.icon_url)+'" alt=""></div>';var g=G[(a.name||'x').length%6].split(',');return '<div class="ico" style="'+st+'background:linear-gradient(135deg,'+g[0]+','+g[1]+')">'+esc((a.name||'?').slice(0,2).toUpperCase())+'</div>'}
 
@@ -395,14 +406,14 @@ function formPage(){var ed=!!S.editId,adm=S.user&&S.user.is_admin;return '<main 
 '<label class="l">App name</label><input type="text" data-k="name" placeholder="e.g. My Awesome App" value="'+esc(S.name)+'">'+(ed?'':'<p class="hint">Leave empty to use the APK file name.</p>')+
 '<label class="l" style="display:flex;justify-content:space-between">Short description<span class="mu" id="scnt" style="font-weight:400">'+S.sum.length+'/50</span></label><input type="text" data-k="sum" maxlength="50" placeholder="One line that sells your app" value="'+esc(S.sum)+'">'+
 (ed?'':'<label class="l">Version <span class="req">*</span></label><input type="text" data-k="ver" placeholder="1.0" value="'+esc(S.ver)+'">')+
-'<label class="l">Category <span class="req">*</span></label><select data-k="cat" class="sel" style="margin:0"><option value="">Choose a category</option>'+['Games','Tools','Education','Productivity','Entertainment','Other'].map(function(c){return '<option'+(S.cat==c?' selected':'')+'>'+c+'</option>'}).join('')+'</select>'+
+'<label class="l">Category <span class="req">*</span></label><select data-k="cat" class="sel" style="margin:0">'+['Games','Tools','Education','Productivity','Entertainment','Other'].map(function(c){return '<option'+(S.cat==c?' selected':'')+'>'+c+'</option>'}).join('')+'</select>'+
 '<label class="l" style="display:flex;justify-content:space-between">Description <span class="req">*</span><span class="req" id="cnt" style="font-weight:400">'+S.desc.length+'/4000</span></label><textarea data-k="desc" maxlength="4000" placeholder="What does your app do?" style="min-height:200px">'+esc(S.desc)+'</textarea><p class="hint">At least 100 characters to publish.</p>'+
 (ed?'':'<label class="l">What\'s new</label><textarea data-k="log" placeholder="Changes in this version (optional)">'+esc(S.log)+'</textarea>')+
 '<label class="l">Source code URL</label><input type="url" data-k="src" placeholder="https://github.com/… (optional)" value="'+esc(S.src)+'"><p class="hint">Add a link if your app is open-source.</p>'+
 '<label class="tg"><input type="checkbox" data-k="excl"'+(S.excl?' checked':'')+'><span><b style="font-size:18px">Exclusive</b><br><span class="mu">The app isn\'t available on Google Play.</span></span></label></div>'+
 '<div class="pad" style="border-top:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Screenshots</h2><p class="mu" style="margin-top:0">Optional, up to 8. You can crop each one: vertical for apps, horizontal for games. Tap ✕ to remove.</p><label class="drop">'+ic('img')+'<b>Add screenshots</b>PNG or JPG<input type="file" id="sh" accept="image/*" multiple hidden></label><div class="shots" id="shl" style="margin-top:14px"></div></div></div>'+
 '<div class="card pad"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:22px">Preview</h2><span class="badge" style="background:var(--sf2);border:0;font-weight:600;letter-spacing:0">Store view</span></div><div id="pvb" style="margin-top:18px"></div><p class="mu" style="text-align:center;margin:16px 0 0">This is how your app will appear to users</p></div>'+foot()+'</main><div id="dk"></div>'}
-function resetForm(){S.editId=null;S.name=S.sum=S.cat=S.desc=S.log=S.src=S.origin='';S.excl=0;S.ver='1.0';S.apk=S.icon=S.eicon=null;S.shots=[];S.eshots=[]}
+function resetForm(){S.editId=null;S.name=S.sum=S.cat=S.desc=S.log=S.src=S.origin='';S.cat='Games';S.excl=0;S.ver='1.0';S.apk=S.icon=S.eicon=null;S.shots=[];S.eshots=[]}
 function initEdit(){var a=S.det.app;S.editId=a.id;S.name=a.name;S.sum=a.summary||'';S.cat=a.category;S.desc=a.description;S.src=a.source_url||'';S.excl=a.is_exclusive?1:0;S.origin=a.origin||'';S.apk=S.icon=null;S.shots=[];S.eicon=a.icon_key?{key:a.icon_key,url:a.icon_url,name:'Current icon'}:null;S.eshots=a.shot_keys.map(function(k,i){return{key:k,url:a.shots[i]}})}
 function saveEdit(){if(S.busy)return;var a=S.det.app;if(!S.cat)return toast('Choose a category');if(!S.icon&&!S.eicon)return toast('Add an icon');if(a.status!='draft'&&S.desc.trim().length<100)return toast('Description needs 100+ characters');
  S.busy=1;var say=function(t){$('#dk').innerHTML=dock(t)},K={shots:[]},p=Promise.resolve();
@@ -645,12 +656,12 @@ function auth(){var em=$('#em').value.trim(),pw=$('#pw').value,m=$('#lm'),b=$('#
 function submit(status){if(S.busy)return;if(!ready())return toast('Add an APK and an icon first');
   if(!S.cat)return toast('Choose a category');if(!S.ver.trim())return toast('Enter a version, for example 1.0');
   if(status!='draft'){if(S.desc.trim().length<100)return toast('Description needs 100+ characters (now '+S.desc.trim().length+')');if(!S.origin)return toast('Choose Original or Mod')}
-  S.busy=1;var say=function(t){$('#dk').innerHTML=dock(t)};say('Uploading APK… 0%');var K={shots:[]},adm=S.user&&S.user.is_admin;
+  S.busy=1;var last='Uploading APK',say=function(t){last=t;$('#dk').innerHTML=dock(t)};say('Uploading APK… 0%');var K={shots:[]},adm=S.user&&S.user.is_admin;
   up(S.apk.file,'apk',function(p){say('Uploading APK… '+p+'%')}).then(function(r){K.apk=r;say('Uploading icon…');return upImg(S.icon.file,512)}).then(function(r){K.icon=r;
     return S.shots.reduce(function(pr,x,i){return pr.then(function(){say('Uploading screenshot '+(i+1)+'/'+S.shots.length+'…');return upImg(x.file,1280).then(function(r){K.shots.push(r.key)})})},Promise.resolve())})
   .then(function(){say('Saving…');return api('/api/apps',{method:'POST',body:{name:S.name.trim()||S.apk.name.replace(/\.apk$/i,''),summary:S.sum.trim(),category:S.cat,description:S.desc.trim(),origin:S.origin||null,source_url:S.src,is_exclusive:S.excl,icon_key:K.icon.key,shots:K.shots,status:status}})})
   .then(function(a){K.id=a.id;return api('/api/apps/'+a.id+'/versions',{method:'POST',body:{version_name:S.ver.trim(),changelog:S.log.trim(),apk_key:K.apk.key,size:K.apk.size}})})
-  .then(function(){S.busy=0;resetForm();toast(status=='draft'?'Saved as draft':adm?'Published!':'Submitted! A moderator will review it.');go('detail',K.id)},function(e){S.busy=0;toast(e.message);if($('#dk'))$('#dk').innerHTML=dock()})}
+  .then(function(){S.busy=0;resetForm();toast(status=='draft'?'Saved as draft':adm?'Published!':'Submitted! A moderator will review it.');go('detail',K.id)},function(e){S.busy=0;toast(last.split('…')[0]+' failed. '+e.message);if($('#dk'))$('#dk').innerHTML=dock()})}
 function keep(f){var y=scrollY;f();scrollTo(0,y)}
 
 /* YouTube Search */
@@ -967,4 +978,3 @@ if(targetApp&&/^[\w-]+$/.test(targetApp)){go('detail',targetApp)}else{go('home')
 startSplashAndGuide(false);
 setInterval(poll,30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()});
 </script></body></html>
-
