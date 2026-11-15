@@ -574,7 +574,7 @@ async function sharePage(env,url,id){
   const desc=esc(a.summary||String(a.description).slice(0,160));
   let apkUrl=env.HEXSTORE_APK_URL||'';
   if(!apkUrl){
-    const hx=await q(env,"select v.apk_key from versions v join apps a on a.id=v.app_id where a.status='published' and v.status='approved' and v.apk_key<>'' and lower(a.name)='hexstore' order by v.version_code desc limit 1").first();
+    const hx=await q(env,"select v.apk_key from versions v join apps a on a.id=v.app_id where a.status='published' and v.status='approved' and v.apk_key<>'' and replace(replace(lower(a.name),' ',''),'-','')='hexstore' order by v.version_code desc limit 1").first();
     if(hx)apkUrl=base+'/files/'+hx.apk_key+'?dl=1';
   }
   const hexApkUrl=apkUrl||(base+'/?app='+encodeURIComponent(id));
