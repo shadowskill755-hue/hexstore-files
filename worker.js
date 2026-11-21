@@ -128,19 +128,24 @@ const orderRef=(appId,userId)=>'HX-'+(String(appId).replace(/-/g,'').slice(0,4)+
 
 // Shop catalog. Prices are in Hex Coins. cfg = which options the owner can customise.
 const SHOP=[
- {id:'intro',emoji:'🎬',name:'Welcome Intro',price:120,desc:'A cinematic full-screen welcome with your own message when someone opens your app page.',cfg:['c1','c2','text','speed'],max:60,def:{c1:'#43c25c',c2:'#1d9bf0',text:'Welcome!',speed:2}},
- {id:'nano',emoji:'💠',name:'Nano Border Light',price:150,desc:'A razor-thin light that races around your app card. Pick the colors, speed and thickness.',cfg:['c1','c2','speed','w'],def:{c1:'#43e5ff',c2:'#8a5cff',speed:2,w:2}},
- {id:'shotlight',emoji:'🖼️',name:'Image Border Light',price:100,desc:'A glowing light runs around every screenshot of your app.',cfg:['c1','c2','speed'],def:{c1:'#ffd84a',c2:'#ff5fa2',speed:2}},
- {id:'aurora',emoji:'🌌',name:'Aurora Banner',price:160,desc:'Soft northern-lights colors flowing behind your app header.',cfg:['c1','c2','speed'],def:{c1:'#2ee6a6',c2:'#7a5cff',speed:2}},
- {id:'iconglow',emoji:'✨',name:'Neon Icon Glow',price:80,desc:'Your app icon pulses with a neon halo.',cfg:['c1','speed'],def:{c1:'#43c25c',speed:2}},
- {id:'glass',emoji:'🧊',name:'Glass Card',price:140,desc:'Frosted-glass header card with a tinted, blurred backdrop.',cfg:['c1','c2'],def:{c1:'#5ec8ff',c2:'#c084fc'}},
- {id:'stars',emoji:'⭐',name:'Starfield',price:180,desc:'Twinkling stars drift across the whole page behind your app.',cfg:['c1','c2','speed'],def:{c1:'#ffffff',c2:'#8ab4ff',speed:2}},
- {id:'holo',emoji:'🌈',name:'Holo Shine',price:90,desc:'A holographic shimmer sweeps across your screenshots.',cfg:['c1','c2','speed'],def:{c1:'#ff6ad5',c2:'#4de1ff',speed:2}},
- {id:'crown',emoji:'👑',name:'Gold Crown Badge',price:200,desc:'A shining crown badge next to your app name. Set your own badge text.',cfg:['c1','c2','text'],max:14,def:{c1:'#ffd54a',c2:'#ff9d00',text:'FEATURED'}},
- {id:'accent',emoji:'🎨',name:'Custom Accent Color',price:60,desc:'Recolor buttons, progress bars and headings across your page.',cfg:['c1','c2'],def:{c1:'#ff5a7a',c2:'#ff9a44'}},
- {id:'btnshine',emoji:'⚡',name:'Shine Download Button',price:70,desc:'A glossy gradient download button with a moving light sweep.',cfg:['c1','c2','speed'],def:{c1:'#43c25c',c2:'#1db3a6',speed:2}},
- {id:'rainbow',emoji:'🔤',name:'Animated Title',price:110,desc:'Your app name flows with a moving two-color gradient.',cfg:['c1','c2','speed'],def:{c1:'#ff5fa2',c2:'#ffd84a',speed:2}},
- {id:'confetti',emoji:'🎉',name:'Confetti Burst',price:130,desc:'Confetti explodes when someone taps download or unlocks your app.',cfg:['c1','c2'],def:{c1:'#ff5fa2',c2:'#43e5ff'}}
+ {id:'intro',emoji:'🎬',name:'Welcome Intro',price:600,desc:'A cinematic full-screen welcome with your own message when someone opens your app page.',cfg:['c1','c2','text','speed'],max:60,def:{c1:'#43c25c',c2:'#1d9bf0',text:'Welcome!',speed:2}},
+ {id:'nano',emoji:'💠',name:'Nano Border Light',price:750,desc:'A razor-thin light that races around your app card. Pick the colors, speed and thickness.',cfg:['c1','c2','speed','w'],def:{c1:'#43e5ff',c2:'#8a5cff',speed:2,w:2}},
+ {id:'shotlight',emoji:'🖼️',name:'Image Border Light',price:500,desc:'A glowing light runs around every screenshot of your app.',cfg:['c1','c2','speed'],def:{c1:'#ffd84a',c2:'#ff5fa2',speed:2}},
+ {id:'aurora',emoji:'🌌',name:'Aurora Banner',price:800,desc:'Soft northern-lights colors flowing behind your app header.',cfg:['c1','c2','speed'],def:{c1:'#2ee6a6',c2:'#7a5cff',speed:2}},
+ {id:'iconglow',emoji:'✨',name:'Neon Icon Glow',price:400,desc:'Your app icon pulses with a neon halo.',cfg:['c1','speed'],def:{c1:'#43c25c',speed:2}},
+ {id:'glass',emoji:'🧊',name:'Glass Card',price:700,desc:'Frosted-glass header card with a tinted, blurred backdrop.',cfg:['c1','c2'],def:{c1:'#5ec8ff',c2:'#c084fc'}},
+ {id:'stars',emoji:'⭐',name:'Starfield',price:900,desc:'Twinkling stars drift across the whole page behind your app.',cfg:['c1','c2','speed'],def:{c1:'#ffffff',c2:'#8ab4ff',speed:2}},
+ {id:'holo',emoji:'🌈',name:'Holo Shine',price:450,desc:'A holographic shimmer sweeps across your screenshots.',cfg:['c1','c2','speed'],def:{c1:'#ff6ad5',c2:'#4de1ff',speed:2}},
+ {id:'crown',emoji:'👑',name:'Gold Crown Badge',price:1000,desc:'A shining crown badge next to your app name. Set your own badge text.',cfg:['c1','c2','text'],max:14,def:{c1:'#ffd54a',c2:'#ff9d00',text:'FEATURED'}},
+ {id:'accent',emoji:'🎨',name:'Custom Accent Color',price:300,desc:'Recolor buttons, progress bars and headings across your page.',cfg:['c1','c2'],def:{c1:'#ff5a7a',c2:'#ff9a44'}},
+ {id:'btnshine',emoji:'⚡',name:'Shine Download Button',price:350,desc:'A glossy gradient download button with a moving light sweep.',cfg:['c1','c2','speed'],def:{c1:'#43c25c',c2:'#1db3a6',speed:2}},
+ {id:'rainbow',emoji:'🔤',name:'Animated Title',price:550,desc:'Your app name flows with a moving two-color gradient.',cfg:['c1','c2','speed'],def:{c1:'#ff5fa2',c2:'#ffd84a',speed:2}},
+ {id:'confetti',emoji:'🎉',name:'Confetti Burst',price:650,desc:'Confetti explodes when someone taps download or unlocks your app.',cfg:['c1','c2'],def:{c1:'#ff5fa2',c2:'#43e5ff'}},
+  {id:'neon',emoji:'💡',name:'Neon Sign Title',price:1200,desc:'Your app name glows like a real neon sign and flickers now and then.',cfg:['c1','speed'],def:{c1:'#ff3df2',speed:2}},
+  {id:'snow',emoji:'❄️',name:'Falling Lights',price:1500,desc:'Soft glowing particles drift down your whole app page like snow. Pick the colors and speed.',cfg:['c1','c2','speed'],def:{c1:'#ffffff',c2:'#7fd6ff',speed:2}},
+  {id:'grid',emoji:'🧿',name:'Cyber Grid',price:1800,desc:'A glowing grid slowly scrolls behind your page with a colored light on top.',cfg:['c1','c2','speed'],def:{c1:'#43e5ff',c2:'#8a5cff',speed:2}},
+  {id:'ribbon',emoji:'🏷️',name:'Corner Banner',price:900,desc:'A bold tag on your app card with your own word, like NEW, HOT or 50% OFF.',cfg:['c1','c2','text'],max:12,def:{c1:'#ff3b5c',c2:'#ff9a44',text:'NEW'}},
+  {id:'heartbeat',emoji:'💓',name:'Heartbeat Button',price:700,desc:'Your download button pulses like a heartbeat and sends out a glowing ring.',cfg:['c1','speed'],def:{c1:'#43c25c',speed:2}}
 ];
 const SHOP_BY=Object.fromEntries(SHOP.map(i=>[i.id,i]));
 function cleanCfg(it,input,base){
@@ -214,6 +219,12 @@ async function giveCoins(env,id,amt,kind,note,ref,now){
   ]);
 }
 async function spendCoins(env,id,amt,kind,note,ref,now){
+  // the admin has unlimited coins: spending is free (logged with 0)
+  const ad=await q(env,'select is_admin from users where id=?',id).first();
+  if(ad&&ad.is_admin){
+    await q(env,'insert into coin_tx(id,user_id,amount,kind,note,ref,created_at) values(?,?,0,?,?,?,?)',uid(),id,kind,note,ref||null,now).run();
+    return true;
+  }
   const r=await q(env,'update users set coins=coins-?1 where id=?2 and coins>=?1',amt,id).run();
   if(!(r.meta&&r.meta.changes>0))return false;
   await q(env,'insert into coin_tx(id,user_id,amount,kind,note,ref,created_at) values(?,?,?,?,?,?,?)',uid(),id,-amt,kind,note,ref||null,now).run();
