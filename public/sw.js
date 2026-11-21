@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hexstore-static-v2';
+const CACHE_NAME = 'hexstore-static-v3';
 const STATIC_ASSETS = ['/', '/index.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', (e) => {
