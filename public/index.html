@@ -320,6 +320,20 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .dmbar{position:sticky;bottom:0;background:var(--bg);padding:12px 0 8px;margin-top:10px;border-top:1px solid var(--ln)}
 .dmbar textarea{width:100%}
 .dmbadge{flex:none;min-width:24px;height:24px;border-radius:999px;background:#f2555a;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 7px}
+
+/* shop: new items */
+.fx-neon .apptitle{color:#fff;-webkit-text-fill-color:#fff;text-shadow:0 0 4px #fff,0 0 12px var(--neon-c1),0 0 28px var(--neon-c1),0 0 54px var(--neon-c1);animation:neonflick calc(var(--neon-sp,3.4s)*1.6) linear infinite}
+@keyframes neonflick{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.5}}
+.fx-snow::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.85;background-image:radial-gradient(circle,var(--snow-c1) 0 2px,transparent 3px),radial-gradient(circle,var(--snow-c2) 0 1.5px,transparent 2.5px),radial-gradient(circle,var(--snow-c1) 0 1px,transparent 2px);background-size:150px 150px,100px 100px,70px 70px;background-position:0 0,40px 30px,20px 50px;animation:snowfall calc(var(--snow-sp,3.4s)*2.2) linear infinite}
+.fxprev.fx-snow::after{position:absolute;border-radius:inherit}
+@keyframes snowfall{to{background-position:0 150px,40px 130px,20px 120px}}
+.fx-grid{background-image:linear-gradient(var(--grid-c1a) 1px,transparent 1px),linear-gradient(90deg,var(--grid-c1a) 1px,transparent 1px),radial-gradient(60% 40% at 50% 0,var(--grid-c2a),transparent);background-size:36px 36px,36px 36px,100% 100%;animation:gridmove calc(var(--grid-sp,3.4s)*3) linear infinite}
+.fx-grid{background-image:linear-gradient(color-mix(in srgb,var(--grid-c1) 20%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--grid-c1) 20%,transparent) 1px,transparent 1px),radial-gradient(60% 40% at 50% 0,var(--grid-c2a),transparent)}
+@keyframes gridmove{to{background-position:0 36px,0 36px,0 0}}
+.fx-ribbon .hdcard{position:relative}
+.fx-ribbon .hdcard::after{content:var(--ribbon-text,"NEW");position:absolute;top:16px;right:0;z-index:4;padding:6px 14px 6px 22px;font-weight:900;font-size:12px;letter-spacing:.1em;color:#fff;background:linear-gradient(90deg,var(--ribbon-c1),var(--ribbon-c2));clip-path:polygon(0 0,100% 0,100% 100%,0 100%,12px 50%);pointer-events:none}
+.fx-heartbeat .fxdl .btn:not(.ok):not(.o):not([disabled]){animation:hbeat calc(var(--heartbeat-sp,3.4s)*.45) ease-out infinite}
+@keyframes hbeat{0%{transform:scale(1);box-shadow:0 0 0 0 var(--heartbeat-c1b)}12%{transform:scale(1.035)}24%{transform:scale(1)}30%{transform:scale(1.025)}100%{transform:scale(1);box-shadow:0 0 0 18px transparent}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#e58f00"/></linearGradient></defs></svg>
 
@@ -1231,7 +1245,7 @@ function pricePill(a){return isPaid(a)?'<span class="pricetag">'+(a.price_mode==
 function setCoins(n){if(!S.user)return;S.user.coins=n;store.set('hxu',JSON.stringify(S.user))}
 function isLocked(a){return !!(S.det&&S.det.app&&S.det.app.id==a.id&&!S.det.owned&&!S.det.is_owner&&!(S.user&&S.user.is_admin)&&isPaid(a))}
 function dlHeaders(){var t=store.get('hx');return t?{Authorization:'Bearer '+t}:{}}
-function balanceCard(c){return '<div class="coincard"><small>Your balance</small><div class="coinbig">🪙 '+fmtN(c)+'</div></div>'}
+function balanceCard(c){return '<div class="coincard"><small>Your balance</small><div class="coinbig">🪙 '+(S.user&&S.user.is_admin?'∞ Unlimited':fmtN(c))+'</div></div>'}
 function freshDet(id){var c=CACHE_DET[id];return c&&Date.now()-c.t<300000?c.j:null}
 function homeCached(){return CACHE_APPS[S.hcat+'|'+S.q]||null}
 function prefetchApp(id){if(!id||(CACHE_DET[id]&&Date.now()-CACHE_DET[id].t<30000))return;api('/api/apps/'+id).then(function(j){CACHE_DET[id]={t:Date.now(),j:j}},function(){})}
@@ -1427,6 +1441,7 @@ function fxVars(list){
     if(c.c2)o+='--'+id+'-c2:'+safeC(c.c2)+';--'+id+'-c2a:'+hexA(c.c2,.3)+';';
     o+='--'+id+'-sp:'+(SPD[c.speed]||3.4)+'s;';
     if(c.w)o+='--'+id+'-w:'+(+c.w)+'px;';
+    if(id=='ribbon'&&c.text)o+='--ribbon-text:"'+String(c.text).replace(/[^\w !.%\-]/g,'').toUpperCase()+'";';
   });
   return o;
 }
