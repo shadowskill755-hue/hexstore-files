@@ -41,7 +41,7 @@ async function who(env,req){
     if(!await crypto.subtle.verify('HMAC',await hkey(env),unb64u(s),enc.encode(p)))return null;
     const d=JSON.parse(dec.decode(unb64u(p)));
     if(d.e<Date.now())return null;
-    return await q(env,'select id,email,username,bio,is_admin,avatar_key,tos_at,email_alerts,coins,welcome_at,cash_enabled,payout_details from users where id=?',d.u).first();
+    return await q(env,'select id,email,username,bio,is_admin,avatar_key,tos_at,email_alerts,coins,welcome_at,cash_enabled,payout_details,hex_id from users where id=?',d.u).first();
   }catch(e){return null}
 }
 
@@ -72,7 +72,7 @@ const lite=(a,base)=>{const x=shape(a,base);x.description=String(a.description||
 const mine=(key,id)=>!key||String(key).startsWith(id+'/');
 const clip=(s,n)=>String(s==null?'':s).trim().slice(0,n);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pub=(u,base)=>({id:u.id,email:u.email,username:u.username,bio:u.bio||'',is_admin:u.is_admin,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null,tos:Boolean(u.tos_at),email_alerts:u.email_alerts===0?0:1,coins:+u.coins||0,cash_enabled:Boolean(u.cash_enabled)||Boolean(u.is_admin&&u.payout_details)});
+const pub=(u,base)=>({id:u.id,email:u.email,username:u.username,bio:u.bio||'',is_admin:u.is_admin,avatar_url:u.avatar_key?base+'/files/'+u.avatar_key:null,tos:Boolean(u.tos_at),email_alerts:u.email_alerts===0?0:1,coins:+u.coins||0,hex_id:u.hex_id||'',cash_enabled:Boolean(u.cash_enabled)||Boolean(u.is_admin&&u.payout_details)});
 
 async function delFile(env,key){
   const f=await q(env,'select asset_id from files where key=?',key).first();
@@ -118,10 +118,11 @@ async function announce(env,ctx,base,a,ver){
 // ======================================================================
 //  HEX COINS · PAID APPS · CASH KEYS · SHOP
 // ======================================================================
-const WELCOME_COINS=300,SCHEMA_V=1;
+const WELCOME_COINS=300,REFER_COINS=100,SCHEMA_V=2;
 const CURRENCIES=['USD','EUR','GBP','NGN','GHS','KES','ZAR','INR','CAD','AUD','BRL','AED'];
 const jp=(s,d)=>{try{const v=JSON.parse(s||'');return v==null?d:v}catch(e){return d}};
 const HEXC=/^#[0-9a-fA-F]{6}$/;
+const fmtC=n=>(+n||0).toLocaleString('en-US');
 const money=(c,cur)=>(c/100).toFixed(2)+' '+cur;
 const orderRef=(appId,userId)=>'HX-'+(String(appId).replace(/-/g,'').slice(0,4)+String(userId).replace(/-/g,'').slice(0,4)).toUpperCase();
 
@@ -169,7 +170,9 @@ async function migrate(env){
     "alter table users add column payout_details text not null default ''",
     "alter table apps add column price_mode text not null default 'free'",
     'alter table apps add column price integer not null default 0',
-    "alter table apps add column currency text not null default 'USD'"
+    "alter table apps add column currency text not null default 'USD'",
+    'alter table users add column hex_id text',
+    'alter table users add column referred_by text'
   ];
   for(const s of alters){try{await run(s)}catch(e){if(!/duplicate column/i.test(String(e.message)))throw e}}
   const st=[
@@ -188,9 +191,18 @@ async function migrate(env){
     'create index if not exists idx_apps_owner on apps(owner_id,status)',
     'create index if not exists idx_follows_app on follows(app_id)',
     'create index if not exists idx_fav_app on favorites(app_id)',
-    'create index if not exists idx_files_owner on files(owner_id,created_at)'
+    'create index if not exists idx_files_owner on files(owner_id,created_at)',
+    // v2: Hex ID, referrals, messages
+    'create unique index if not exists idx_users_hex on users(hex_id)',
+    'create index if not exists idx_users_ref on users(referred_by)',
+    "create table if not exists dm_msgs(id text primary key,sender_id text not null,recipient_id text not null,body text not null default '',img_key text,order_id text,kind text not null default 'text',created_at integer not null,read_at integer)",
+    'create index if not exists idx_dm_to on dm_msgs(recipient_id,read_at)',
+    'create index if not exists idx_dm_pair on dm_msgs(sender_id,recipient_id,created_at)'
   ];
   await env.DB.batch(st.map(s=>env.DB.prepare(s)));
+  // give every existing account a Hex ID
+  const nohex=(await env.DB.prepare('select id from users where hex_id is null').all()).results;
+  for(const u of nohex)await ensureHex(env,u.id);
   await env.DB.prepare("insert into hx_meta(k,v) values('schema',?1) on conflict(k) do update set v=?1").bind(String(SCHEMA_V)).run();
 }
 
@@ -256,6 +268,24 @@ function pricing(seller,body,cur){
 const priceLabel=a=>!a.price_mode||a.price_mode==='free'?'Free':a.price_mode==='coins'?'🪙 '+a.price:money(a.price,a.currency);
 
 const KA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const hexClean=v=>String(v==null?'':v).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12);
+const waNum=env=>String(env.WHATSAPP_NUMBER||'').replace(/\D/g,'');
+function genHexId(){const b=crypto.getRandomValues(new Uint8Array(6));return 'HX'+[...b].map(x=>KA[x%32]).join('')}
+async function ensureHex(env,id){
+  const cur=await q(env,'select hex_id from users where id=?',id).first();
+  if(cur&&cur.hex_id)return cur.hex_id;
+  for(let t=0;t<10;t++){
+    const h=genHexId();
+    try{const r=await q(env,'update users set hex_id=? where id=? and hex_id is null',h,id).run();if(r.meta&&r.meta.changes>0)return h;return (await q(env,'select hex_id from users where id=?',id).first()).hex_id}
+    catch(e){if(!/UNIQUE/i.test(String(e.message)))throw e}
+  }
+  return '';
+}
+async function notifyDm(env,toId,fromName,text,now){
+  const title='💬 '+fromName;
+  await q(env,'delete from notifications where user_id=? and title=? and is_read=0',toId,title).run();
+  await tell(env,toId,null,null,title,String(text).slice(0,120));
+}
 function genKey(){
   const b=crypto.getRandomValues(new Uint8Array(12)),s=[...b].map(x=>KA[x%32]).join('');
   return 'HEX-'+s.slice(0,4)+'-'+s.slice(4,8)+'-'+s.slice(8,12);
@@ -358,7 +388,12 @@ async function apiX(req,env,url,path,ctx,me,body,m,base,now){
     const id=uid();
     await q(env,'insert into cash_orders(id,app_id,buyer_id,seller_id,amount,currency,ref,note,created_at) values(?,?,?,?,?,?,?,?,?)',id,a.id,me.id,a.owner_id,a.price,a.currency,orderRef(a.id,me.id),clip(body.note,200),now).run();
     await tell(env,a.owner_id,a.id,null,'💵 Payment to confirm: '+a.name,me.username+' says they sent '+money(a.price,a.currency)+'. Open Wallet to confirm.');
-    return J({ok:true,id});
+    const rimg=body.receipt_key&&mine(body.receipt_key,me.id)?String(body.receipt_key):null,rnote=clip(body.note,200);
+    const msg='💵 I paid '+money(a.price,a.currency)+' for '+a.name+'.\nReference: '+orderRef(a.id,me.id)+(rnote?'\nNote: '+rnote:'')+'\nPlease confirm my payment so I can download.';
+    await q(env,"insert into dm_msgs(id,sender_id,recipient_id,body,img_key,order_id,kind,created_at) values(?,?,?,?,?,?,'receipt',?)",uid(),me.id,a.owner_id,msg,rimg,id,now).run();
+    await notifyDm(env,a.owner_id,me.username,'Receipt: '+money(a.price,a.currency)+' for '+a.name,now);
+    const sl=await q(env,'select username from users where id=?',a.owner_id).first();
+    return J({ok:true,id,seller_id:a.owner_id,seller_name:sl?sl.username:''});
   }
   if(path==='/api/cash/orders'&&m==='GET'){
     need();
@@ -421,6 +456,106 @@ async function apiX(req,env,url,path,ctx,me,body,m,base,now){
     return J({ok:true});
   }
 
+  // ---------- HEX ID · REFERRALS · TRANSFERS ----------
+  if(path==='/api/hexinfo'&&m==='GET'){
+    need();
+    const hid=me.hex_id||await ensureHex(env,me.id);
+    const [cnt,earn,recent,adm]=await Promise.all([
+      q(env,'select count(*) n from users where referred_by=?',me.id).first(),
+      q(env,"select coalesce(sum(amount),0) n from coin_tx where user_id=? and kind='referral'",me.id).first(),
+      q(env,'select username,created_at from users where referred_by=? order by created_at desc limit 10',me.id).all(),
+      q(env,'select id,username from users where is_admin=1 order by created_at asc limit 1').first()]);
+    return J({hex_id:hid,referrals:cnt.n,earned:earn.n,recent:recent.results,refer_coins:REFER_COINS,admin:adm?{id:adm.id,username:adm.username}:null,whatsapp:Boolean(waNum(env)),is_admin:Boolean(me.is_admin)});
+  }
+  if(path==='/api/coins/lookup'&&m==='GET'){
+    need();
+    const h=hexClean(url.searchParams.get('hex'));
+    const u=h?await q(env,'select id,username from users where hex_id=?',h).first():null;
+    if(!u)throw new E(404,'No user has that Hex ID.');
+    if(u.id===me.id)throw new E(400,'That is your own Hex ID.');
+    return J({id:u.id,username:u.username,hex_id:h});
+  }
+  if(path==='/api/coins/transfer'&&m==='POST'){
+    need();
+    const h=hexClean(body.to),amt=Math.floor(+body.amount),note=clip(body.note,80);
+    if(!h)throw new E(400,'Enter the Hex ID of the person you want to send coins to.');
+    if(!(amt>=1&&amt<=(me.is_admin?1e9:1e7)))throw new E(400,'Enter an amount of at least 1 coin.');
+    const kT='x:'+me.id,W=36e5;
+    if(!me.is_admin&&await limited(env,kT,20,W,now))throw new E(429,'Too many transfers. Try again in a little while.');
+    const to=await q(env,'select id,username from users where hex_id=?',h).first();
+    if(!to)throw new E(404,'No user has that Hex ID.');
+    if(to.id===me.id)throw new E(400,'You cannot send coins to yourself.');
+    if(me.is_admin){
+      // the admin has unlimited coins: sending never lowers the admin balance
+      await giveCoins(env,to.id,amt,'gift','Gift from HEXSTORE'+(note?' · '+note:''),me.id,now);
+      await q(env,'insert into coin_tx(id,user_id,amount,kind,note,ref,created_at) values(?,?,0,?,?,?,?)',uid(),me.id,'gift_sent','Sent '+fmtC(amt)+' coins to '+to.username,to.id,now).run();
+    }else{
+      if(!await spendCoins(env,me.id,amt,'transfer','Sent to '+to.username+(note?' · '+note:''),to.id,now))
+        throw new E(402,'Not enough Hex Coins. You have '+await balance(env,me.id)+'.');
+      await giveCoins(env,to.id,amt,'transfer','Received from '+me.username+(note?' · '+note:''),me.id,now);
+      await bump(env,kT,W,now);
+    }
+    await tell(env,to.id,null,null,'🪙 You received '+fmtC(amt)+' coins','From '+(me.is_admin?'HEXSTORE':me.username)+(note?': '+note:''));
+    return J({ok:true,coins:await balance(env,me.id),to:to.username});
+  }
+
+  // ---------- MESSAGES ----------
+  if(path==='/api/dm'&&m==='GET'){
+    need();
+    const rows=(await q(env,'select sender_id,recipient_id,body,img_key,created_at,read_at from dm_msgs where sender_id=?1 or recipient_id=?1 order by created_at desc limit 400',me.id).all()).results;
+    const th={};
+    for(const x of rows){
+      const o=x.sender_id===me.id?x.recipient_id:x.sender_id;
+      const t=th[o]||(th[o]={other:o,last:x.body||'📷 Photo',at:x.created_at,unread:0});
+      if(x.recipient_id===me.id&&!x.read_at)t.unread++;
+    }
+    const ids=Object.keys(th).slice(0,60);
+    let us=[];
+    if(ids.length)us=(await q(env,'select id,username,avatar_key,is_admin from users where id in ('+ids.map(()=>'?').join(',')+')',...ids).all()).results;
+    const by=Object.fromEntries(us.map(u=>[u.id,u]));
+    return J({threads:ids.map(i=>({...th[i],username:(by[i]||{}).username||'User',avatar_url:by[i]&&by[i].avatar_key?base+'/files/'+by[i].avatar_key:null,is_admin:Boolean(by[i]&&by[i].is_admin)})).sort((a,b)=>b.at-a.at)});
+  }
+  if((r=path.match(/^\/api\/dm\/([\w-]+)\/send-key$/))&&m==='POST'){
+    admin();
+    const o=await q(env,'select id,username from users where id=?',r[1]).first();
+    if(!o)throw new E(404,'User not found');
+    const k=genKey();
+    await q(env,'insert into cash_keys(code,note,created_by,created_at) values(?,?,?,?)',k,'For '+o.username,me.id,now).run();
+    await q(env,"insert into dm_msgs(id,sender_id,recipient_id,body,kind,created_at) values(?,?,?,?,'key',?)",uid(),me.id,o.id,'🔑 Your Hex key: '+k+'\nOpen Wallet, go to Real cash sales, paste the key and add your account details.',now).run();
+    await notifyDm(env,o.id,me.username,'🔑 Your Hex key is ready',now);
+    return J({ok:true,key:k});
+  }
+  if((r=path.match(/^\/api\/dm\/([\w-]+)$/))&&m==='GET'){
+    need();
+    const o=await q(env,'select id,username,avatar_key,is_admin from users where id=?',r[1]).first();
+    if(!o)throw new E(404,'User not found');
+    const [msgs,ord]=await Promise.all([
+      q(env,'select id,sender_id,body,img_key,order_id,kind,created_at from dm_msgs where (sender_id=?1 and recipient_id=?2) or (sender_id=?2 and recipient_id=?1) order by created_at desc limit 100',me.id,o.id).all(),
+      q(env,'select o.id,o.amount,o.currency,o.ref,o.status,o.created_at,o.buyer_id,o.seller_id,a.name app_name from cash_orders o join apps a on a.id=o.app_id where (o.buyer_id=?1 and o.seller_id=?2) or (o.buyer_id=?2 and o.seller_id=?1) order by o.created_at desc limit 10',me.id,o.id).all()]);
+    await q(env,'update dm_msgs set read_at=? where recipient_id=? and sender_id=? and read_at is null',now,me.id,o.id).run();
+    await q(env,'update notifications set is_read=1 where user_id=? and title=?',me.id,'💬 '+o.username).run();
+    return J({
+      me:me.id,other:{id:o.id,username:o.username,is_admin:Boolean(o.is_admin),avatar_url:o.avatar_key?base+'/files/'+o.avatar_key:null},
+      messages:msgs.results.reverse().map(x=>({id:x.id,body:x.body,order_id:x.order_id,kind:x.kind,created_at:x.created_at,mine:x.sender_id===me.id,img_url:x.img_key?base+'/files/'+x.img_key:null})),
+      orders:ord.results.map(x=>({id:x.id,app_name:x.app_name,amount:x.amount,currency:x.currency,ref:x.ref,status:x.status,created_at:x.created_at,i_am_seller:x.seller_id===me.id,label:money(x.amount,x.currency)}))
+    });
+  }
+  if((r=path.match(/^\/api\/dm\/([\w-]+)$/))&&m==='POST'){
+    need();
+    const o=await q(env,'select id,username from users where id=?',r[1]).first();
+    if(!o)throw new E(404,'User not found');
+    if(o.id===me.id)throw new E(400,'You cannot message yourself.');
+    const text=clip(body.body,1000),img=body.img_key?String(body.img_key):'';
+    if(img&&!mine(img,me.id))throw new E(400,'Invalid photo.');
+    if(!text&&!img)throw new E(400,'Type a message first.');
+    const kD='m:'+me.id,W=10*60*1000;
+    if(await limited(env,kD,30,W,now))throw new E(429,'You are sending messages too fast. Wait a few minutes.');
+    await bump(env,kD,W,now);
+    await q(env,'insert into dm_msgs(id,sender_id,recipient_id,body,img_key,created_at) values(?,?,?,?,?,?)',uid(),me.id,o.id,text,img||null,now).run();
+    await notifyDm(env,o.id,me.username,text||'📷 Photo',now);
+    return J({ok:true});
+  }
+
   // ---------- DOWNLOAD TICKET (paid apps) ----------
   if((r=path.match(/^\/api\/versions\/([\w-]+)\/ticket$/))&&m==='POST'){
     need();
@@ -441,6 +576,13 @@ export default{
       const miss=['DB','JWT_SECRET','GITHUB_TOKEN','GITHUB_OWNER','GITHUB_REPO'].filter(k=>!env[k]);
       if(miss.length)throw new E(500,'Setup incomplete. Missing: '+miss.join(', '));
       await ensureSchema(env);
+      if(path==='/go/whatsapp'){
+        const n=waNum(env);
+        if(!n)return new Response('WhatsApp support is not set up yet. Please send a message inside the app instead.',{status:503,headers:{'Content-Type':'text/plain'}});
+        const hid=hexClean(url.searchParams.get('h')),nm=String(url.searchParams.get('n')||'').replace(/[^\w .-]/g,'').slice(0,30);
+        const text='Hello HEXSTORE, I need a Hex key so I can sell my apps.'+(nm?' My username: '+nm+'.':'')+(hid?' My Hex ID: '+hid+'.':'');
+        return new Response(null,{status:302,headers:{Location:'https://wa.me/'+n+'?text='+encodeURIComponent(text),'Cache-Control':'no-store'}});
+      }
       if(path.startsWith('/files/'))return await file(req,env,sd(path.slice(7)),url);
       if(path.startsWith('/a/'))return await sharePage(env,url,sd(path.slice(3)));
       if(!path.startsWith('/api/'))return env.ASSETS?env.ASSETS.fetch(req):J({name:'HEXSTORE API',ok:true});
@@ -520,10 +662,16 @@ async function api(req,env,url,path,ctx){
     await bump(env,kR,36e5,now);
     const id=uid(),salt=hex(crypto.getRandomValues(new Uint8Array(16)));
     const name=clip(body.username,30)||email.split('@')[0].slice(0,30);
-    try{await q(env,'insert into users(id,email,pass_hash,username,is_admin,created_at) values(?,?,?,?,?,?)',id,email,salt+':'+await hashPw(pw,salt),name,first?1:0,now).run()}
+    const refCode=hexClean(body.ref),refUser=refCode?await q(env,'select id,username from users where hex_id=?',refCode).first():null;
+    const myHex=genHexId();
+    try{await q(env,'insert into users(id,email,pass_hash,username,is_admin,created_at,hex_id,referred_by) values(?,?,?,?,?,?,?,?)',id,email,salt+':'+await hashPw(pw,salt),name,first?1:0,now,myHex,refUser?refUser.id:null).run()}
     catch(e){if(/UNIQUE/i.test(String(e.message)))throw new E(409,'That email already has an account. Sign in instead.');throw e}
     const gift=await welcome(env,id,now);
-    return J({token:await mint(env,id),welcome:gift,user:pub({id,email,username:name,bio:'',is_admin:first?1:0,email_alerts:1,coins:gift?WELCOME_COINS:0},base)});
+    if(refUser){
+      await giveCoins(env,refUser.id,REFER_COINS,'referral','Referral bonus: '+name+' joined',id,now);
+      await tell(env,refUser.id,null,null,'🪙 You earned '+REFER_COINS+' coins',name+' joined HEXSTORE with your Hex ID.');
+    }
+    return J({token:await mint(env,id),welcome:gift,user:pub({id,email,username:name,bio:'',is_admin:first?1:0,email_alerts:1,coins:gift?WELCOME_COINS:0,hex_id:myHex},base)});
   }
   if(path==='/api/login'&&m==='POST'){
     const email=clip(body.email,120).toLowerCase(),ip=ipOf(req),kE='l:'+email+'|'+ip,kI='i:'+ip,W=15*60*1000;
