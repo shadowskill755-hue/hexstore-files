@@ -203,6 +203,114 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 #vimg{position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;max-width:none;transform-origin:center center;will-change:transform;-webkit-user-drag:none;opacity:0}
 .vclose{position:absolute;top:calc(env(safe-area-inset-top) + 12px);right:12px;width:46px;height:46px;border-radius:50%;background:#000a;border:1px solid #fff3;color:#fff;font-size:22px;display:grid;place-items:center;z-index:2;padding:0}
 .vcnt{position:absolute;top:calc(env(safe-area-inset-top) + 22px);left:16px;color:#fff;font-weight:700;z-index:2;text-shadow:0 1px 4px #000}
+
+/* ===== Hex Coins · Shop · Paid apps · Page effects ===== */
+.btn.gold{background:linear-gradient(135deg,#ffe07a,#f0a500);color:#2a1a00;border-color:transparent;box-shadow:0 6px 22px -8px #f0a500aa}
+.coinchip{flex:none;height:38px;padding:0 11px;border-radius:999px;border:1px solid #f0a50055;background:linear-gradient(135deg,#f0a50022,#ffe07a14);color:var(--tx);font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.coinchip b{font-weight:800}
+@media(max-width:380px){.coinchip{padding:0 8px;font-size:13px}}
+.pricechip{color:#f0a500;font-weight:800}
+.pricetag{display:inline-flex;align-items:center;gap:6px;border:1px solid #f0a50066;background:#f0a50018;color:var(--tx);border-radius:999px;padding:8px 14px;font-weight:800;font-size:15px;margin:0 8px 8px 0}
+.coincard{position:relative;overflow:hidden;border-radius:24px;padding:24px;margin:14px 0 16px;color:#2a1a00;background:linear-gradient(135deg,#ffe07a,#f0a500 60%,#e07b00);box-shadow:0 18px 40px -18px #f0a500}
+.coincard small{font-weight:700;opacity:.75;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+.coinbig{font-size:44px;font-weight:900;letter-spacing:-.02em;line-height:1.1;margin-top:4px}
+.coincard::after{content:"";position:absolute;top:-30%;bottom:-30%;width:34%;left:-50%;background:linear-gradient(100deg,transparent,#fff7,transparent);transform:skewX(-20deg);animation:btnsweep 3.6s ease-in-out infinite}
+.wcoin{font-size:76px;line-height:1;animation:coinspin 2.4s ease-in-out infinite;filter:drop-shadow(0 8px 20px #f0a500aa)}
+@keyframes coinspin{0%,100%{transform:rotateY(0) scale(1)}50%{transform:rotateY(180deg) scale(1.12)}}
+.pbox{margin-top:6px}
+.paybox{background:var(--sf2);border-radius:14px;padding:14px 16px;margin:10px 0}
+.paybox small{color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:12px}
+.paybox pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0;font:inherit;user-select:text;-webkit-user-select:text}
+.ord{border:1px solid var(--ln);border-radius:18px;padding:16px;margin:10px 0;background:var(--sf)}
+.ord .st2{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;padding:4px 10px;border-radius:999px;background:var(--sf2)}
+.st2.pending{background:#3a2d08;color:#f3c84b}.st2.confirmed{background:#14301c;color:#4fcb68}.st2.rejected{background:#3a1416;color:#f2555a}
+.tx{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--ln)}
+.tx b.pos{color:#4fcb68}.tx b.neg{color:var(--tx)}
+.keyrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--ln);font-family:ui-monospace,monospace;font-size:14px}
+.keyrow span{flex:1;min-width:0;word-break:break-all}.keyrow.used{opacity:.5}
+/* shop */
+.shgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.shi{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:14px;border-radius:18px;border:1px solid var(--ln);background:var(--sf);color:var(--tx);position:relative}
+.shi .shi-e{font-size:28px;line-height:1}.shi b{font-size:15px}.shi small{color:var(--mu);font-weight:700;font-size:13px}
+.shi.on{border-color:#f0a500;box-shadow:0 0 0 2px #f0a50055}
+.shi.owned small{color:#4fcb68}
+.shp{border-radius:22px;border:1px solid var(--ln);background:var(--bg);padding:14px;margin:12px 0}
+.shp .lbl{display:flex;justify-content:space-between;align-items:center;margin:0 4px 10px;color:var(--mu);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.fxprev{position:relative;isolation:isolate;overflow:hidden;border-radius:20px;padding:12px}
+.fxprev .shots{padding-bottom:0}.fxprev .shots>div{height:120px}
+.fxprev .fxstars{position:absolute;z-index:0}
+.fxprev.fx-glass::before{position:absolute}
+.cfgrow{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:14px 0 0}
+.cfgrow>span{font-weight:700}
+.cfgrow input[type=color]{width:58px;height:42px;padding:2px;border:1px solid var(--ln);border-radius:12px;background:var(--bg)}
+.mini-seg{display:flex;gap:6px}.mini-seg button{height:38px;padding:0 14px;border-radius:11px;border:1px solid var(--ln);background:transparent;font-weight:700}
+.mini-seg button.on{background:linear-gradient(135deg,#ffe07a,#f0a500);color:#2a1a00;border-color:transparent}
+/* ---- page effects ---- */
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes hxspin{to{--a:360deg}}
+.fxm{position:relative}
+.fx-nano .hdcard{position:relative;overflow:visible;border-color:transparent;box-shadow:0 0 26px -8px var(--nano-c1a)}
+.fx-nano .hdcard::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:var(--nano-w,2px);background:conic-gradient(from var(--a),transparent 0 48%,var(--nano-c1) 72%,var(--nano-c2) 92%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:hxspin var(--nano-sp,3.4s) linear infinite;pointer-events:none;z-index:3;filter:drop-shadow(0 0 5px var(--nano-c1))}
+.fx-nano .hdcard .stats{border-radius:0 0 23px 23px}
+.fx-shotlight .shots{padding-top:10px;padding-left:3px}
+.fx-shotlight .shots>div{position:relative;border-color:transparent;box-shadow:0 0 18px -4px var(--shotlight-c1a)}
+.fx-shotlight .shots>div::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--a),transparent 0 42%,var(--shotlight-c1) 68%,var(--shotlight-c2) 88%,transparent);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:hxspin var(--shotlight-sp,3.4s) linear infinite;pointer-events:none;z-index:3}
+.fx-aurora .hdcard{position:relative}
+.fx-aurora .hdcard>.pad{position:relative;z-index:1}
+.fxaur{position:absolute;left:0;right:0;top:0;height:200px;overflow:hidden;z-index:0;pointer-events:none;border-radius:24px 24px 0 0;-webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent)}
+.fxaur i{position:absolute;width:75%;height:150%;border-radius:50%;filter:blur(36px);opacity:.75;animation:aur var(--aurora-sp,3.4s) ease-in-out infinite alternate}
+.fxaur i:nth-child(1){background:var(--aurora-c1);left:-20%;top:-60%}
+.fxaur i:nth-child(2){background:var(--aurora-c2);right:-25%;top:-70%;animation-delay:-1.2s}
+.fxaur i:nth-child(3){background:var(--aurora-c1a);left:25%;top:-90%;animation-delay:-2.4s}
+@keyframes aur{0%{transform:translate(-12%,0) scale(1)}100%{transform:translate(18%,14%) scale(1.3)}}
+.fx-iconglow .hdcard .ico{box-shadow:0 0 0 2px var(--iconglow-c1),0 0 28px 4px var(--iconglow-c1a);animation:icopulse var(--iconglow-sp,3.4s) ease-in-out infinite}
+@keyframes icopulse{50%{box-shadow:0 0 0 2px var(--iconglow-c1),0 0 48px 12px var(--iconglow-c1a)}}
+.fx-glass .hdcard{background:linear-gradient(135deg,var(--glass-c1a),var(--glass-c2a)),var(--sf);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--glass-c1b);box-shadow:inset 0 1px 0 #ffffff22,0 18px 50px -22px var(--glass-c1)}
+.fx-glass::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(45vmax 45vmax at 12% 8%,var(--glass-c1a),transparent 60%),radial-gradient(50vmax 50vmax at 92% 28%,var(--glass-c2a),transparent 62%)}
+.fxstars{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.fxstars i{position:absolute;border-radius:50%;background:var(--stars-c1);box-shadow:0 0 7px var(--stars-c1);animation:twk var(--stars-sp,3.4s) ease-in-out infinite}
+.fxstars i:nth-child(3n){background:var(--stars-c2);box-shadow:0 0 7px var(--stars-c2)}
+@keyframes twk{0%,100%{opacity:.12;transform:scale(.6)}50%{opacity:1;transform:scale(1.5)}}
+.fx-holo .shots>div{position:relative}
+.fx-holo .shots>div::before{content:"";position:absolute;inset:-30% -60%;z-index:2;pointer-events:none;background:linear-gradient(115deg,transparent 38%,var(--holo-c1a) 45%,#ffffff66 50%,var(--holo-c2a) 55%,transparent 62%);animation:holosweep var(--holo-sp,3.4s) ease-in-out infinite}
+@keyframes holosweep{0%{transform:translateX(-55%)}65%,100%{transform:translateX(55%)}}
+.crownb{display:inline-flex;align-items:center;gap:5px;vertical-align:middle;margin-left:10px;padding:4px 11px 4px 7px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.07em;color:#2a1a00;background:linear-gradient(110deg,var(--crown-c1),var(--crown-c2),var(--crown-c1));background-size:200% 100%;animation:crownshine 2.8s linear infinite;box-shadow:0 3px 16px var(--crown-c1a);-webkit-text-fill-color:#2a1a00}
+.crownb svg{width:16px;height:16px;fill:currentColor;stroke:none;animation:crownbob 2s ease-in-out infinite}
+@keyframes crownshine{to{background-position:-200% 0}}
+@keyframes crownbob{50%{transform:translateY(-2px) rotate(-6deg)}}
+.fx-accent{--ac:var(--accent-c1)}
+.fx-accent .btn:not(.o):not(.ok):not(.gold):not([disabled]),.fx-accent .btn.g{background:linear-gradient(135deg,var(--accent-c1),var(--accent-c2));color:#fff}
+.fx-accent .prog i{background:linear-gradient(90deg,var(--accent-c1),var(--accent-c2))}
+.fx-accent .tag,.fx-accent .ver,.fx-accent .pill{border-color:var(--accent-c1)}
+.fx-accent .sec h2{display:flex;align-items:center;gap:10px}
+.fx-accent .sec h2::before{content:"";width:5px;height:22px;border-radius:3px;background:linear-gradient(var(--accent-c1),var(--accent-c2))}
+.fx-btnshine .fxdl .btn:not(.ok):not(.o):not([disabled]){position:relative;overflow:hidden;background:linear-gradient(135deg,var(--btnshine-c1),var(--btnshine-c2));color:#fff;box-shadow:0 8px 26px -6px var(--btnshine-c1a)}
+.fx-btnshine .fxdl .btn:not(.ok):not(.o):not([disabled])::after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-60%;background:linear-gradient(100deg,transparent,#ffffff77,transparent);transform:skewX(-20deg);animation:btnsweep var(--btnshine-sp,3.4s) ease-in-out infinite}
+@keyframes btnsweep{0%{left:-60%}60%,100%{left:135%}}
+.fx-rainbow .apptitle{background:linear-gradient(90deg,var(--rainbow-c1),var(--rainbow-c2),var(--rainbow-c1));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rbflow var(--rainbow-sp,3.4s) linear infinite}
+@keyframes rbflow{to{background-position:-200% 0}}
+.cfp{position:fixed;top:0;left:0;width:9px;height:14px;border-radius:2px;z-index:300;pointer-events:none;animation:cfall 1.7s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes cfall{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+/* welcome intro */
+.fxintro{position:fixed;inset:0;z-index:260;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;color:#fff;padding:24px;background:radial-gradient(70vmax 70vmax at 50% 38%,var(--ic2a),#050507 68%),#050507;animation:fxiIn .5s ease both;transition:opacity .5s ease}
+.fxintro.out{opacity:0;pointer-events:none}
+@keyframes fxiIn{from{opacity:0}to{opacity:1}}
+.fxi-ic{position:relative;z-index:2;animation:fxiPop .9s cubic-bezier(.18,.89,.32,1.25) both .1s}
+.fxi-ic .ico{width:120px!important;height:120px!important;border-radius:30px!important;box-shadow:0 0 0 3px var(--ic1),0 0 60px 10px var(--ic1a)}
+@keyframes fxiPop{from{transform:scale(.2) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}
+.fxi-rings{position:absolute;left:50%;top:38%;width:0;height:0;z-index:1}
+.fxi-rings i{position:absolute;left:-90px;top:-90px;width:180px;height:180px;border-radius:50%;border:2px solid var(--ic1);opacity:0;animation:fxiRing 2.2s ease-out infinite}
+.fxi-rings i:nth-child(2){animation-delay:.6s;border-color:var(--ic2)}.fxi-rings i:nth-child(3){animation-delay:1.2s}
+@keyframes fxiRing{0%{transform:scale(.6);opacity:.9}100%{transform:scale(3.2);opacity:0}}
+.fxi-name{z-index:2;font-size:30px;font-weight:900;letter-spacing:-.01em;margin-top:14px;animation:fxiUp .7s ease both .5s}
+.fxi-msg{z-index:2;font-size:19px;font-weight:600;min-height:28px;max-width:90vw;color:#ffffffd9}
+.fxi-msg span{display:inline-block;opacity:0;animation:fxiL .6s ease forwards}
+@keyframes fxiL{from{opacity:0;transform:translateY(14px) scale(.9);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes fxiUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.fxi-bar{z-index:2;width:min(260px,60vw);height:4px;border-radius:99px;background:#ffffff22;overflow:hidden;margin-top:18px}
+.fxi-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ic1),var(--ic2));animation:fxiBar var(--idur,3s) linear forwards}
+@keyframes fxiBar{to{width:100%}}
+.fxi-skip{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 26px);font-size:13px;color:#ffffff77}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#e58f00"/></linearGradient></defs></svg>
 
@@ -272,7 +380,7 @@ function toggleTheme(){
   var cur=document.documentElement.dataset.theme==='light'?'':'light';
   document.documentElement.dataset.theme=cur;
   store.set('hx_theme',cur);
-  draw();
+  keep(draw);
 }
 
 function api(path,o){o=o||{};var h={};var t=store.get('hx');if(t)h.Authorization='Bearer '+t;var b;if(o.body){h['Content-Type']='application/json';b=JSON.stringify(o.body)}
@@ -293,7 +401,7 @@ function up(f,kind,cb){
  return run();
 }
 
-function ico(a,big){var st=big?'width:112px;height:112px;border-radius:26px;font-size:30px;':'';if(a.icon_url)return '<div class="ico" style="'+st+'"><img src="'+esc(a.icon_url)+'" alt=""></div>';var g=G[(a.name||'x').length%6].split(',');return '<div class="ico" style="'+st+'background:linear-gradient(135deg,'+g[0]+','+g[1]+')">'+esc((a.name||'?').slice(0,2).toUpperCase())+'</div>'}
+function ico(a,big){var st=big?'width:112px;height:112px;border-radius:26px;font-size:30px;':'';if(a.icon_url)return '<div class="ico" style="'+st+'"><img src="'+esc(a.icon_url)+'"'+(big?'':' loading="lazy" decoding="async"')+' alt=""></div>';var g=G[(a.name||'x').length%6].split(',');return '<div class="ico" style="'+st+'background:linear-gradient(135deg,'+g[0]+','+g[1]+')">'+esc((a.name||'?').slice(0,2).toUpperCase())+'</div>'}
 
 function getDevBadges(u){
   var res='';if(!u)return res;
@@ -312,12 +420,12 @@ function getFollowersCount(u, raw){
 
 function row(a){
   var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_followers,downloads:a.owner_downloads,is_prime:a.owner_is_prime});
-  return '<button class="row" data-open="'+esc(a.id)+'">'+ico(a)+'<span style="flex:1;min-width:0"><b>'+esc(a.name)+(a.owner_is_prime?primeStar():'')+'</b><small class="by">by '+esc(a.owner_name||'')+devBadges+' · '+esc(a.category)+'</small>'+(a.summary?'<small class="sum">'+esc(a.summary)+'</small>':'')+'<small>'+(INST[a.id]?(a.version_code&&a.version_code>INST[a.id].c?'<span class="st" style="color:#e0a82e">Update</span>':'<span class="st" style="color:#4fcb68">Installed ✅</span>')+'<span class="dot">•</span>':'')+(a.rating_count?'<span class="st">★ '+a.rating+'</span><span class="dot">•</span>':'')+'⤓ '+a.downloads+(a.size?' <span class="dot">•</span> '+fmt(a.size):'')+'</small></span>'+(a.status!='published'?'<span class="badge">'+(a.status=='draft'?'DRAFT':a.status=='pending'?'IN REVIEW':'REJECTED')+'</span>':'')+'</button>';
+  return '<button class="row" data-open="'+esc(a.id)+'">'+ico(a)+'<span style="flex:1;min-width:0"><b>'+esc(a.name)+(a.owner_is_prime?primeStar():'')+'</b><small class="by">by '+esc(a.owner_name||'')+devBadges+' · '+esc(a.category)+'</small>'+(a.summary?'<small class="sum">'+esc(a.summary)+'</small>':'')+'<small>'+(INST[a.id]?(a.version_code&&a.version_code>INST[a.id].c?'<span class="st" style="color:#e0a82e">Update</span>':'<span class="st" style="color:#4fcb68">Installed ✅</span>')+'<span class="dot">•</span>':'')+(a.rating_count?'<span class="st">★ '+a.rating+'</span><span class="dot">•</span>':'')+priceChip(a)+'⤓ '+a.downloads+(a.size?' <span class="dot">•</span> '+fmt(a.size):'')+'</small></span>'+(a.status!='published'?'<span class="badge">'+(a.status=='draft'?'DRAFT':a.status=='pending'?'IN REVIEW':'REJECTED')+'</span>':'')+'</button>';
 }
 
 function head(){
   var u=S.user,devBadges=getDevBadges(u);
-  return '<div class="top"><button class="logo" data-go="home">'+ic('box')+'</button><button class="search-btn" id="open-yt-search">'+ic('search')+'<span>'+esc(S.q||'Search apps, games, tools...')+'</span></button>'+(u?'<button class="ib" data-go="notif" style="position:relative">'+ic('bell')+'<span id="bdg" style="position:absolute;top:0;right:-2px;background:#f2555a;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 6px;'+(S.unread?'':'display:none')+'">'+S.unread+'</span></button>':'')+'<button class="ib" data-theme>'+ic('sun')+'</button><button class="av" data-pop>'+(u?(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':esc(u.username.slice(0,2).toUpperCase())):ic('user'))+'</button></div>'+(S.pop?'<div class="pop">'+(u?'<div class="h"><b style="font-size:19px">'+esc(u.username)+devBadges+'</b><br><small>'+esc(u.email)+'</small></div><button data-go="profile">'+ic('user')+'Profile</button><button data-go="upload">'+ic('up')+'Upload app</button><button data-go="settings">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button data-go="moderation">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="red" data-out>'+ic('out')+'Sign out</button>':'<button data-go="login">'+ic('user')+'Sign in / Create account</button><button data-go="settings">'+ic('gear')+'Settings</button>')+'</div>':'');
+  return '<div class="top"><button class="logo" data-go="home">'+ic('box')+'</button><button class="search-btn" id="open-yt-search">'+ic('search')+'<span>'+esc(S.q||'Search apps, games, tools...')+'</span></button>'+(u?'<button class="ib" data-go="notif" style="position:relative">'+ic('bell')+'<span id="bdg" style="position:absolute;top:0;right:-2px;background:#f2555a;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 6px;'+(S.unread?'':'display:none')+'">'+S.unread+'</span></button>':'')+(u?'<button class="coinchip" data-go="wallet" aria-label="Wallet">🪙 <b>'+(u.coins==null?'':fmtN(u.coins))+'</b></button>':'')+'<button class="ib" data-theme>'+ic('sun')+'</button><button class="av" data-pop>'+(u?(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':esc(u.username.slice(0,2).toUpperCase())):ic('user'))+'</button></div>'+(S.pop?'<div class="pop">'+(u?'<div class="h"><b style="font-size:19px">'+esc(u.username)+devBadges+'</b><br><small>'+esc(u.email)+'</small></div><button data-go="profile">'+ic('user')+'Profile</button><button data-go="upload">'+ic('up')+'Upload app</button><button data-go="wallet">'+ic('coin')+'Wallet</button><button data-go="shop">'+ic('shop')+'Shop</button><button data-go="settings">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button data-go="moderation">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="red" data-out>'+ic('out')+'Sign out</button>':'<button data-go="login">'+ic('user')+'Sign in / Create account</button><button data-go="settings">'+ic('gear')+'Settings</button>')+'</div>':'');
 }
 
 function foot(){return '<div class="foot"><nav><a data-go="home">Home</a><a data-go="upload">Publish your app</a><a data-go="settings">Settings &amp; Help</a><a data-go="terms">Terms</a>'+(S.user?'<a data-go="profile">Profile</a>':'<a data-go="login">Sign in</a>')+'</nav><p>© 2026 HEXSTORE — Creator: <b>mrdakroma</b></p></div>'}
@@ -327,19 +435,19 @@ function catBar(){return '<div class="cats">'+CATS.map(function(c){return '<butt
 function home(){if(!S.apps)return wait().replace('<main>','<main>'+catBar());return '<main>'+catBar()+'<h1>'+(S.q?'Results':'Discover apps')+'</h1><p class="mu">'+(S.q?esc(S.q):'Games, tools, and indie apps on HEXSTORE.')+'</p>'+(S.apps.length?S.apps.map(row).join(''):'<p class="mu" style="padding:40px 0;text-align:center">'+(S.hcat!='All'?'No apps in '+esc(S.hcat)+' yet.':'No apps found.')+'</p>')+foot()+'</main>'}
 function login(){var r=S.reg;return '<main style="max-width:480px"><h1>'+(r?'Create account':'Sign in')+'</h1><p class="mu">'+(r?'Join HEXSTORE to publish apps and get update alerts.':'Welcome back.')+'</p><div class="card pad"><label class="l" style="margin-top:0">Email</label><input type="email" id="em" autocapitalize="off" autocomplete="email"><label class="l">Password</label><input type="password" id="pw" autocomplete="'+(r?'new-password':'current-password')+'">'+(r?'<label class="l">Username (optional)</label><input type="text" id="un">':'')+'<p class="hint" id="lm" style="color:#f2555a;min-height:22px"></p><button class="btn f" id="go" data-auth>'+(r?'Create account':'Sign in')+'</button><button class="btn o f" style="margin-top:12px" data-swap>'+(r?'I already have an account':'Create a new account')+'</button></div></main>'}
 
-function detail(){if(!S.det)return wait();var d=S.det,a=d.app,vs=d.versions,own=d.is_owner||(S.user&&S.user.is_admin),v=vs.filter(function(x){return x.status=='approved'})[0],dist={};d.dist.forEach(function(x){dist[x.rating]=x.n});
+function detail0(){if(!S.det)return wait();var d=S.det,a=d.app,vs=d.versions,own=d.is_owner||(S.user&&S.user.is_admin),v=vs.filter(function(x){return x.status=='approved'})[0],dist={};d.dist.forEach(function(x){dist[x.rating]=x.n});
 var by={username:a.owner_name,avatar_url:a.owner_avatar},desc=a.description,short=desc.length>180?desc.slice(0,180).replace(/\s+\S*$/,'')+'…':desc;
 var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_followers,downloads:a.owner_downloads,is_prime:a.owner_is_prime});
 var note=a.status=='published'?'':'<div class="note"><span style="font-size:22px">'+ic('eye')+'</span><div><b style="font-size:19px">'+(a.status=='rejected'?'Not approved':a.status=='pending'?'In review':'Draft')+'</b><br>'+(a.status=='rejected'?'Reason: '+esc(a.reject_reason||'No reason given')+'. Edit the app or upload a fixed APK, then submit it again.':a.status=='pending'?'A moderator is checking this app. It goes live once approved.':'Only you can see this app. Submit it for review when you are ready.')+'</div></div>';
 var showV=vs.length>1||(own&&vs.some(function(x){return x.status!='approved'}));
 var vIdx=v?vs.indexOf(v):-1,vsShow=S.allVer?vs:vs.slice(0,vIdx<0?1:vIdx+1);
 return '<main><button class="back" data-go="home">'+ic('back')+'Back</button>'+note+
-'<div class="card"><div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px">'+esc(a.name)+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+devBadges+'</button> · '+esc(a.category)+'</div>'+(a.owner_is_prime?primePill():'')+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+
-'<div style="margin-top:14px"><div id="dlbox" style="display:flex;width:100%">'+dlBox(a,v)+'</div><div style="display:flex;gap:10px;margin-top:10px">'+(d.is_owner?'':'<button class="sq" data-follow style="flex:1;width:auto;color:'+(d.following?'var(--ac)':'inherit')+'">'+ic('bell')+'</button>')+'<button class="sq" data-fav style="flex:1;width:auto;'+(d.favorited?'color:#f2555a;':'')+'">'+ic('heart')+'</button><button class="sq" data-share style="flex:1;width:auto">'+ic('share')+'</button></div></div>'+
+'<div class="card hdcard">'+fxAurHtml()+'<div class="pad">'+ico(a,1)+'<h1 style="margin:22px 0 6px;font-size:32px"><span class="apptitle">'+esc(a.name)+'</span>'+crownHtml()+'</h1>'+(a.summary?'<p style="margin:0 0 10px;font-size:17px">'+esc(a.summary)+'</p>':'')+'<div class="mu" style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">by <button class="view" data-userpopup="'+esc(a.owner_id)+'" style="display:inline-flex;align-items:center;gap:8px;padding:0;text-decoration:none">'+pic(by,24,10)+'<b>'+esc(a.owner_name)+'</b>'+devBadges+'</button> · '+esc(a.category)+'</div>'+(a.owner_is_prime?primePill():'')+(a.origin?'<span class="pill">'+ic('box')+(a.origin=='mod'?'Mod':'Original')+'</span>':'')+(a.is_exclusive?'<span class="pill">Exclusive</span>':'')+pricePill(a)+
+'<div style="margin-top:14px"><div id="dlbox" class="fxdl" style="display:flex;width:100%">'+dlBox(a,v)+'</div><div style="display:flex;gap:10px;margin-top:10px">'+(d.is_owner?'':'<button class="sq" data-follow style="flex:1;width:auto;color:'+(d.following?'var(--ac)':'inherit')+'">'+ic('bell')+'</button>')+'<button class="sq" data-fav style="flex:1;width:auto;'+(d.favorited?'color:#f2555a;':'')+'">'+ic('heart')+'</button><button class="sq" data-share style="flex:1;width:auto">'+ic('share')+'</button></div></div>'+
 (own?'<div style="display:grid;gap:10px;margin-top:14px"><button class="btn o f" data-nv>'+ic('up')+'Upload new version</button><button class="btn o f" data-edit>'+ic('edit')+'Edit app</button>'+(a.status=='draft'||a.status=='rejected'?'<button class="btn o f" data-submit>Submit for review</button>':'')+'<button class="btn o f" data-del style="color:#f2555a">'+(S.delArm?'Tap again to delete':'Delete app')+'</button></div>':'')+
 (d.is_owner?'':'<p class="hint" style="margin:12px 0 0">'+(d.following?'You will be notified about new versions.':'Tap the bell to get notified about new versions.')+'</p>')+'</div>'+
 '<div class="stats"><div><b>'+(a.rating||'–')+'</b>'+(a.rating_count?a.rating_count+' review'+(a.rating_count>1?'s':''):'No reviews')+'</div><div><b>'+a.downloads+'</b>Downloads</div><div><b>'+(v?fmt(v.size):'–')+'</b>Size</div></div></div>'+
-(a.shots.length?'<div class="sec"><h2>Screenshots</h2><div class="shots">'+a.shots.map(function(u,i){return '<div data-shot="'+i+'" style="cursor:zoom-in"><img src="'+esc(u)+'" alt=""></div>'}).join('')+'</div></div>':'')+
+(a.shots.length?'<div class="sec"><h2>Screenshots</h2><div class="shots">'+a.shots.map(function(u,i){return '<div data-shot="'+i+'" style="cursor:zoom-in"><img src="'+esc(u)+'" loading="lazy" decoding="async" alt=""></div>'}).join('')+'</div></div>':'')+
 '<div class="sec"><h2>About this app</h2>'+(a.summary?'<p style="font-size:18px;font-weight:600;margin:0 0 8px">'+esc(a.summary)+'</p>':'')+'<p style="font-size:18px;line-height:1.7;margin:0 0 4px;white-space:pre-wrap">'+esc(short)+'</p><button class="view" data-about>View</button><div style="margin-top:8px">'+a.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div></div>'+
 (v?'<div class="sec"><h2>What\'s new</h2><p><span class="ver">v'+esc(v.version_name)+'</span><span class="mu">· '+fd(v.created_at)+'</span></p><p style="font-size:18px;line-height:1.7;white-space:pre-wrap">'+esc(v.changelog||'Initial release')+'</p></div>'+
 '<div class="sec"><h2>About this version</h2>'+[['tag','Version',esc(v.version_name)+' ('+v.version_code+')'],['box','Size',fmt(v.size)],['dl','Downloads',v.downloads],['cal','Updated',fd(v.created_at)]].map(function(r){return '<div class="info"><span>'+ic(r[0])+r[1]+'</span><b>'+r[2]+'</b></div>'}).join('')+'</div>':'')+
@@ -359,7 +467,7 @@ function profile(){if(!S.me)return wait();var u=S.me.user,st=S.me.stats,list=S.t
 var devBadges=getDevBadges(u);
 var folDisplay=getFollowersCount(u, st.followers);
 return '<main><div class="card pad" style="padding:26px"><div style="margin-bottom:20px">'+pic(u,120,40)+'</div><h1 style="margin:0 0 8px;font-size:32px;display:flex;align-items:center">'+esc(u.username)+devBadges+'</h1>'+(u.bio?'<p style="margin:0 0 12px;white-space:pre-wrap">'+esc(u.bio)+'</p>':'')+'<div class="mu" style="display:flex;gap:10px;align-items:center;margin-bottom:12px">'+ic('cal')+'Joined '+fd(u.created_at)+(u.is_admin?' <span class="dot">·</span> Admin':'')+'</div><div class="mu" style="display:flex;gap:22px;margin-bottom:22px"><span>'+ic('box')+' '+st.apps+'</span><span>'+ic('dl')+' '+st.downloads+'</span><span>'+ic('heart')+' '+st.favorites+'</span></div>'+
-'<div style="display:flex;gap:18px;margin-bottom:18px"><button class="view" data-devtab="followers" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+folDisplay+'</b> <span class="mu" style="font-weight:400">followers</span></button><button class="view" data-devtab="following" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+(st.following||0)+'</b> <span class="mu" style="font-weight:400">following</span></button></div><button class="btn f" data-go="upload" style="margin-bottom:12px">'+ic('up')+'Upload app</button><button class="btn o f" data-dev="'+u.id+'" style="margin-bottom:12px">'+ic('eye')+'View public profile</button><button class="btn o f" data-editprofile style="margin-bottom:12px">'+ic('edit')+'Edit profile</button><button class="btn o f" data-go="settings" style="margin-bottom:12px">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button class="btn o f" data-go="moderation" style="margin-bottom:12px">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="btn o f" data-out>'+ic('out')+'Sign out</button></div>'+
+'<div style="display:flex;gap:18px;margin-bottom:18px"><button class="view" data-devtab="followers" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+folDisplay+'</b> <span class="mu" style="font-weight:400">followers</span></button><button class="view" data-devtab="following" data-devid="'+u.id+'" style="text-decoration:none;padding:8px 14px;background:var(--sf2);border-radius:12px"><b>'+(st.following||0)+'</b> <span class="mu" style="font-weight:400">following</span></button></div><button class="btn f" data-go="upload" style="margin-bottom:12px">'+ic('up')+'Upload app</button><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><button class="btn gold f" data-go="wallet">'+ic('coin')+'Wallet</button><button class="btn o f" data-go="shop">'+ic('shop')+'Shop</button></div><button class="btn o f" data-dev="'+u.id+'" style="margin-bottom:12px">'+ic('eye')+'View public profile</button><button class="btn o f" data-editprofile style="margin-bottom:12px">'+ic('edit')+'Edit profile</button><button class="btn o f" data-go="settings" style="margin-bottom:12px">'+ic('gear')+'Settings</button>'+(u.is_admin?'<button class="btn o f" data-go="moderation" style="margin-bottom:12px">'+ic('shield')+'Moderation'+(S.qn?' ('+S.qn+')':'')+'</button>':'')+'<button class="btn o f" data-out>'+ic('out')+'Sign out</button></div>'+
 '<div class="tabs">'+[['apps','Apps',S.mine.length],['fav','Favorites',S.fav.length]].map(function(t){return '<button data-tab="'+t[0]+'" class="'+(S.tab==t[0]?'on':'')+'">'+t[1]+' <em>'+t[2]+'</em></button>'}).join('')+'</div>'+(list.length?list.map(row).join(''):'<p class="mu" style="text-align:center;padding:40px 0">Nothing here yet.</p>')+foot()+'</main>'}
 
 function settings(){
@@ -369,7 +477,7 @@ return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><h1
 '<div class="card pad"><h2 style="font-size:22px;margin-bottom:6px">Guide &amp; Tour</h2><p class="mu" style="margin:0 0 16px">Want to see the intro animation and feature guide again?</p><button class="btn o f" data-replayguide>'+ic('box')+'Replay Welcome Tutorial</button></div>'+foot()+'</main>';
 }
 
-function notif(){if(!S.notes)return wait();return '<main><h1>Notifications</h1>'+(S.notes.length?'<div style="display:flex;justify-content:flex-end;margin:0 0 8px"><button class="btn o" data-clrnotif style="height:42px;padding:0 16px;font-size:15px">'+(S.clrArm?'Tap again to clear all':'Clear all')+'</button></div>':'')+(S.notes.length?S.notes.map(function(n){return '<button class="row" '+(n.from_user?(n.title.indexOf('📢')==0?'data-pcomm="':'data-userpopup="')+esc(n.from_user)+'"':(n.title.indexOf('📩')==0?'data-go="moderation"':'data-open="'+esc(n.app_id)+'"'))+' style="'+(n.is_read?'':'background:var(--sf);border-radius:16px;padding:14px;margin:6px 0;')+'"><span class="ico" style="background:var(--sf2);color:var(--ac);font-size:26px">'+ic(n.from_user?'user':'bell')+'</span><span style="flex:1;min-width:0"><b style="font-size:17px">'+esc(n.title)+'</b><small style="display:block">'+esc(n.body)+'</small><small>'+fd(n.created_at)+'</small></span></button>'}).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No notifications yet.<br>Open an app and tap the bell to follow it.</p>')+foot()+'</main>'}
+function notif(){if(!S.notes)return wait();return '<main><h1>Notifications</h1>'+(S.notes.length?'<div style="display:flex;justify-content:flex-end;margin:0 0 8px"><button class="btn o" data-clrnotif style="height:42px;padding:0 16px;font-size:15px">'+(S.clrArm?'Tap again to clear all':'Clear all')+'</button></div>':'')+(S.notes.length?S.notes.map(function(n){return '<button class="row" '+(n.from_user?(n.title.indexOf('📢')==0?'data-pcomm="':'data-userpopup="')+esc(n.from_user)+'"':(n.title.indexOf('📩')==0?'data-go="moderation"':(/^(🪙|💵)/.test(n.title)?'data-go="wallet"':'data-open="'+esc(n.app_id)+'"')))+' style="'+(n.is_read?'':'background:var(--sf);border-radius:16px;padding:14px;margin:6px 0;')+'"><span class="ico" style="background:var(--sf2);color:var(--ac);font-size:26px">'+ic(n.from_user?'user':'bell')+'</span><span style="flex:1;min-width:0"><b style="font-size:17px">'+esc(n.title)+'</b><small style="display:block">'+esc(n.body)+'</small><small>'+fd(n.created_at)+'</small></span></button>'}).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No notifications yet.<br>Open an app and tap the bell to follow it.</p>')+foot()+'</main>'}
 
 function newver(){if(!S.det||S.det.app.id!=S.id)return wait();var a=S.det.app,v=S.det.versions[0];return '<main style="padding-bottom:150px"><button class="back" data-open="'+esc(a.id)+'">'+ic('back')+'Back to app</button><h1>New version</h1><p class="mu" style="font-size:18px">'+esc(a.name)+(v?' · current v'+esc(v.version_name):'')+'</p><div class="card pad"><h2 style="font-size:22px">New APK</h2><div id="nvbox"></div><label class="l">Version <span class="req">*</span></label><input type="text" data-k="nver" placeholder="e.g. 1.1" value="'+esc(S.nver)+'"><label class="l">What\'s new</label><textarea data-k="nlog" placeholder="What changed in this version?">'+esc(S.nlog)+'</textarea><p class="hint">'+(a.status=='published'?'Everyone following this app will be notified.':'This app is not published yet, so nobody is notified.')+'</p></div></main><div class="dock"><p id="nvm">'+(S.napk?'Ready to upload.':'Choose the new APK to continue.')+'</p><div><button class="btn f" data-nvsubmit '+(S.napk?'':'disabled')+'>Upload &amp; notify followers</button></div></div>'}
 function paintNv(){var b=$('#nvbox');if(!b)return;b.innerHTML=S.napk?'<div class="file">'+ic('box').replace('<svg','<svg style="font-size:44px"')+'<div style="flex:1;min-width:0"><b style="word-break:break-all">'+esc(S.napk.name)+'</b><span class="mu">'+fmt(S.napk.size)+'</span></div><button class="ib" data-rm="napk">'+ic('x')+'</button></div>':'<label class="drop">'+ic('cloud')+'<b>Choose new APK</b>Android package (.apk), max 100 MB<input type="file" id="fn" accept=".apk,application/vnd.android.package-archive" hidden></label>';var f=$('#fn');if(f)f.onchange=function(){var x=f.files[0];if(x){if(!/\.apk$/i.test(x.name))return toast('Choose an .apk file');S.napk={name:x.name,size:x.size,file:x};draw()}}}
@@ -380,7 +488,7 @@ var polling=0,pollInit=0;
 function poll(){
  if(polling||!S.user||!store.get('hx'))return;
  polling=1;
- api('/api/notifications').then(function(j){
+ api('/api/notifications?peek=1').then(function(j){
   polling=0;
   var n=j.unread,t=j.notifications&&j.notifications[0],seen=store.get('hx_lastn');
   if(t&&t.id!==seen){
@@ -426,13 +534,13 @@ var qapps=S.queue.length?S.queue.map(function(it,i){var a=it.app,v=it.version;re
 
 var qtick=S.tickets&&S.tickets.length?S.tickets.map(function(tk){return '<div class="mod"><span class="tagl" style="background:#134058;color:#b9dcee">HELP TICKET</span><b style="font-size:18px;display:block">'+esc(tk.subject)+'</b><span class="mu">From: '+esc(tk.name||'User')+' ('+esc(tk.email)+') · '+fd(tk.created_at)+'</span><p style="white-space:pre-wrap;margin:12px 0">'+esc(tk.message)+'</p><button class="btn o f" data-resolveticket="'+tk.id+'">Mark Resolved &amp; Close</button></div>'}).join(''):'<p class="mu" style="padding:20px 0;text-align:center">No pending support messages.</p>';
 
-return '<main><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Moderation</h1><p class="mu" style="font-size:18px">Review submitted apps, updates, and community help tickets.</p><h2 style="margin-top:24px">App Review Queue</h2>'+qapps+'<h2 style="margin-top:34px">Help Center Messages</h2>'+qtick+'</main>'}
+return '<main><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Moderation</h1><p class="mu" style="font-size:18px">Review submitted apps, updates, and community help tickets.</p><h2 style="margin-top:24px">App Review Queue</h2>'+qapps+'<h2 style="margin-top:34px">Help Center Messages</h2>'+qtick+keysSection()+'</main>'}
 
 function edit(){if(!S.det||S.det.app.id!=S.id||S.editId!=S.id)return wait();return formPage()}
 function formPage(){var ed=!!S.editId,adm=S.user&&S.user.is_admin;return '<main style="padding-bottom:170px"><button class="back" '+(ed?'data-open="'+esc(S.editId)+'"':'data-go="profile"')+'>'+ic('back')+(ed?'Back to app':'Back to profile')+'</button><h1>'+(ed?'Edit app':'Upload app')+'</h1><p class="mu" style="font-size:18px">'+(ed?'Change how your app appears in the store.':'Publish a new app to HEXSTORE.'+(adm?'':' A moderator reviews it before it goes live.'))+'</p>'+
 '<div class="card">'+(ed?'':'<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">App bundle</h2><p class="mu" style="margin-top:0">The APK people download and install (max 100 MB).</p><div id="apkbox"></div></div>')+
 '<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Origin</h2><p class="mu" style="margin-top:0">Where this build comes from. Required to publish.</p><div class="opt" data-or="original"><i></i><div><b>Original</b><span>An unmodified build of someone else\'s app, or your own.</span></div></div><div class="opt" data-or="mod"><i></i><div><b>Mod</b><span>A modified build.</span></div></div></div>'+
-'<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Icon</h2><p class="mu" style="margin-top:0">Shown across the store. Square works best.</p><div id="icobox"></div></div>'+
+pricingSection()+'<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Icon</h2><p class="mu" style="margin-top:0">Shown across the store. Square works best.</p><div id="icobox"></div></div>'+
 '<div class="pad"><h2 style="margin-bottom:2px;font-size:22px">Details</h2><p class="mu" style="margin-top:0">How your app appears on its page.</p>'+
 '<label class="l">App name</label><input type="text" data-k="name" placeholder="e.g. My Awesome App" value="'+esc(S.name)+'">'+(ed?'':'<p class="hint">Leave empty to use the APK file name.</p>')+
 '<label class="l" style="display:flex;justify-content:space-between">Short description<span class="mu" id="scnt" style="font-weight:400">'+S.sum.length+'/50</span></label><input type="text" data-k="sum" maxlength="50" placeholder="One line that sells your app" value="'+esc(S.sum)+'">'+
@@ -444,13 +552,14 @@ function formPage(){var ed=!!S.editId,adm=S.user&&S.user.is_admin;return '<main 
 '<label class="tg"><input type="checkbox" data-k="excl"'+(S.excl?' checked':'')+'><span><b style="font-size:18px">Exclusive</b><br><span class="mu">The app isn\'t available on Google Play.</span></span></label></div>'+
 '<div class="pad" style="border-top:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Screenshots <span class="req">*</span></h2><p class="mu" style="margin-top:0">Add at least 1, up to 8. You can crop each one: vertical for apps, horizontal for games. Tap ✕ to remove.</p><label class="drop">'+ic('img')+'<b>Add screenshots</b>PNG or JPG<input type="file" id="sh" accept="image/*" multiple hidden></label><div class="shots" id="shl" style="margin-top:14px"></div></div></div>'+
 '<div class="card pad"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:22px">Preview</h2><span class="badge" style="background:var(--sf2);border:0;font-weight:600;letter-spacing:0">Store view</span></div><div id="pvb" style="margin-top:18px"></div><p class="mu" style="text-align:center;margin:16px 0 0">This is how your app will appear to users</p></div>'+foot()+'</main><div id="dk"></div>'}
-function resetForm(){S.editId=null;S.name=S.sum=S.cat=S.desc=S.log=S.src=S.origin='';S.cat='Games';S.excl=0;S.ver='1.0';S.apk=S.icon=S.eicon=null;S.shots=[];S.eshots=[]}
-function initEdit(){var a=S.det.app;S.editId=a.id;S.name=a.name;S.sum=a.summary||'';S.cat=a.category;S.desc=a.description;S.src=a.source_url||'';S.excl=a.is_exclusive?1:0;S.origin=a.origin||'';S.apk=S.icon=null;S.shots=[];S.eicon=a.icon_key?{key:a.icon_key,url:a.icon_url,name:'Current icon'}:null;S.eshots=a.shot_keys.map(function(k,i){return{key:k,url:a.shots[i]}})}
+function resetForm(){S.editId=null;S.name=S.sum=S.cat=S.desc=S.log=S.src=S.origin='';S.cat='Games';S.excl=0;S.ver='1.0';S.apk=S.icon=S.eicon=null;S.shots=[];S.eshots=[];loadPrice(null);S.pendId=null;S.pendSt='';S.ckey=''}
+function initEdit(){var a=S.det.app;S.editId=a.id;S.name=a.name;S.sum=a.summary||'';S.cat=a.category;S.desc=a.description;S.src=a.source_url||'';S.excl=a.is_exclusive?1:0;S.origin=a.origin||'';S.apk=S.icon=null;S.shots=[];loadPrice(a);S.eicon=a.icon_key?{key:a.icon_key,url:a.icon_url,name:'Current icon'}:null;S.eshots=a.shot_keys.map(function(k,i){return{key:k,url:a.shots[i]}})}
 function saveEdit(){if(S.busy)return;var a=S.det.app;if(!S.cat)return toast('Choose a category');if(!S.icon&&!S.eicon)return toast('Add an icon');if(a.status!='draft'&&S.desc.trim().length<100)return toast('Description needs 100+ characters');if(a.status!='draft'&&!(S.shots.length+S.eshots.length))return toast('Add at least 1 screenshot');
+ var pe=priceCheck();if(pe)return toast(pe);
  S.busy=1;var say=function(t){$('#dk').innerHTML=dock(t)},K={shots:[]},p=Promise.resolve();
  if(S.icon)p=p.then(function(){say('Uploading icon…');return upImg(S.icon.file,512)}).then(function(r){K.icon=r.key});
  S.shots.forEach(function(x,i){p=p.then(function(){say('Uploading screenshot '+(i+1)+'…');return upImg(x.file,1280)}).then(function(r){K.shots.push(r.key)})});
- p.then(function(){say('Saving…');return api('/api/apps/'+a.id,{method:'PATCH',body:{name:S.name.trim()||a.name,summary:S.sum.trim(),category:S.cat,description:S.desc.trim(),origin:S.origin||undefined,source_url:S.src,is_exclusive:S.excl,icon_key:K.icon||S.eicon.key,shots:S.eshots.map(function(x){return x.key}).concat(K.shots)}})}).then(function(){S.busy=0;toast('Changes saved');go('detail',a.id)},function(e){S.busy=0;toast(e.message);if($('#dk'))$('#dk').innerHTML=dock()})}
+ p.then(function(){say('Saving…');return api('/api/apps/'+a.id,{method:'PATCH',body:ext({name:S.name.trim()||a.name,summary:S.sum.trim(),category:S.cat,description:S.desc.trim(),origin:S.origin||undefined,source_url:S.src,is_exclusive:S.excl,icon_key:K.icon||S.eicon.key,shots:S.eshots.map(function(x){return x.key}).concat(K.shots)},priceBody())})}).then(function(){S.busy=0;delete CACHE_DET[a.id];toast('Changes saved');go('detail',a.id)},function(e){S.busy=0;toast(e.message);if($('#dk'))$('#dk').innerHTML=dock()})}
 function share(a){var u=API+'/a/'+a.id;if(navigator.share){navigator.share({title:a.name+' on HEXSTORE',text:a.summary||'Download '+a.name,url:u}).catch(function(){});return}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(function(){toast('Link copied: '+u)},function(){toast(u)});else toast(u)}
 
 function latestV(){return S.det&&S.det.versions.filter(function(x){return x.status=='approved'})[0]}
@@ -458,6 +567,7 @@ function dlStat(d){var pc=d.total?Math.min(100,Math.round(d.loaded/d.total*100))
 function dlBox(a,v){
  var d=DL[a.id],ins=INST[a.id],pe=PEND[a.id];
  if(!v)return '<button class="btn" style="flex:1" disabled>No APK yet</button>';
+ if(isLocked(a))return buyBox(a);
  if(d&&d.st=='dl'){var s=dlStat(d);
   return '<div class="dlb"><div class="prog'+(d.upd?' upd':'')+'"><i style="width:'+s.w+'%"></i><span>'+s.txt+'</span></div><div class="ds">'+s.sub+'</div></div>'}
  if(d&&(d.st=='ready'||d.st=='ask')){
@@ -470,10 +580,11 @@ function paintDl(id){var b=$('#dlbox');if(b&&S.page=='detail'&&S.det&&S.det.app.
 function startDl(a,v){
  var id=a.id;if(DL[id]&&DL[id].st=='dl')return;
  var d=DL[id]={st:'dl',loaded:0,total:+v.size||0,speed:0,vid:v.id,vk:v.apk_key,vc:v.version_code,vn:v.version_name,name:a.name,upd:!!INST[id],tl:Date.now(),ll:0};
- paintDl(id);
+ paintDl(id);fxBurst();
  api('/api/versions/'+v.id+'/download',{method:'POST'}).catch(function(){});
  if(S.user&&S.det&&S.det.app.id==id&&!S.det.following&&!S.det.is_owner)api('/api/apps/'+id+'/follow',{method:'POST',body:{on:true}}).then(function(){if(S.det)S.det.following=true},function(){});
- fetch(API+'/files/'+v.apk_key+'?dl=1').then(function(r){
+ fetch(API+'/files/'+v.apk_key+'?dl=1',{headers:dlHeaders()}).then(function(r){
+  if(r.status==402)throw new Error('Buy this app to download it.');
   if(!r.ok)throw new Error('Download failed ('+r.status+')');
   var cl=+r.headers.get('Content-Length');if(cl)d.total=cl;
   if(!r.body||!r.body.getReader)return r.blob().then(function(b){d.loaded=b.size;return b});
@@ -537,7 +648,7 @@ function openInstallSheet(id){
  showSheet(html);
 }
 function markInstalled(id){var d=DL[id]||PEND[id];if(!d)return;INST[id]={c:d.vc,n:d.vn};saveInst();delete PEND[id];savePend();DL[id]=null;hideSheet();toast('Installed ✅');pushInstall(id);if(S.page=='detail'&&S.det&&S.det.app.id==id)keep(draw)}
-function retryDirect(id){var d=DL[id];if(d&&d.vk)window.location.href=API+'/files/'+d.vk+'?dl=1'}
+function retryDirect(id){var d=DL[id];if(!d||!d.vk)return;api('/api/versions/'+d.vid+'/ticket',{method:'POST'}).then(function(j){window.location.href=j.url},function(){window.location.href=API+'/files/'+d.vk+'?dl=1'})}
 
 function showSheet(html){
  var s=$('#sheet'),bd=$('#sheet-bd');if(!s||!bd)return;
@@ -672,7 +783,7 @@ function loadDfol(){var t=S.dtab,id=S.id;S.dfol=null;draw();api('/api/users/'+id
 
 function ready(){return Boolean(S.apk&&S.icon)}
 function dock(t){if(S.editId)return '<div class="dock"><p>'+(t||'Editing '+esc(S.name||'app'))+'</p><div><button class="btn o" data-open="'+esc(S.editId)+'">Cancel</button><button class="btn" data-saveedit '+(S.busy?'disabled':'')+'>Save changes</button></div></div>';var adm=S.user&&S.user.is_admin;return '<div class="dock"><p>'+(t||(ready()?(S.shots.length?(adm?'Ready to publish.':'Ready to submit. A moderator reviews it before it goes live.'):'Add at least 1 screenshot to publish.'):'Add an APK and an icon to continue.'))+'</p><div><button class="btn o" data-draft '+(S.busy?'disabled':'')+'>Save as draft</button><button class="btn" data-pub '+(ready()&&S.shots.length&&!S.busy?'':'disabled')+'>'+(adm?'Publish':'Submit for review')+'</button></div></div>'}
-function preview(){var n=S.name||(S.apk?S.apk.name.replace(/\.apk$/i,''):'Your app'),i=S.icon||S.eicon;return '<div class="pv"><div class="ico" style="width:96px;height:96px;border-radius:24px;background:var(--sf2);color:var(--mu)">'+(i?'<img src="'+esc(i.url)+'">':ic('box').replace('<svg','<svg style="font-size:44px"'))+'</div><div style="min-width:0"><b style="font-size:22px">'+esc(n)+'</b>'+(S.sum?'<div style="margin-top:2px">'+esc(S.sum)+'</div>':'')+'<div class="mu">'+(S.user?'by '+esc(S.user.username)+' · ':'')+esc(S.cat)+'</div></div></div>'}
+function preview(){var n=S.name||(S.apk?S.apk.name.replace(/\.apk$/i,''):'Your app'),i=S.icon||S.eicon;return '<div class="pv"><div class="ico" style="width:96px;height:96px;border-radius:24px;background:var(--sf2);color:var(--mu)">'+(i?'<img src="'+esc(i.url)+'">':ic('box').replace('<svg','<svg style="font-size:44px"'))+'</div><div style="min-width:0"><b style="font-size:22px">'+esc(n)+'</b>'+(S.sum?'<div style="margin-top:2px">'+esc(S.sum)+'</div>':'')+'<div class="mu">'+(S.user?'by '+esc(S.user.username)+' · ':'')+esc(S.cat)+(S.pmode&&S.pmode!='free'?' · '+esc(S.pmode=='coins'?'🪙 '+(S.pcoins||'?'):(S.pcash||'?')+' '+S.pcur):'')+'</div></div></div>'}
 function upload(){if(!S.user)return wait();if(!S.user.tos)return gate();return formPage()}
 function paintUp(){if(!$('#icobox'))return;var ab=$('#apkbox'),ci=S.icon||S.eicon;
   if(ab)ab.innerHTML=S.apk?'<div class="file">'+ic('box').replace('<svg','<svg style="font-size:44px"')+'<div style="flex:1;min-width:0"><b style="font-size:19px;word-break:break-all">'+esc(S.apk.name)+'</b><span class="mu">'+fmt(S.apk.size)+'</span></div><button class="ib" data-rm="apk">'+ic('x')+'</button></div>':'<label class="drop">'+ic('cloud')+'<b>Choose APK</b>Android package (.apk)<input type="file" id="fa" accept=".apk,application/vnd.android.package-archive" hidden></label>';
@@ -684,36 +795,35 @@ function paintUp(){if(!$('#icobox'))return;var ab=$('#apkbox'),ci=S.icon||S.eico
   var fi=$('#fi');if(fi)fi.onchange=function(){var f=fi.files[0];if(f){S.icon={name:f.name,url:URL.createObjectURL(f),file:f};paintUp()}};
   $('#sh').onchange=function(e){var fs=Array.prototype.slice.call(e.target.files);e.target.value='';startCrop(fs)}}
 
-function draw(){if(S.page=='edit'&&S.det&&S.det.app.id==S.id&&S.editId!=S.id)initEdit();var P={home:home,detail:detail,profile:profile,upload:upload,login:login,notif:notif,newver:newver,about:about,terms:terms,edit:edit,editprofile:editprofile,moderation:moderation,dev:dev,settings:settings,allreviews:allreviews};app.innerHTML=head()+(P[S.page]||home)();if(S.page=='upload'||S.page=='edit')paintUp();if(S.page=='newver')paintNv();if(S.page=='editprofile')bindEp();bindSearchTrigger();var cs=$('.cats');if(cs)cs.scrollLeft=S.catX||0}
+function draw(){if(S.page=='edit'&&S.det&&S.det.app.id==S.id&&S.editId!=S.id)initEdit();var P={home:home,detail:detail,profile:profile,upload:upload,login:login,notif:notif,newver:newver,about:about,terms:terms,edit:edit,editprofile:editprofile,moderation:moderation,dev:dev,settings:settings,allreviews:allreviews,wallet:wallet,shop:shop};app.innerHTML=head()+(P[S.page]||home)();if(S.page=='upload'||S.page=='edit')paintUp();if(S.page=='newver')paintNv();if(S.page=='editprofile')bindEp();bindSearchTrigger();var cs=$('.cats');if(cs)cs.scrollLeft=S.catX||0;if(S.page=='detail')fxAfter()}
 function toast(t){var d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2800)}
 
-function go(p,id){if((p=='profile'||p=='upload'||p=='notif'||p=='newver'||p=='edit'||p=='editprofile'||p=='moderation')&&!S.user){S.after=p;p='login'}if(p=='moderation'&&!(S.user&&S.user.is_admin))p='home';
+function go(p,id,np){if((p=='profile'||p=='upload'||p=='notif'||p=='newver'||p=='edit'||p=='editprofile'||p=='moderation'||p=='wallet'||p=='shop')&&!S.user){S.after=p;p='login'}if(p=='moderation'&&!(S.user&&S.user.is_admin))p='home';
   if(p=='upload'&&S.editId)resetForm();if(p!='edit')S.editId=null;
   S.page=p;S.id=id||null;S.pop=0;S.err='';S.delArm=0;S.clrArm=0;scrollTo(0,0);
-  if(p=='notif')S.notes=null;if(p=='home'&&!S.q)S.apps=null;if(p=='detail'){S.det=null;S.star=0;S.allVer=0}if(p=='profile'){S.me=null;S.mine=null;S.fav=null}if(p=='moderation'){S.queue=null;S.tickets=null}if(p=='dev'){S.dev=null;S.dfol=null;S.dposts=null}draw();fetchPage()}
+  if(p=='notif')S.notes=null;if(p=='home')S.apps=homeCached();if(p=='detail'){S.det=freshDet(id);S.star=0;S.allVer=0}if(p=='wallet'){S.wal=null;S.ord=null}if(p=='shop'){S.shop=null;S.shopSel=null}if(p=='profile'){S.me=null;S.mine=null;S.fav=null}if(p=='moderation'){S.queue=null;S.tickets=null}if(p=='dev'){S.dev=null;S.dfol=null;S.dposts=null}HXhist(np);draw();fetchPage()}
 
-function fetchPage(){var p=S.page,id=S.id;var done=function(){if(S.page==p&&S.id==id)draw()};
-  var fail=function(e){if(/sign in/i.test(e.message)){logout();return}S.err=e.message;done()};
-  if(p=='home'){var hc=S.hcat,hq=S.q;api('/api/apps?q='+encodeURIComponent(S.q)+'&cat='+encodeURIComponent(S.hcat)).then(function(j){if(S.hcat!=hc||S.q!=hq)return;S.apps=j.apps;done()},fail)}
-  if(p=='detail')api('/api/apps/'+id).then(function(j){S.det=j;done()},fail);
-  if(p=='profile')Promise.all([api('/api/me'),api('/api/apps?mine=1'),api('/api/favorites'),S.user.is_admin?api('/api/admin/queue'):Promise.resolve({items:[]})]).then(function(r){S.me=r[0];S.mine=r[1].apps;S.fav=r[2].apps;S.qn=r[3].items.length;done()},fail);
-  if(p=='moderation')Promise.all([api('/api/admin/queue'),api('/api/admin/support')]).then(function(r){S.queue=r[0].items;S.tickets=r[1].tickets;done()},fail);
-  if(p=='dev')api('/api/users/'+id).then(function(j){S.dev=j;done();if(S.dtab=='community')loadCommunityPosts();else if(S.dtab!='apps')loadDfol()},fail);
-  if(p=='notif')api('/api/notifications').then(function(j){S.notes=j.notifications;S.unread=0;done();if(j.unread)api('/api/notifications/read',{method:'POST',body:{}}).catch(function(){})},fail);
-  if((p=='newver'||p=='about'||p=='edit'||p=='allreviews')&&(!S.det||S.det.app.id!=id))api('/api/apps/'+id).then(function(j){S.det=j;done()},fail)}
-
-function logout(){store.del('hx');store.del('hxu');S.user=null;go('home')}
+function logout(){store.del('hx');store.del('hxu');store.del('hx_lastn');S.user=null;S.me=S.mine=S.fav=S.wal=S.ord=S.shop=S.queue=null;S.unread=0;CACHE_DET={};go('home')}
 function auth(){var em=$('#em').value.trim(),pw=$('#pw').value,m=$('#lm'),b=$('#go');m.textContent='';b.disabled=true;
-  api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;var n=S.after||'home';S.after='';go(n);poll();syncInstalls()},function(e){m.textContent=e.message;b.disabled=false})}
+  api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;CACHE_DET={};var n=S.after||'home';S.after='';go(n);poll();syncInstalls();if(j.welcome)welcomeSheet()},function(e){m.textContent=e.message;b.disabled=false})}
 function submit(status){if(S.busy)return;if(!ready())return toast('Add an APK and an icon first');
   if(!S.cat)return toast('Choose a category');if(!S.ver.trim())return toast('Enter a version, for example 1.0');
   if(status!='draft'){if(S.desc.trim().length<100)return toast('Description needs 100+ characters (now '+S.desc.trim().length+')');if(!S.origin)return toast('Choose Original or Mod');if(!S.shots.length)return toast('Add at least 1 screenshot')}
-  S.busy=1;var last='Uploading APK',say=function(t){last=t;$('#dk').innerHTML=dock(t)};say('Uploading APK… 0%');var K={shots:[]},adm=S.user&&S.user.is_admin;
-  up(S.apk.file,'apk',function(p){say('Uploading APK… '+p+'%')}).then(function(r){K.apk=r;say('Uploading icon…');return upImg(S.icon.file,512)}).then(function(r){K.icon=r;
-    return S.shots.reduce(function(pr,x,i){return pr.then(function(){say('Uploading screenshot '+(i+1)+'/'+S.shots.length+'…');return upImg(x.file,1280).then(function(r){K.shots.push(r.key)})})},Promise.resolve())})
-  .then(function(){say('Saving…');return api('/api/apps',{method:'POST',body:{name:S.name.trim()||S.apk.name.replace(/\.apk$/i,''),summary:S.sum.trim(),category:S.cat,description:S.desc.trim(),origin:S.origin||null,source_url:S.src,is_exclusive:S.excl,icon_key:K.icon.key,shots:K.shots,status:status}})})
-  .then(function(a){K.id=a.id;return api('/api/apps/'+a.id+'/versions',{method:'POST',body:{version_name:S.ver.trim(),changelog:S.log.trim(),apk_key:K.apk.key,size:K.apk.size}})})
-  .then(function(){S.busy=0;resetForm();toast(status=='draft'?'Saved as draft':adm?'Published!':'Submitted! A moderator will review it.');go('detail',K.id)},function(e){S.busy=0;toast(last.split('…')[0]+' failed. '+e.message);if($('#dk'))$('#dk').innerHTML=dock()})}
+  var pe=priceCheck();if(pe)return toast(pe);
+  S.busy=1;var last='Uploading APK',say=function(t){last=t;$('#dk').innerHTML=dock(t)},adm=S.user&&S.user.is_admin,p=Promise.resolve();
+  /* files already uploaded on an earlier try keep their key, so a retry never re-uploads them */
+  if(!S.apk.key)p=p.then(function(){say('Uploading APK… 0%');return up(S.apk.file,'apk',function(pc){say('Uploading APK… '+pc+'%')})}).then(function(r){S.apk.key=r.key;S.apk.size=r.size});
+  if(!S.icon.key)p=p.then(function(){say('Uploading icon…');return upImg(S.icon.file,512)}).then(function(r){S.icon.key=r.key});
+  S.shots.forEach(function(x,i){if(!x.key)p=p.then(function(){say('Uploading screenshot '+(i+1)+'/'+S.shots.length+'…');return upImg(x.file,1280)}).then(function(r){x.key=r.key})});
+  p=p.then(function(){
+    say('Saving…');
+    var f={name:S.name.trim()||S.apk.name.replace(/\.apk$/i,''),summary:S.sum.trim(),category:S.cat,description:S.desc.trim(),origin:S.origin||null,source_url:S.src,is_exclusive:S.excl,icon_key:S.icon.key,shots:S.shots.map(function(x){return x.key})};
+    ext(f,priceBody());
+    if(S.pendId)return api('/api/apps/'+S.pendId,{method:'PATCH',body:f});
+    f.status=status;return api('/api/apps',{method:'POST',body:f}).then(function(a){S.pendId=a.id;S.pendSt=a.status})
+  }).then(function(){say('Publishing…');return api('/api/apps/'+S.pendId+'/versions',{method:'POST',body:{version_name:S.ver.trim(),changelog:S.log.trim(),apk_key:S.apk.key,size:S.apk.size}})})
+  .then(function(){var want=status=='draft'?'draft':'pending';if(S.pendSt!=want&&!(adm&&S.pendSt=='published'&&want=='pending'))return api('/api/apps/'+S.pendId,{method:'PATCH',body:{status:want}})})
+  .then(function(){var id=S.pendId;S.busy=0;delete CACHE_APPS['All|'];resetForm();toast(status=='draft'?'Saved as draft':adm?'Published!':'Submitted! A moderator will review it.');go('detail',id)},function(e){S.busy=0;toast(last.split('…')[0]+' failed. '+e.message+' Tap again to retry.');if($('#dk'))$('#dk').innerHTML=dock()})}
 function keep(f){var y=scrollY;f();scrollTo(0,y)}
 
 /* YouTube Search */
@@ -740,7 +850,7 @@ $('#yt-q').addEventListener('keydown',function(e){
   }
 });
 function renderYtResults(query){
-  var rb=$('#yt-results');if(!query){
+  var rb=$('#yt-results');if(!query){RID++;
     var h='<div style="font-size:14px;color:var(--mu);margin-bottom:12px;font-weight:700">RECENT SEARCHES</div>';
     if(!recentSearches.length)h+='<p class="mu">No recent searches.</p>';
     else h+=recentSearches.map(function(s){return '<button class="yt-item" data-yts="'+esc(s)+'">'+ic('clock')+'<span>'+esc(s)+'</span></button>'}).join('')+'<button class="ulk" id="clear-rec-s" style="margin-top:14px">Clear recent searches</button>';
@@ -748,7 +858,8 @@ function renderYtResults(query){
     var cb=$('#clear-rec-s');if(cb)cb.onclick=function(){recentSearches=[];store.del('hx_rec_s');renderYtResults('')};
     return;
   }
-  api('/api/apps?q='+encodeURIComponent(query)).then(function(j){
+  var rid=++RID;api('/api/apps?q='+encodeURIComponent(query)).then(function(j){
+    if(rid!=RID)return;
     if(!j.apps.length){rb.innerHTML='<p class="mu" style="padding:20px 0;text-align:center">No apps found for “'+esc(query)+'”</p>';return}
     rb.innerHTML=j.apps.map(function(a){
       return '<button class="yt-item" data-openapp="'+a.id+'" data-nm="'+esc(a.name)+'">'+ico(a)+'<span><b>'+esc(a.name)+'</b><br><small class="mu">'+esc(a.category)+' · by '+esc(a.owner_name)+'</small></span>'+ic('search')+'</button>';
@@ -1084,13 +1195,377 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})});
 }
 
+
+/* ===================================================================
+   HEX COINS · PAID APPS · SHOP · PAGE EFFECTS · SPEED
+   =================================================================== */
+var $$=function(q){return document.querySelectorAll(q)};
+P.copy='<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/>';
+P.coin='<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/>';
+P.shop='<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 016 0v2"/>';
+P.key='<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>';
+S.pmode='free';S.pcoins='';S.pcash='';S.pcur='USD';S.ckey='';S.cdet='';S.pendId=null;S.pendSt='';
+S.wal=null;S.ord=null;S.shop=null;S.shopApp='';S.shopSel=null;S.shopCfg={};S.keys=null;S.payInfo=null;
+var RID=0,CACHE_APPS={},CACHE_DET={},INTRO_SEEN={},HXH=0;
+try{var _ca=JSON.parse(store.get('hx_apps')||'null');if(_ca&&_ca.length)CACHE_APPS['All|']=_ca}catch(e){}
+
+/* ---------- small helpers ---------- */
+function fmtN(n){return (+n||0).toLocaleString()}
+function ext(o,p){for(var k in p)o[k]=p[k];return o}
+function safeC(c){return /^#[0-9a-fA-F]{6}$/.test(c||'')?c:'#43c25c'}
+function hexA(c,a){c=safeC(c);return 'rgba('+parseInt(c.slice(1,3),16)+','+parseInt(c.slice(3,5),16)+','+parseInt(c.slice(5,7),16)+','+a+')'}
+function moneyFmt(c,cur){return (c/100).toFixed(2)+' '+(cur||'USD')}
+function priceLabel(a){if(!a||!a.price_mode||a.price_mode=='free')return 'Free';if(a.price_mode=='coins')return '🪙 '+fmtN(a.price);return moneyFmt(a.price,a.currency)}
+function isPaid(a){return !!(a&&a.price_mode&&a.price_mode!='free')}
+function priceChip(a){return isPaid(a)?'<span class="pricechip">'+esc(priceLabel(a))+'</span><span class="dot">•</span>':''}
+function pricePill(a){return isPaid(a)?'<span class="pricetag">'+(a.price_mode=='coins'?'':'💵 ')+esc(priceLabel(a))+'</span>':''}
+function setCoins(n){if(!S.user)return;S.user.coins=n;store.set('hxu',JSON.stringify(S.user))}
+function isLocked(a){return !!(S.det&&S.det.app&&S.det.app.id==a.id&&S.det.owned===false&&isPaid(a))}
+function dlHeaders(){var t=store.get('hx');return t?{Authorization:'Bearer '+t}:{}}
+function balanceCard(c){return '<div class="coincard"><small>Your balance</small><div class="coinbig">🪙 '+fmtN(c)+'</div></div>'}
+function freshDet(id){var c=CACHE_DET[id];return c&&Date.now()-c.t<300000?c.j:null}
+function homeCached(){return CACHE_APPS[S.hcat+'|'+S.q]||null}
+function prefetchApp(id){if(!id||(CACHE_DET[id]&&Date.now()-CACHE_DET[id].t<30000))return;api('/api/apps/'+id).then(function(j){CACHE_DET[id]={t:Date.now(),j:j}},function(){})}
+['touchstart','mouseover'].forEach(function(ev){document.addEventListener(ev,function(e){var t=e.target.closest&&e.target.closest('.row[data-open]');if(t)prefetchApp(t.dataset.open)},{passive:true})});
+
+/* ---------- history: Android / browser Back button ---------- */
+function HXhist(np){try{var st={p:S.page,id:S.id};if(!HXH){history.replaceState(st,'');HXH=1}else if(np)history.replaceState(st,'');else if(!(history.state&&history.state.p==st.p&&history.state.id==st.id))history.pushState(st,'')}catch(e){}}
+window.addEventListener('popstate',function(e){
+  var o=false;
+  if($('#yt-search')&&$('#yt-search').classList.contains('on')){if(typeof closeYtSearch=='function')closeYtSearch();o=true}
+  else if($('#viewer')&&$('#viewer').classList.contains('on')){closeShots();o=true}
+  else if($('#sheet')&&$('#sheet').classList.contains('on')){hideSheet();o=true}
+  else if($('#fxintro')){$('#fxintro').click();o=true}
+  if(o){try{history.pushState({p:S.page,id:S.id},'')}catch(x){}return}
+  var s=e.state;if(s&&s.p)go(s.p,s.id,true);else go('home',null,true);
+});
+
+/* ---------- terms: coins & paid apps ---------- */
+try{TERMS.push([(TERMS.length+1)+'. Hex Coins & paid apps','Hex Coins are the in-store digital currency of HEXSTORE. They can be used to buy paid apps and shop items, and cannot be withdrawn as money. Real-cash sales are an agreement between the buyer and the developer. HEXSTORE does not process or guarantee those payments, so only pay people you trust.'])}catch(e){}
+
+/* ---------- welcome gift ---------- */
+function welcomeSheet(){
+  setTimeout(function(){
+    showSheet('<div class="sheet-bar"></div><div style="text-align:center;padding:4px 0 2px"><div class="wcoin">🪙</div><h2 style="font-size:27px;margin:10px 0 6px">You got 300 Hex Coins!</h2><p class="mu" style="margin:0">Your welcome gift is in your wallet. Spend coins in the Shop to upgrade how your apps look, or buy paid apps.</p></div><div style="display:grid;gap:10px;margin-top:18px"><button class="btn gold f" data-x="welcomego">'+ic('shop')+'Open the Shop</button><button class="btn o f" data-sheetclose>Later</button></div>');
+    burst({c1:'#ffd84a',c2:'#43c25c'},innerWidth/2,innerHeight/3);
+  },700);
+}
+
+/* ===================== PRICING (upload / edit form) ===================== */
+function pricingSection(){
+  var m=S.pmode||'free';
+  var o=[['free','Free','Anyone can download it.'],['coins','Hex Coins','Buyers pay with in-store Hex Coins and you earn them.'],['cash','Real cash transfer','Buyers pay you directly. Needs a cash key from HEXSTORE.']];
+  return '<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Price</h2><p class="mu" style="margin-top:0">Choose how people get your app.</p>'+
+   o.map(function(x){return '<div class="opt'+(m==x[0]?' on':'')+'" data-x="pm" data-v="'+x[0]+'"><i></i><div><b>'+x[1]+'</b><span>'+x[2]+'</span></div></div>'}).join('')+
+   '<div class="pbox" id="pbox">'+priceFields()+'</div></div>';
+}
+function priceFields(){
+  var m=S.pmode||'free',u=S.user||{};
+  if(m=='coins')return '<label class="l">Price in Hex Coins</label><input type="number" inputmode="numeric" min="1" max="100000" placeholder="e.g. 150" data-k="pcoins" value="'+esc(S.pcoins)+'"><p class="mu" style="font-size:14px;margin:8px 0 0">You receive 100% of every sale as Hex Coins. Spend them in the Shop.</p>';
+  if(m!='cash')return '';
+  var en=u.cash_enabled||u.is_admin&&u.cash_enabled;
+  var h='';
+  if(en){
+    h+='<div style="display:grid;grid-template-columns:1fr 130px;gap:10px"><div><label class="l">Price</label><input type="text" inputmode="decimal" placeholder="4.99" data-k="pcash" value="'+esc(S.pcash)+'"></div><div><label class="l">Currency</label><select data-k="pcur">'+['USD','EUR','GBP','NGN','GHS','KES','ZAR','INR','CAD','AUD','BRL','AED'].map(function(c){return '<option'+(S.pcur==c?' selected':'')+'>'+c+'</option>'}).join('')+'</select></div></div>';
+    h+='<p class="mu" style="font-size:14px;margin:10px 0 0">✓ Cash key active. Buyers will see your account details and pay you directly. You confirm each payment in your Wallet.</p>';
+    h+='<button class="ulk" data-go="wallet" style="margin-top:6px">Edit account details in Wallet</button>';
+  }else h+=activateBox();
+  return h;
+}
+function activateBox(){
+  return '<div class="paybox"><b>Activate real cash sales</b><p class="mu" style="font-size:14px;margin:6px 0 10px">Get a cash key from HEXSTORE, then enter it below with the account details where buyers should send money.</p>'+
+   '<label class="l">Cash key</label><input type="text" autocapitalize="characters" autocomplete="off" placeholder="HEX-XXXX-XXXX-XXXX" data-k="ckey" value="'+esc(S.ckey)+'">'+
+   '<label class="l">Your account details</label><textarea rows="3" maxlength="500" placeholder="Bank name, account number, account name… or your payment link" data-k="cdet">'+esc(S.cdet)+'</textarea>'+
+   '<button class="btn gold f" data-x="actkey" style="margin-top:12px">'+ic('key')+'Activate</button><button class="ulk" data-openhelp style="margin-top:6px">Need a key? Contact HEXSTORE</button></div>';
+}
+function paintPrice(){var b=$('#pbox');if(b)b.innerHTML=priceFields();$$('[data-x="pm"]').forEach(function(e){e.classList.toggle('on',e.dataset.v==(S.pmode||'free'))})}
+function priceCheck(){
+  var m=S.pmode;
+  if(m=='coins'){var n=Math.round(+S.pcoins);if(!(n>=1&&n<=100000))return 'Set a coin price between 1 and 100,000'}
+  if(m=='cash'){if(!(S.user&&S.user.cash_enabled))return 'Activate your cash key first';var c=Math.round(parseFloat(S.pcash)*100);if(!(c>=50))return 'Cash price must be at least 0.50'}
+  return '';
+}
+function priceBody(){
+  var m=S.pmode||'free';
+  if(m=='coins')return{price_mode:'coins',price:Math.round(+S.pcoins)};
+  if(m=='cash')return{price_mode:'cash',price:Math.round(parseFloat(S.pcash)*100),currency:S.pcur};
+  return{price_mode:'free',price:0};
+}
+function loadPrice(a){
+  S.pmode=a&&a.price_mode||'free';
+  S.pcoins=S.pmode=='coins'?String(a.price):'';
+  S.pcash=S.pmode=='cash'?(a.price/100).toFixed(2):'';
+  S.pcur=a&&a.currency||'USD';
+}
+
+/* ===================== BUY (coins / cash) ===================== */
+function buyBox(a){
+  var d=S.det,o=d.my_order,bal=S.user?S.user.coins:0;
+  if(a.price_mode=='coins'){
+    return '<div style="width:100%"><button class="btn gold f" data-x="buycoins">🪙 Buy for '+fmtN(a.price)+' coins</button><div class="mu" style="font-size:14px;margin-top:8px;text-align:center">'+(S.user?'Your balance: 🪙 '+fmtN(bal):'Sign in to buy this app')+'</div></div>';
+  }
+  var pend=o&&o.status=='pending';
+  return '<div style="width:100%">'+(pend?'<button class="btn o f" disabled>⏳ Waiting for the developer to confirm</button><button class="ulk" data-x="paycash" style="margin-top:6px">View payment details</button>':'<button class="btn gold f" data-x="paycash">💵 Pay '+esc(moneyFmt(a.price,a.currency))+' by transfer</button><div class="mu" style="font-size:14px;margin-top:8px;text-align:center">'+(o&&o.status=='rejected'?'Last payment was not confirmed. You can send it again.':'You pay the developer directly. It unlocks when they confirm.')+'</div>')+'</div>';
+}
+function buyCoinsSheet(){
+  var a=S.det.app,bal=S.user.coins||0,short=a.price-bal;
+  showSheet('<div class="sheet-bar"></div><h2 style="font-size:24px;margin:0 0 10px">Buy '+esc(a.name)+'</h2><div class="paybox"><div style="display:flex;justify-content:space-between"><span>Price</span><b>🪙 '+fmtN(a.price)+'</b></div><div style="display:flex;justify-content:space-between;margin-top:8px"><span>Your balance</span><b>🪙 '+fmtN(bal)+'</b></div>'+(short>0?'<p style="color:#f2555a;margin:10px 0 0;font-weight:700">You need '+fmtN(short)+' more coins.</p>':'<div style="display:flex;justify-content:space-between;margin-top:8px;border-top:1px solid var(--ln);padding-top:8px"><span>After purchase</span><b>🪙 '+fmtN(bal-a.price)+'</b></div>')+'</div><div style="display:grid;gap:10px;margin-top:14px">'+(short>0?'<button class="btn o f" data-sheetclose>Close</button>':'<button class="btn gold f" data-x="confirmbuy">Confirm purchase</button><button class="btn o f" data-sheetclose>Cancel</button>')+'</div>');
+}
+function doBuy(btn){
+  if(S.busy)return;S.busy=1;btn.disabled=true;btn.textContent='Buying…';
+  api('/api/apps/'+S.det.app.id+'/buy',{method:'POST'}).then(function(j){
+    S.busy=0;setCoins(j.coins);hideSheet();delete CACHE_DET[S.det.app.id];toast('Unlocked! You can download it now.');
+    api('/api/apps/'+S.det.app.id).then(function(d){S.det=d;CACHE_DET[d.app.id]={t:Date.now(),j:d};if(S.page=='detail')draw();fxBurst()},function(){S.det.owned=true;draw()});
+  },function(e){S.busy=0;btn.disabled=false;btn.textContent='Confirm purchase';toast(e.message)});
+}
+function cashSheet(){
+  api('/api/apps/'+S.det.app.id+'/pay').then(function(p){
+    S.payInfo=p;var o=p.order,a=S.det.app;
+    var h='<div class="sheet-bar"></div><h2 style="font-size:24px;margin:0 0 6px">Pay '+esc(p.label)+'</h2>';
+    if(o&&o.status=='pending'){
+      h+='<p class="mu" style="margin-top:0">Your payment notice was sent to <b>'+esc(p.seller)+'</b>. This app unlocks as soon as they confirm it.</p>';
+    }else{
+      h+='<p class="mu" style="margin-top:0">Send the money to <b>'+esc(p.seller)+'</b>, then tap “I’ve paid”. They will confirm and the app unlocks.</p>';
+      if(o&&o.status=='rejected')h+='<p style="color:#f2555a;font-weight:700">Last payment was not confirmed'+(o.reason?': '+esc(o.reason):'')+'.</p>';
+    }
+    h+='<div class="paybox"><small>Pay to</small><pre>'+(esc(p.details)||'The developer has not added details yet.')+'</pre><button class="ulk" data-x="copydet" style="margin-top:6px">Copy details</button></div><div class="paybox"><small>Put this reference in your transfer</small><div style="font-size:22px;font-weight:900;letter-spacing:.06em;margin-top:4px">'+esc(p.ref)+'</div></div>';
+    if(!(o&&o.status=='pending'))h+='<label class="l">Transaction ID or note (optional)</label><input id="cnote" maxlength="200" placeholder="e.g. transfer ID"><button class="btn gold f" data-x="sendcash" style="margin-top:12px">I’ve paid</button>';
+    h+='<button class="btn o f" data-sheetclose style="margin-top:10px">Close</button>';
+    showSheet(h);
+  },function(e){toast(e.message)});
+}
+function sendCash(btn){
+  btn.disabled=true;btn.textContent='Sending…';
+  api('/api/apps/'+S.det.app.id+'/cash-order',{method:'POST',body:{note:($('#cnote')||{}).value||''}}).then(function(){
+    hideSheet();toast('Sent! The developer will confirm your payment.');delete CACHE_DET[S.det.app.id];
+    api('/api/apps/'+S.det.app.id).then(function(d){S.det=d;if(S.page=='detail')draw()},function(){});
+  },function(e){btn.disabled=false;btn.textContent='I’ve paid';toast(e.message)});
+}
+
+/* ===================== WALLET ===================== */
+function wallet(){
+  if(!S.wal||!S.ord)return wait();
+  var w=S.wal,o=S.ord,sell=o.selling||[],pend=sell.filter(function(x){return x.status=='pending'});
+  var h='<main><button class="back" data-go="profile">'+ic('back')+'Profile</button><h1>Wallet</h1>'+balanceCard(w.coins)+
+   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn f" data-go="shop">'+ic('shop')+'Shop</button><button class="btn o f" data-x="howcoins">How coins work</button></div>';
+  h+='<h2 style="margin-top:30px">Payments to confirm</h2>';
+  if(!pend.length)h+='<p class="mu" style="margin-top:0">No payments waiting. When a buyer says they paid you by transfer, it shows up here.</p>';
+  pend.forEach(function(x){h+='<div class="ord"><div style="display:flex;justify-content:space-between;gap:10px"><b>'+esc(x.app_name)+'</b><b>'+esc(moneyFmt(x.amount,x.currency))+'</b></div><p class="mu" style="margin:6px 0">From <b>'+esc(x.buyer_name)+'</b> · ref '+esc(x.ref)+(x.note?'<br>Note: '+esc(x.note):'')+'<br>'+fd(x.created_at)+'</p><p class="mu" style="font-size:14px;margin:0 0 10px">Check your account first. Only confirm once the money arrived.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn f" data-x="orderok" data-id="'+x.id+'">Confirm</button><button class="btn o f" data-x="orderno" data-id="'+x.id+'">Not received</button></div></div>'});
+  var past=sell.filter(function(x){return x.status!='pending'}).slice(0,8);
+  if(past.length){h+='<h2 style="margin-top:26px;font-size:20px">Past cash sales</h2>';past.forEach(function(x){h+='<div class="tx"><div><b>'+esc(x.app_name)+'</b><div class="mu" style="font-size:14px">'+esc(x.buyer_name)+' · '+fd(x.created_at)+'</div></div><span class="st2 '+x.status+'">'+x.status.toUpperCase()+'</span></div>'})}
+  h+='<h2 style="margin-top:30px">Real cash sales</h2>';
+  if(w.cash_enabled){
+    h+='<div class="card pad"><p class="mu" style="margin-top:0">✓ Active. This is what buyers see when they pay you.</p><textarea rows="3" maxlength="500" data-k="cdet">'+esc(S.cdet)+'</textarea><button class="btn f" data-x="savedet" style="margin-top:12px">Save details</button></div>';
+  }else h+='<div class="card pad">'+activateBox()+'</div>';
+  var buy=o.buying||[];
+  if(buy.length){h+='<h2 style="margin-top:30px">My cash payments</h2>';buy.forEach(function(x){h+='<div class="tx"><div><b>'+esc(x.app_name)+'</b><div class="mu" style="font-size:14px">'+esc(moneyFmt(x.amount,x.currency))+' to '+esc(x.seller_name)+' · '+fd(x.created_at)+(x.status=='rejected'&&x.reason?'<br>'+esc(x.reason):'')+'</div></div><span class="st2 '+x.status+'">'+x.status.toUpperCase()+'</span></div>'})}
+  h+='<h2 style="margin-top:30px">Coin history</h2>';
+  if(!w.tx.length)h+='<p class="mu" style="margin-top:0">Nothing yet.</p>';
+  w.tx.forEach(function(t){h+='<div class="tx"><div><b>'+esc(t.note||t.kind)+'</b><div class="mu" style="font-size:14px">'+fd(t.created_at)+'</div></div><b class="'+(t.amount>0?'pos':'neg')+'">'+(t.amount>0?'+':'')+fmtN(t.amount)+' 🪙</b></div>'});
+  return h+foot()+'</main>';
+}
+
+/* ===================== SHOP ===================== */
+function shopFxList(){
+  var d=S.shop,map={},list=[];if(!d)return list;
+  Object.keys(d.owned).forEach(function(id){if(d.owned[id].enabled)map[id]=d.owned[id].cfg});
+  if(S.shopSel)map[S.shopSel]=S.shopCfg;
+  d.items.forEach(function(it){if(map[it.id])list.push({id:it.id,cfg:map[it.id]})});
+  return list;
+}
+function shopItem(id){var r=null;S.shop.items.forEach(function(i){if(i.id==id)r=i});return r}
+function fxPreview(app,list){
+  var has=function(id){return list.some(function(f){return f.id==id})},cf=function(id){var r={};list.forEach(function(f){if(f.id==id)r=f.cfg});return r};
+  var sh=(app.shots||[]).slice(0,3).map(function(u){return '<div><img src="'+esc(u)+'" alt=""></div>'}).join('');
+  if(!sh)sh=[0,1,2].map(function(i){return '<div style="width:70px;background:linear-gradient(160deg,var(--sf2),var(--sf))"></div>'}).join('');
+  return '<div class="fxprev fxm '+fxCls(list)+'" style="'+fxVars(list)+'">'+(has('stars')?starsHtml(app.id):'')+'<div class="card hdcard" style="margin:0">'+(has('aurora')?auroraHtml():'')+'<div class="pad">'+ico(app,1)+'<h1 style="margin:16px 0 4px;font-size:26px"><span class="apptitle">'+esc(app.name)+'</span>'+(has('crown')?crownBadge(cf('crown')):'')+'</h1><p class="mu" style="margin:0 0 14px">'+esc(app.summary||'Your app summary appears here')+'</p><div class="fxdl" style="display:flex"><button class="btn f" type="button" tabindex="-1">'+ic('dl')+'Download APK</button></div></div><div class="shots" style="padding:0 16px 16px">'+sh+'</div></div></div>';
+}
+function paintShopPrev(){var el=$('#shpv');if(el&&S.shop&&S.shop.app)el.innerHTML=fxPreview(S.shop.app,shopFxList())}
+function itemPanel(it){
+  var d=S.shop,ow=d.owned[it.id],c=S.shopCfg,h='<div class="card pad" id="shpanel" style="margin-top:12px"><div style="display:flex;gap:12px;align-items:center"><span style="font-size:34px">'+it.emoji+'</span><div><b style="font-size:18px">'+esc(it.name)+'</b><p class="mu" style="margin:2px 0 0;font-size:15px">'+esc(it.desc)+'</p></div></div>';
+  it.cfg.forEach(function(k){
+    if(k=='c1'||k=='c2')h+='<div class="cfgrow"><span>'+(k=='c1'?'Main color':'Second color')+'</span><input type="color" data-cfg="'+k+'" value="'+safeC(c[k])+'"></div>';
+    else if(k=='speed'||k=='w'){var lab=k=='speed'?['Slow','Normal','Fast']:['Thin','Medium','Bold'];h+='<div class="cfgrow"><span>'+(k=='speed'?'Speed':'Thickness')+'</span><div class="mini-seg">'+[1,2,3].map(function(v){return '<button data-x="cfgseg" data-key="'+k+'" data-val="'+v+'"'+(+c[k]==v?' class="on"':'')+'>'+lab[v-1]+'</button>'}).join('')+'</div></div>'}
+    else if(k=='text')h+='<div style="margin-top:14px"><label class="l">'+(it.id=='crown'?'Badge text':'Your welcome message')+'</label><input type="text" data-cfg="text" maxlength="'+it.max+'" value="'+esc(c.text||'')+'"></div>';
+  });
+  h+='<div style="display:grid;gap:10px;margin-top:18px">';
+  if(it.id=='intro')h+='<button class="btn o f" data-x="introplay">▶ Play intro</button>';
+  if(it.id=='confetti')h+='<button class="btn o f" data-x="confettitest">🎉 Test confetti</button>';
+  if(!ow){var need=it.price-d.coins;h+='<button class="btn gold f" data-x="shopbuy">'+(need>0?'Need '+fmtN(need)+' more coins · 🪙 '+fmtN(it.price):'Unlock for 🪙 '+fmtN(it.price))+'</button>'}
+  else h+='<button class="btn f" data-x="shopsave">Save changes</button><button class="btn o f" data-x="shoptoggle">'+(ow.enabled?'Turn off on my page':'Turn on')+'</button>';
+  return h+'</div></div>';
+}
+function shop(){
+  if(!S.shop)return wait();
+  var d=S.shop,h='<main><button class="back" data-go="wallet">'+ic('back')+'Wallet</button><h1>Shop</h1><p class="mu" style="font-size:18px;margin-top:0">Spend Hex Coins to make your app page stand out.</p>'+balanceCard(d.coins);
+  if(!d.apps.length)return h+'<div class="card pad"><b>You have no apps yet</b><p class="mu">Upload an app, then come back to style its page.</p><button class="btn f" data-go="upload">'+ic('up')+'Upload app</button></div>'+foot()+'</main>';
+  h+='<label class="l">Choose your app</label><div class="cats" style="padding-left:0">'+d.apps.map(function(a){return '<button class="chip'+(a.id==S.shopApp?' on':'')+'" data-x="shopapp" data-id="'+a.id+'">'+esc(a.name)+'</button>'}).join('')+'</div>';
+  h+='<div class="shp"><div class="lbl"><span>Live preview</span><span>'+(S.shopSel?'Trying: '+esc(shopItem(S.shopSel).name):'Tap an item')+'</span></div><div id="shpv">'+(d.app?fxPreview(d.app,shopFxList()):'')+'</div></div>';
+  h+='<div id="shpanelbox">'+(S.shopSel?itemPanel(shopItem(S.shopSel)):'')+'</div>';
+  h+='<div class="shgrid">'+d.items.map(function(it){var ow=d.owned[it.id];return '<button class="shi'+(S.shopSel==it.id?' on':'')+(ow?' owned':'')+'" data-x="shopsel" data-id="'+it.id+'"><span class="shi-e">'+it.emoji+'</span><b>'+esc(it.name)+'</b><small>'+(ow?(ow.enabled?'✓ Active':'Owned · off'):'🪙 '+fmtN(it.price))+'</small></button>'}).join('')+'</div>';
+  return h+foot()+'</main>';
+}
+
+/* ===================== PAGE EFFECTS ===================== */
+var SPD=[0,6,3.4,1.8];
+function fxCls(list){return list.map(function(f){return 'fx-'+f.id}).join(' ')}
+function fxVars(list){
+  var o='';
+  list.forEach(function(f){var c=f.cfg||{},id=f.id;
+    if(c.c1)o+='--'+id+'-c1:'+safeC(c.c1)+';--'+id+'-c1a:'+hexA(c.c1,.35)+';--'+id+'-c1b:'+hexA(c.c1,.5)+';';
+    if(c.c2)o+='--'+id+'-c2:'+safeC(c.c2)+';--'+id+'-c2a:'+hexA(c.c2,.3)+';';
+    o+='--'+id+'-sp:'+(SPD[c.speed]||3.4)+'s;';
+    if(c.w)o+='--'+id+'-w:'+(+c.w)+'px;';
+  });
+  return o;
+}
+function fxGet(id){var r=null;if(S.det&&S.det.fx)S.det.fx.forEach(function(f){if(f.id==id)r=f});return r}
+function auroraHtml(){return '<div class="fxaur"><i></i><i></i><i></i></div>'}
+function fxAurHtml(){return fxGet('aurora')?auroraHtml():''}
+function crownBadge(c){return '<span class="crownb"><svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>'+esc(c.text||'FEATURED')+'</span>'}
+function crownHtml(){var f=fxGet('crown');return f?crownBadge(f.cfg):''}
+function starsHtml(seed){
+  var h=0,s=String(seed);for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;
+  function r(){h=(h*1664525+1013904223)|0;return ((h>>>0)%10000)/10000}
+  var o='<div class="fxstars">';
+  for(var j=0;j<56;j++){var z=(1.5+r()*2.5).toFixed(1);o+='<i style="left:'+(r()*100).toFixed(1)+'%;top:'+(r()*100).toFixed(1)+'%;width:'+z+'px;height:'+z+'px;animation-delay:'+(r()*4).toFixed(2)+'s"></i>'}
+  return o+'</div>';
+}
+function detail(){
+  var h=detail0(),fx=S.det&&S.det.fx;
+  if(!fx||!fx.length||h.indexOf('<main>')!==0)return h;
+  return h.replace('<main>','<main class="fxm '+fxCls(fx)+'" style="'+fxVars(fx)+'">'+(fxGet('stars')?starsHtml(S.det.app.id):''));
+}
+function fxAfter(){
+  var d=S.det;if(!d||!d.app||d.app.id!=S.id)return;
+  var f=fxGet('intro');
+  if(f&&(!INTRO_SEEN[d.app.id]||Date.now()-INTRO_SEEN[d.app.id]>600000)){INTRO_SEEN[d.app.id]=Date.now();playIntro(d.app,f.cfg)}
+}
+function playIntro(a,c){
+  var old=$('#fxintro');if(old)old.remove();
+  var dur=[0,4.6,3.2,2.2][c.speed||2]||3.2,t=String(c.text||'Welcome!'),L='';
+  Array.from(t).slice(0,60).forEach(function(ch,i){L+='<span style="animation-delay:'+(0.6+i*0.045).toFixed(2)+'s">'+(ch==' '?'&nbsp;':esc(ch))+'</span>'});
+  var d=document.createElement('div');d.id='fxintro';d.className='fxintro';
+  d.style.cssText='--ic1:'+safeC(c.c1)+';--ic2:'+safeC(c.c2)+';--ic1a:'+hexA(c.c1,.5)+';--ic2a:'+hexA(c.c2,.4)+';--idur:'+dur+'s';
+  d.innerHTML='<div class="fxi-rings"><i></i><i></i><i></i></div><div class="fxi-ic">'+ico(a,1)+'</div><div class="fxi-name">'+esc(a.name)+'</div><div class="fxi-msg">'+L+'</div><div class="fxi-bar"><i></i></div><div class="fxi-skip">Tap to skip</div>';
+  document.body.appendChild(d);
+  var end=function(){if(!d.parentNode)return;d.classList.add('out');setTimeout(function(){if(d.parentNode)d.remove()},520)};
+  d.onclick=end;setTimeout(end,dur*1000);
+}
+function burst(c,x,y){
+  var cols=[safeC(c.c1),safeC(c.c2),'#ffd84a','#ffffff'];
+  for(var i=0;i<48;i++){
+    var p=document.createElement('i'),ang=Math.random()*Math.PI*2,sp=110+Math.random()*230;
+    p.className='cfp';
+    p.style.cssText='left:'+x+'px;top:'+y+'px;background:'+cols[i%4]+';--x:'+(Math.cos(ang)*sp).toFixed(0)+'px;--y:'+(Math.sin(ang)*sp-70+Math.random()*340).toFixed(0)+'px;--r:'+(Math.random()*900-450).toFixed(0)+'deg;animation-delay:'+(Math.random()*.08).toFixed(2)+'s';
+    document.body.appendChild(p);(function(n){setTimeout(function(){n.remove()},2000)})(p);
+  }
+}
+function fxBurst(){
+  var f=fxGet('confetti');if(!f||S.page!='detail')return;
+  var el=$('#dlbox')||document.body,r=el.getBoundingClientRect();
+  burst(f.cfg,r.left+r.width/2,Math.max(80,Math.min(innerHeight-80,r.top+r.height/2)));
+}
+
+/* ===================== CASH KEYS (admin) ===================== */
+function keysSection(){
+  var h='<h2 style="margin-top:34px">Cash keys</h2><p class="mu" style="margin-top:0">Developers need a key to sell apps for real cash. Make keys here and give them to buyers.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn f" data-x="genkey" data-n="1">'+ic('key')+'Make 1 key</button><button class="btn o f" data-x="genkey" data-n="5">Make 5 keys</button></div>';
+  (S.keys||[]).forEach(function(k){h+='<div class="keyrow'+(k.used_at?' used':'')+'"><span>'+esc(k.code)+(k.used_at?'<br><small class="mu">Used by '+esc(k.used_by_name||'?')+'</small>':'')+'</span>'+(k.used_at?'':'<button class="ib" data-x="copykey" data-code="'+esc(k.code)+'" aria-label="Copy">'+ic('copy')+'</button><button class="ib" data-x="delkey" data-code="'+esc(k.code)+'" aria-label="Delete">'+ic('x')+'</button>')+'</div>'});
+  return h;
+}
+
+/* ===================== PAGE LOADER (replaces old fetchPage) ===================== */
+function fetchPage(){
+  var p=S.page,id=S.id;
+  var live=function(){return S.page==p&&S.id==id};
+  var done=function(){if(live())draw()};
+  var fail=function(e){if(/sign in/i.test(e.message)){logout();return}if(!live())return;S.err=e.message;draw()};
+  if(p=='home'){var hc=S.hcat,hq=S.q,ck=hc+'|'+hq;api('/api/apps?q='+encodeURIComponent(hq)+'&cat='+encodeURIComponent(hc)).then(function(j){CACHE_APPS[ck]=j.apps;if(ck=='All|')store.set('hx_apps',JSON.stringify(j.apps.slice(0,40)));if(!live()||S.hcat!=hc||S.q!=hq)return;S.apps=j.apps;draw()},fail)}
+  if(p=='detail')api('/api/apps/'+id).then(function(j){CACHE_DET[id]={t:Date.now(),j:j};if(!live())return;S.det=j;if(j.my_review&&!S.star)S.star=j.my_review.rating;draw()},fail);
+  if(p=='profile')Promise.all([api('/api/me'),api('/api/apps?mine=1'),api('/api/favorites'),S.user.is_admin?api('/api/admin/queue?count=1'):Promise.resolve({count:0})]).then(function(r){if(!live())return;S.me=r[0];S.mine=r[1].apps;S.fav=r[2].apps;S.qn=r[3].count||0;if(r[0].user)setCoins(r[0].user.coins);if(r[0].welcome)welcomeSheet();draw()},fail);
+  if(p=='moderation')Promise.all([api('/api/admin/queue'),api('/api/admin/support'),api('/api/admin/cash-keys')]).then(function(r){if(!live())return;S.queue=r[0].items;S.tickets=r[1].tickets;S.keys=r[2].keys;draw()},fail);
+  if(p=='dev')api('/api/users/'+id).then(function(j){if(!live())return;S.dev=j;draw();if(S.dtab=='community')loadCommunityPosts();else if(S.dtab!='apps')loadDfol()},fail);
+  if(p=='notif')api('/api/notifications').then(function(j){if(!live())return;S.notes=j.notifications;S.unread=0;draw();if(j.unread)api('/api/notifications/read',{method:'POST',body:{}}).catch(function(){})},fail);
+  if(p=='wallet')Promise.all([api('/api/wallet'),api('/api/cash/orders')]).then(function(r){if(!live())return;S.wal=r[0];S.ord=r[1];setCoins(r[0].coins);if(!S.cdet)S.cdet=r[0].details||'';draw()},fail);
+  if(p=='shop')api('/api/shop?app='+encodeURIComponent(S.shopApp||'')).then(function(j){if(!live())return;S.shop=j;S.shopApp=j.app?j.app.id:'';setCoins(j.coins);draw()},fail);
+  if((p=='newver'||p=='about'||p=='edit'||p=='allreviews')&&(!S.det||S.det.app.id!=id))api('/api/apps/'+id).then(function(j){if(!live())return;S.det=j;draw()},fail);
+}
+
+/* ===================== CLICK / INPUT HANDLERS FOR NEW FEATURES ===================== */
+document.addEventListener('input',function(e){
+  var k=e.target.dataset&&e.target.dataset.cfg;if(!k||!S.shop)return;
+  S.shopCfg[k]=e.target.value;paintShopPrev();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key=='Enter'&&S.page=='login'&&e.target&&(e.target.id=='em'||e.target.id=='pw'||e.target.id=='un')){e.preventDefault();var b=$('#go');if(b&&!b.disabled)auth()}
+});
+function shopSync(){var b=$('#shpanelbox');if(b)b.innerHTML=S.shopSel?itemPanel(shopItem(S.shopSel)):'';paintShopPrev();$$('.shi').forEach(function(e){e.classList.toggle('on',e.dataset.id==S.shopSel)})}
+function shopBody(){return{app_id:S.shopApp,item_id:S.shopSel,cfg:S.shopCfg}}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-x]');if(!t)return;
+  var x=t.dataset.x,d=t.dataset,id;
+  if(x=='pm'){S.pmode=d.v;paintPrice();if(typeof preview=='function'){try{preview()}catch(z){}}return}
+  if(x=='actkey'){
+    if(!S.user)return go('login');
+    if((S.ckey||'').trim().length<6)return toast('Enter your cash key');
+    if((S.cdet||'').trim().length<8)return toast('Enter your account details');
+    t.disabled=true;
+    api('/api/cash/activate',{method:'POST',body:{key:S.ckey,details:S.cdet}}).then(function(){S.user.cash_enabled=true;setCoins(S.user.coins);S.ckey='';toast('Real cash sales activated ✓');if(S.page=='wallet'){S.wal=null;draw();fetchPage()}else paintPrice()},function(er){t.disabled=false;toast(er.message)});
+    return;
+  }
+  if(x=='savedet'){
+    if((S.cdet||'').trim().length<8)return toast('Enter your account details');
+    t.disabled=true;api('/api/cash/activate',{method:'POST',body:{details:S.cdet}}).then(function(){t.disabled=false;toast('Details saved')},function(er){t.disabled=false;toast(er.message)});return;
+  }
+  if(x=='buycoins'){if(!S.user)return go('login');return buyCoinsSheet()}
+  if(x=='confirmbuy')return doBuy(t);
+  if(x=='paycash'){if(!S.user)return go('login');return cashSheet()}
+  if(x=='sendcash')return sendCash(t);
+  if(x=='copydet'){var tx=S.payInfo&&S.payInfo.details||'';try{navigator.clipboard.writeText(tx).then(function(){toast('Copied')},function(){toast('Press and hold the text to copy')})}catch(z){toast('Press and hold the text to copy')}return}
+  if(x=='howcoins'){showSheet('<div class="sheet-bar"></div><h2 style="font-size:24px;margin:0 0 10px">How Hex Coins work</h2><p class="mu" style="margin-top:0"><b>Get coins:</b> every new account gets 300 free. You also earn coins when people buy your apps with coins.</p><p class="mu"><b>Spend coins:</b> buy paid apps, or open the Shop to upgrade how your own app pages look.</p><button class="btn f" data-x="welcomego" style="margin-top:8px">Open the Shop</button>');return}
+  if(x=='welcomego'){hideSheet();go('shop');return}
+  if(x=='orderok'||x=='orderno'){
+    t.disabled=true;
+    api('/api/cash/orders/'+d.id+'/decide',{method:'POST',body:{decision:x=='orderok'?'confirm':'reject'}}).then(function(){toast(x=='orderok'?'Confirmed. The buyer can download now.':'Marked as not received');S.wal=null;S.ord=null;draw();fetchPage()},function(er){t.disabled=false;toast(er.message)});return;
+  }
+  if(x=='shopapp'){S.shopApp=d.id;S.shop=null;S.shopSel=null;draw();fetchPage();return}
+  if(x=='shopsel'){
+    var it=shopItem(d.id),ow=S.shop.owned[d.id];
+    if(S.shopSel==d.id){S.shopSel=null}else{S.shopSel=d.id;S.shopCfg=JSON.parse(JSON.stringify(ow?ow.cfg:it.def))}
+    shopSync();
+    if(S.shopSel){var pn=$('#shpanel');if(pn)pn.scrollIntoView({behavior:'smooth',block:'nearest'})}
+    return;
+  }
+  if(x=='cfgseg'){S.shopCfg[d.key]=+d.val;var pb=$('#shpanelbox');if(pb)pb.innerHTML=itemPanel(shopItem(S.shopSel));paintShopPrev();return}
+  if(x=='introplay'){if(S.shop.app)playIntro(S.shop.app,S.shopCfg);return}
+  if(x=='confettitest'){var pv=$('#shpv');if(pv){var r=pv.getBoundingClientRect();burst(S.shopCfg,r.left+r.width/2,r.top+r.height/2)}return}
+  if(x=='shopbuy'){
+    var it2=shopItem(S.shopSel);if(S.shop.coins<it2.price)return toast('Not enough coins. You need '+fmtN(it2.price-S.shop.coins)+' more.');
+    if(S.busy)return;S.busy=1;t.disabled=true;
+    api('/api/shop/buy',{method:'POST',body:shopBody()}).then(function(j){S.busy=0;S.shop.coins=j.coins;setCoins(j.coins);S.shop.owned[S.shopSel]={cfg:j.item.cfg,enabled:true};delete CACHE_DET[S.shopApp];toast('Unlocked '+it2.name+' 🎉');draw();var r=$('#shpv').getBoundingClientRect();burst(j.item.cfg,r.left+r.width/2,r.top+r.height/2)},function(er){S.busy=0;t.disabled=false;toast(er.message)});
+    return;
+  }
+  if(x=='shopsave'||x=='shoptoggle'){
+    var cur=S.shop.owned[S.shopSel],body=shopBody();
+    if(x=='shoptoggle')body.enabled=!cur.enabled;
+    t.disabled=true;
+    api('/api/shop/config',{method:'POST',body:body}).then(function(j){S.shop.owned[S.shopSel]={cfg:j.item.cfg,enabled:j.item.enabled};delete CACHE_DET[S.shopApp];toast(x=='shopsave'?'Saved ✓':(j.item.enabled?'Turned on':'Turned off'));S.shopCfg=JSON.parse(JSON.stringify(j.item.cfg));draw()},function(er){t.disabled=false;toast(er.message)});
+    return;
+  }
+  if(x=='genkey'){
+    t.disabled=true;api('/api/admin/cash-keys',{method:'POST',body:{count:+d.n||1}}).then(function(j){return api('/api/admin/cash-keys')}).then(function(j){S.keys=j.keys;toast('Keys created');draw()},function(er){t.disabled=false;toast(er.message)});return;
+  }
+  if(x=='copykey'){try{navigator.clipboard.writeText(d.code).then(function(){toast('Key copied')},function(){toast(d.code)})}catch(z){toast(d.code)}return}
+  if(x=='delkey'){api('/api/admin/cash-keys/'+d.code,{method:'DELETE'}).then(function(){S.keys=(S.keys||[]).filter(function(k){return k.code!=d.code});draw()},function(er){toast(er.message)});return}
+});
+
 /* Boot & Init */
 try{var cu=store.get('hxu');if(cu&&store.get('hx'))S.user=JSON.parse(cu)}catch(e){}
-if(S.user)api('/api/me').then(function(j){S.user=j.user;store.set('hxu',JSON.stringify(j.user));draw();poll();syncInstalls()},function(e){if(/sign in/i.test(e.message)){store.del('hx');store.del('hxu');S.user=null;draw()}});
+if(S.user)api('/api/me').then(function(j){S.user=j.user;store.set('hxu',JSON.stringify(j.user));draw();poll();syncInstalls();if(j.welcome)welcomeSheet()},function(e){if(/sign in/i.test(e.message)){store.del('hx');store.del('hxu');S.user=null;draw()}});
 
 var urlP=new URLSearchParams(window.location.search),targetApp=urlP.get('app');
 if(targetApp&&/^[\w-]+$/.test(targetApp)){go('detail',targetApp)}else{go('home')}
 
 startSplashAndGuide(false);
-setInterval(poll,30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()});
+setInterval(function(){if(!document.hidden)poll()},30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()});
 </script></body></html>
