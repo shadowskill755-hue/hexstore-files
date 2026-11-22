@@ -334,6 +334,25 @@ label.l{display:block;font-weight:700;margin:22px 0 10px;font-size:17px}.req{col
 .fx-ribbon .hdcard::after{content:var(--ribbon-text,"NEW");position:absolute;top:16px;right:0;z-index:4;padding:6px 14px 6px 22px;font-weight:900;font-size:12px;letter-spacing:.1em;color:#fff;background:linear-gradient(90deg,var(--ribbon-c1),var(--ribbon-c2));clip-path:polygon(0 0,100% 0,100% 100%,0 100%,12px 50%);pointer-events:none}
 .fx-heartbeat .fxdl .btn:not(.ok):not(.o):not([disabled]){animation:hbeat calc(var(--heartbeat-sp,3.4s)*.45) ease-out infinite}
 @keyframes hbeat{0%{transform:scale(1);box-shadow:0 0 0 0 var(--heartbeat-c1b)}12%{transform:scale(1.035)}24%{transform:scale(1)}30%{transform:scale(1.025)}100%{transform:scale(1);box-shadow:0 0 0 18px transparent}}
+
+/* admin control center */
+.mtabs{display:flex;gap:8px;overflow-x:auto;margin:14px -2px 18px;padding:2px;scrollbar-width:none}
+.mtabs::-webkit-scrollbar{display:none}
+.mtab{flex:none;padding:10px 16px;border-radius:999px;border:1px solid var(--ln);background:none;color:inherit;font:inherit;font-weight:700;font-size:15px}
+.mtab.on{background:var(--ac);color:#fff;border-color:transparent}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mcard{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:16px;min-width:0}
+.mcard small{display:block;color:var(--mu);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.mnum{font-size:28px;font-weight:900;margin:4px 0 2px;line-height:1.1}
+.msub{font-size:13px;opacity:.7}
+.mbars{display:flex;align-items:flex-end;gap:5px;height:120px;margin-top:12px}
+.mbars i{flex:1;background:linear-gradient(var(--ac),#27913f);border-radius:6px 6px 2px 2px;min-height:3px}
+.mrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}
+.mrow:last-child{border-bottom:0}
+.chipx{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;padding:3px 9px;border-radius:999px;background:var(--sf2);margin-left:6px;vertical-align:middle}
+.chipx.red{background:#4a1a1d;color:#ff9aa0}.chipx.grn{background:#173d22;color:#8ee6a1}.chipx.amb{background:#4a3a10;color:#ffd979}
+.mbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mbtns .btn{height:40px;padding:0 14px;font-size:14px}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#e58f00"/></linearGradient></defs></svg>
 
@@ -461,7 +480,7 @@ function login(){var r=S.reg;return '<main style="max-width:480px"><h1>'+(r?'Cre
 function detail0(){if(!S.det)return wait();var d=S.det,a=d.app,vs=d.versions,own=d.is_owner||(S.user&&S.user.is_admin),v=vs.filter(function(x){return x.status=='approved'})[0],dist={};d.dist.forEach(function(x){dist[x.rating]=x.n});
 var by={username:a.owner_name,avatar_url:a.owner_avatar},desc=a.description,short=desc.length>180?desc.slice(0,180).replace(/\s+\S*$/,'')+'…':desc;
 var devBadges=getDevBadges({is_admin:a.owner_is_admin,followers:a.owner_followers,downloads:a.owner_downloads,is_prime:a.owner_is_prime});
-var note=a.status=='published'?'':'<div class="note"><span style="font-size:22px">'+ic('eye')+'</span><div><b style="font-size:19px">'+(a.status=='rejected'?'Not approved':a.status=='pending'?'In review':'Draft')+'</b><br>'+(a.status=='rejected'?'Reason: '+esc(a.reject_reason||'No reason given')+'. Edit the app or upload a fixed APK, then submit it again.':a.status=='pending'?'A moderator is checking this app. It goes live once approved.':'Only you can see this app. Submit it for review when you are ready.')+'</div></div>';
+var note=a.status=='published'?'':'<div class="note"><span style="font-size:22px">'+ic('eye')+'</span><div><b style="font-size:19px">'+(a.status=='rejected'?'Not approved':a.status=='pending'?'In review':a.status=='suspended'?'Suspended':'Draft')+'</b><br>'+(a.status=='rejected'?'Reason: '+esc(a.reject_reason||'No reason given')+'. Edit the app or upload a fixed APK, then submit it again.':a.status=='pending'?'A moderator is checking this app. It goes live once approved.':a.status=='suspended'?'A moderator suspended this app. Reason: '+esc(a.reject_reason||'Policy violation')+'. Contact support if you think this is a mistake.':'Only you can see this app. Submit it for review when you are ready.')+'</div></div>';
 var showV=vs.length>1||(own&&vs.some(function(x){return x.status!='approved'}));
 var vIdx=v?vs.indexOf(v):-1,vsShow=S.allVer?vs:vs.slice(0,vIdx<0?1:vIdx+1);
 return '<main><button class="back" data-go="home">'+ic('back')+'Back</button>'+note+
@@ -500,7 +519,7 @@ return '<main><button class="back" data-go="home">'+ic('back')+'Back</button><h1
 '<div class="card pad"><h2 style="font-size:22px;margin-bottom:6px">Guide &amp; Tour</h2><p class="mu" style="margin:0 0 16px">Want to see the intro animation and feature guide again?</p><button class="btn o f" data-replayguide>'+ic('box')+'Replay Welcome Tutorial</button></div>'+foot()+'</main>';
 }
 
-function notif(){if(!S.notes)return wait();return '<main><h1>Notifications</h1>'+(S.notes.length?'<div style="display:flex;justify-content:flex-end;margin:0 0 8px"><button class="btn o" data-clrnotif style="height:42px;padding:0 16px;font-size:15px">'+(S.clrArm?'Tap again to clear all':'Clear all')+'</button></div>':'')+(S.notes.length?S.notes.map(function(n){return '<button class="row" '+(n.from_user?(n.title.indexOf('📢')==0?'data-pcomm="':'data-userpopup="')+esc(n.from_user)+'"':(n.title.indexOf('📩')==0?'data-go="moderation"':(n.title.indexOf('💬')==0?'data-go="inbox"':/^(🪙|💵)/.test(n.title)?'data-go="wallet"':'data-open="'+esc(n.app_id)+'"')))+' style="'+(n.is_read?'':'background:var(--sf);border-radius:16px;padding:14px;margin:6px 0;')+'"><span class="ico" style="background:var(--sf2);color:var(--ac);font-size:26px">'+ic(n.from_user?'user':'bell')+'</span><span style="flex:1;min-width:0"><b style="font-size:17px">'+esc(n.title)+'</b><small style="display:block">'+esc(n.body)+'</small><small>'+fd(n.created_at)+'</small></span></button>'}).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No notifications yet.<br>Open an app and tap the bell to follow it.</p>')+foot()+'</main>'}
+function notif(){if(!S.notes)return wait();return '<main><h1>Notifications</h1>'+(S.notes.length?'<div style="display:flex;justify-content:flex-end;margin:0 0 8px"><button class="btn o" data-clrnotif style="height:42px;padding:0 16px;font-size:15px">'+(S.clrArm?'Tap again to clear all':'Clear all')+'</button></div>':'')+(S.notes.length?S.notes.map(function(n){return '<button class="row" '+(n.from_user?(n.title.indexOf('📢')==0?'data-pcomm="':'data-userpopup="')+esc(n.from_user)+'"':(n.title.indexOf('📣')==0?'data-bc="1"':n.title.indexOf('📩')==0?'data-go="moderation"':(n.title.indexOf('💬')==0?'data-go="inbox"':/^(🪙|💵)/.test(n.title)?'data-go="wallet"':'data-open="'+esc(n.app_id)+'"')))+' style="'+(n.is_read?'':'background:var(--sf);border-radius:16px;padding:14px;margin:6px 0;')+'"><span class="ico" style="background:var(--sf2);color:var(--ac);font-size:26px">'+ic(n.from_user?'user':'bell')+'</span><span style="flex:1;min-width:0"><b style="font-size:17px">'+esc(n.title)+'</b><small style="display:block">'+esc(n.body)+'</small><small>'+fd(n.created_at)+'</small></span></button>'}).join(''):'<p class="mu" style="padding:40px 0;text-align:center">No notifications yet.<br>Open an app and tap the bell to follow it.</p>')+foot()+'</main>'}
 
 function newver(){if(!S.det||S.det.app.id!=S.id)return wait();var a=S.det.app,v=S.det.versions[0];return '<main style="padding-bottom:150px"><button class="back" data-open="'+esc(a.id)+'">'+ic('back')+'Back to app</button><h1>New version</h1><p class="mu" style="font-size:18px">'+esc(a.name)+(v?' · current v'+esc(v.version_name):'')+'</p><div class="card pad"><h2 style="font-size:22px">New APK</h2><div id="nvbox"></div><label class="l">Version <span class="req">*</span></label><input type="text" data-k="nver" placeholder="e.g. 1.1" value="'+esc(S.nver)+'"><label class="l">What\'s new</label><textarea data-k="nlog" placeholder="What changed in this version?">'+esc(S.nlog)+'</textarea><p class="hint">'+(a.status=='published'?'Everyone following this app will be notified.':'This app is not published yet, so nobody is notified.')+'</p></div></main><div class="dock"><p id="nvm">'+(S.napk?'Ready to upload.':'Choose the new APK to continue.')+'</p><div><button class="btn f" data-nvsubmit '+(S.napk?'':'disabled')+'>Upload &amp; notify followers</button></div></div>'}
 function paintNv(){var b=$('#nvbox');if(!b)return;b.innerHTML=S.napk?'<div class="file">'+ic('box').replace('<svg','<svg style="font-size:44px"')+'<div style="flex:1;min-width:0"><b style="word-break:break-all">'+esc(S.napk.name)+'</b><span class="mu">'+fmt(S.napk.size)+'</span></div><button class="ib" data-rm="napk">'+ic('x')+'</button></div>':'<label class="drop">'+ic('cloud')+'<b>Choose new APK</b>Android package (.apk), max 100 MB<input type="file" id="fn" accept=".apk,application/vnd.android.package-archive" hidden></label>';var f=$('#fn');if(f)f.onchange=function(){var x=f.files[0];if(x){if(!/\.apk$/i.test(x.name))return toast('Choose an .apk file');S.napk={name:x.name,size:x.size,file:x};draw()}}}
@@ -557,10 +576,11 @@ var qapps=S.queue.length?S.queue.map(function(it,i){var a=it.app,v=it.version;re
 
 var qtick=S.tickets&&S.tickets.length?S.tickets.map(function(tk){return '<div class="mod"><span class="tagl" style="background:#134058;color:#b9dcee">HELP TICKET</span><b style="font-size:18px;display:block">'+esc(tk.subject)+'</b><span class="mu">From: '+esc(tk.name||'User')+' ('+esc(tk.email)+') · '+fd(tk.created_at)+'</span><p style="white-space:pre-wrap;margin:12px 0">'+esc(tk.message)+'</p><button class="btn o f" data-resolveticket="'+tk.id+'">Mark Resolved &amp; Close</button></div>'}).join(''):'<p class="mu" style="padding:20px 0;text-align:center">No pending support messages.</p>';
 
-return '<main><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Moderation</h1><p class="mu" style="font-size:18px">Review submitted apps, updates, and community help tickets.</p><h2 style="margin-top:24px">App Review Queue</h2>'+qapps+'<h2 style="margin-top:34px">Help Center Messages</h2>'+qtick+keysSection()+'</main>'}
+var mt=S.modTab||'overview';
+return '<main><button class="back" data-go="profile">'+ic('back')+'Back</button><h1>Admin</h1><p class="mu" style="font-size:17px;margin-top:0">Control center for HEXSTORE.</p>'+modTabs(mt)+(mt=='review'?'<h2 style="margin-top:8px">App Review Queue</h2>'+qapps+'<h2 style="margin-top:34px">Help Center Messages</h2>'+qtick+keysSection():modPanel(mt))+'</main>'}
 
 function edit(){if(!S.det||S.det.app.id!=S.id||S.editId!=S.id)return wait();return formPage()}
-function formPage(){var ed=!!S.editId,adm=S.user&&S.user.is_admin;return '<main style="padding-bottom:170px"><button class="back" '+(ed?'data-open="'+esc(S.editId)+'"':'data-go="profile"')+'>'+ic('back')+(ed?'Back to app':'Back to profile')+'</button><h1>'+(ed?'Edit app':'Upload app')+'</h1><p class="mu" style="font-size:18px">'+(ed?'Change how your app appears in the store.':'Publish a new app to HEXSTORE.'+(adm?'':' A moderator reviews it before it goes live.'))+'</p>'+
+function formPage(){var ed=!!S.editId,adm=S.user&&S.user.is_admin;return '<main style="padding-bottom:170px"><button class="back" '+(ed?'data-open="'+esc(S.editId)+'"':'data-go="profile"')+'>'+ic('back')+(ed?'Back to app':'Back to profile')+'</button><h1>'+(ed?'Edit app':'Upload app')+'</h1><p class="mu" style="font-size:18px">'+(ed?'Change how your app appears in the store.':'Publish a new app to HEXSTORE.'+(adm?'':' A moderator reviews it before it goes live.'))+'</p>'+(ed?'':uploadGuide())+
 '<div class="card">'+(ed?'':'<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">App bundle</h2><p class="mu" style="margin-top:0">The APK people download and install (max 100 MB).</p><div id="apkbox"></div></div>')+
 '<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Origin</h2><p class="mu" style="margin-top:0">Where this build comes from. Required to publish.</p><div class="opt" data-or="original"><i></i><div><b>Original</b><span>An unmodified build of someone else\'s app, or your own.</span></div></div><div class="opt" data-or="mod"><i></i><div><b>Mod</b><span>A modified build.</span></div></div></div>'+
 pricingSection()+'<div class="pad" style="border-bottom:1px solid var(--ln)"><h2 style="margin-bottom:6px;font-size:22px">Icon</h2><p class="mu" style="margin-top:0">Shown across the store. Square works best.</p><div id="icobox"></div></div>'+
@@ -1509,7 +1529,7 @@ function fetchPage(){
   if(p=='home'){var hc=S.hcat,hq=S.q,ck=hc+'|'+hq;api('/api/apps?q='+encodeURIComponent(hq)+'&cat='+encodeURIComponent(hc)).then(function(j){CACHE_APPS[ck]=j.apps;if(ck=='All|')store.set('hx_apps',JSON.stringify(j.apps.slice(0,40)));if(!live()||S.hcat!=hc||S.q!=hq)return;S.apps=j.apps;draw()},fail)}
   if(p=='detail')api('/api/apps/'+id).then(function(j){CACHE_DET[id]={t:Date.now(),j:j};if(!live())return;S.det=j;if(j.my_review&&!S.star)S.star=j.my_review.rating;draw()},fail);
   if(p=='profile')Promise.all([api('/api/me'),api('/api/apps?mine=1'),api('/api/favorites'),S.user.is_admin?api('/api/admin/queue?count=1'):Promise.resolve({count:0})]).then(function(r){if(!live())return;S.me=r[0];S.mine=r[1].apps;S.fav=r[2].apps;S.qn=r[3].count||0;if(r[0].user)setCoins(r[0].user.coins);if(r[0].welcome)welcomeSheet();draw()},fail);
-  if(p=='moderation')Promise.all([api('/api/admin/queue'),api('/api/admin/support'),api('/api/admin/cash-keys')]).then(function(r){if(!live())return;S.queue=r[0].items;S.tickets=r[1].tickets;S.keys=r[2].keys;draw()},fail);
+  if(p=='moderation')Promise.all([api('/api/admin/queue'),api('/api/admin/support'),api('/api/admin/cash-keys'),api('/api/admin/stats').catch(function(){return null})]).then(function(r){if(!live())return;S.queue=r[0].items;S.tickets=r[1].tickets;S.keys=r[2].keys;S.stats=r[3];draw()},fail);
   if(p=='dev')api('/api/users/'+id).then(function(j){if(!live())return;S.dev=j;draw();if(S.dtab=='community')loadCommunityPosts();else if(S.dtab!='apps')loadDfol()},fail);
   if(p=='notif')api('/api/notifications').then(function(j){if(!live())return;S.notes=j.notifications;S.unread=0;draw();if(j.unread)api('/api/notifications/read',{method:'POST',body:{}}).catch(function(){})},fail);
   if(p=='wallet')Promise.all([api('/api/wallet'),api('/api/cash/orders'),api('/api/hexinfo').catch(function(){return null})]).then(function(r){if(!live())return;S.wal=r[0];S.ord=r[1];S.hx=r[2];setCoins(r[0].coins);if(!S.cdet)S.cdet=r[0].details||'';draw()},fail);
@@ -1568,7 +1588,7 @@ document.addEventListener('click',function(e){
   if(x=='introplay'){if(S.shop.app)playIntro(S.shop.app,S.shopCfg);return}
   if(x=='confettitest'){var pv=$('#shpv');if(pv){var r=pv.getBoundingClientRect();burst(S.shopCfg,r.left+r.width/2,r.top+r.height/2)}return}
   if(x=='shopbuy'){
-    var it2=shopItem(S.shopSel);if(S.shop.coins<it2.price)return toast('Not enough coins. You need '+fmtN(it2.price-S.shop.coins)+' more.');
+    var it2=shopItem(S.shopSel);if(!(S.user&&S.user.is_admin)&&S.shop.coins<it2.price)return toast('Not enough coins. You need '+fmtN(it2.price-S.shop.coins)+' more.');
     if(S.busy)return;S.busy=1;t.disabled=true;
     api('/api/shop/buy',{method:'POST',body:shopBody()}).then(function(j){S.busy=0;S.shop.coins=j.coins;setCoins(j.coins);S.shop.owned[S.shopSel]={cfg:j.item.cfg,enabled:true};delete CACHE_DET[S.shopApp];toast('Unlocked '+it2.name+' 🎉');draw();var r=$('#shpv').getBoundingClientRect();burst(j.item.cfg,r.left+r.width/2,r.top+r.height/2)},function(er){S.busy=0;t.disabled=false;toast(er.message)});
     return;
@@ -1689,6 +1709,84 @@ setInterval(function(){
     if(sig(j)!=sig(S.chat)){S.chat=j;var l=$('#dmlist');if(l){l.innerHTML=chatBody();chatScroll()}}
   },function(){});
 },8000);
+
+/* ===================== ADMIN CONTROL CENTER ===================== */
+S.modTab='overview';S.uq='';S.aq='';S.users=null;S.mapps=null;S.bcs=null;S.set=null;S.wa='';S.bct='';S.bcb='';S.bca='all';S.stats=null;
+function uploadGuide(){
+  return '<details class="card pad" open style="margin:14px 0"><summary style="font-weight:800;font-size:19px;cursor:pointer">🚀 New here? How to make your first app</summary><ol style="margin:12px 0 0;padding-left:20px;line-height:1.6;font-size:16px"><li>Install <b>HTML to APK</b> from the Play Store (button below).</li><li>Paste your HTML code or pick your project folder, add a name and icon, then tap build.</li><li>Save the APK it makes on your phone.</li><li>Come back here, add the APK, an icon and screenshots, then tap publish.</li><li>A moderator checks it, then it goes live in HEXSTORE.</li></ol><a class="btn gold f" target="_blank" rel="noopener" style="text-decoration:none;margin-top:14px" href="https://play.google.com/store/apps/details?id=com.basitce.htmltoapk">Get HTML to APK</a></details>';
+}
+function modTabs(t){
+  var T=[['overview','Overview'],['review','Review'],['users','Users'],['apps','Apps'],['broadcast','Broadcast'],['settings','Settings']];
+  return '<div class="mtabs">'+T.map(function(x){return '<button class="mtab'+(t==x[0]?' on':'')+'" data-hx="modtab" data-id="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>';
+}
+function mstat(l,v,sub){return '<div class="mcard"><small>'+l+'</small><div class="mnum">'+v+'</div><div class="msub">'+(sub||'&nbsp;')+'</div></div>'}
+function modPanel(t){
+  var h='';
+  if(t=='overview'){
+    var s=S.stats;if(!s)return '<p class="mu">Loading stats…</p>';
+    var u=s.users,a=s.apps,c=s.activity,mx=Math.max.apply(null,s.series.map(function(x){return x.n}).concat([1]));
+    h+='<div class="mgrid">'+mstat('Total users',fmtN(u.total),'+'+u.d1+' today · +'+u.d7+' this week')+mstat('New in 30 days',fmtN(u.d30),fmtN(u.referred)+' came from referrals')+mstat('Live apps',fmtN(a.published),fmtN(a.total)+' apps in total')+mstat('Downloads',fmtN(a.downloads),'across all apps')+mstat('Waiting review',fmtN(a.pending),fmtN(c.tickets)+' open help tickets')+mstat('Suspended apps',fmtN(a.suspended),fmtN(u.banned)+' banned users')+mstat('Coins held by users',fmtN(u.coins),'admin not counted')+mstat('Real cash sales',fmtN(c.cash_done),fmtN(c.cash_pending)+' waiting')+mstat('Coin purchases',fmtN(c.purchases),'paid apps bought with coins')+mstat('Sellers',fmtN(u.sellers),fmtN(c.keys_free)+' unused keys')+'</div>';
+    h+='<div class="mcard" style="margin-top:12px"><small>New users · last 14 days</small><div class="mbars">'+s.series.map(function(x){return '<i title="'+x.n+'" style="height:'+Math.max(3,Math.round(x.n/mx*100))+'%"></i>'}).join('')+'</div><div style="display:flex;justify-content:space-between;margin-top:6px" class="msub"><span>'+fd(s.series[0].day)+'</span><span>Today</span></div></div>';
+    h+='<div class="mcard" style="margin-top:12px"><small>Top apps</small>'+(s.top.length?s.top.map(function(x,i){return '<div class="mrow"><b style="width:22px">'+(i+1)+'</b><span style="flex:1;min-width:0"><b>'+esc(x.name)+'</b><br><span class="msub">by '+esc(x.owner)+'</span></span><b>⤓ '+fmtN(x.downloads)+'</b></div>'}).join(''):'<p class="mu">No live apps yet.</p>')+'</div>';
+    h+='<div class="mcard" style="margin-top:12px"><small>Newest users</small>'+s.recent.map(function(x){return '<div class="mrow"><span style="flex:1;min-width:0"><b>'+esc(x.username)+'</b><br><span class="msub">'+esc(x.email)+'</span></span><span class="msub">'+fd(x.created_at)+'</span></div>'}).join('')+'</div>';
+    return h;
+  }
+  if(t=='users'){
+    h+='<div style="display:flex;gap:10px"><input type="text" data-k="uq" placeholder="Search name, email or Hex ID" value="'+esc(S.uq)+'" style="flex:1"><button class="btn" data-hx="usearch" style="height:52px;padding:0 18px">Search</button></div>';
+    if(!S.users)return h+'<p class="mu" style="margin-top:16px">Loading…</p>';
+    h+='<div class="mcard" style="margin-top:14px">'+(S.users.users.length?S.users.users.map(function(x){
+      return '<div class="mrow" style="align-items:flex-start"><span style="flex:1;min-width:0"><b>'+esc(x.username)+'</b>'+(x.is_admin?'<span class="chipx grn">ADMIN</span>':'')+(x.banned_at?'<span class="chipx red">BANNED</span>':'')+'<br><span class="msub">'+esc(x.email)+'</span><br><span class="msub">'+esc(x.hex_id||'')+' · 🪙 '+fmtN(x.coins)+' · '+x.apps+' apps · joined '+fd(x.created_at)+'</span>'+(x.banned_at&&x.ban_reason?'<br><span class="msub" style="color:#ff9aa0">Reason: '+esc(x.ban_reason)+'</span>':'')+
+        '<div class="mbtns"><button class="btn o" data-hx="openchat" data-id="'+esc(x.id)+'">💬 Message</button>'+(x.is_admin?'':(x.banned_at?'<button class="btn" data-hx="unban" data-id="'+esc(x.id)+'">Unban</button>':'<button class="btn o" style="color:#f2555a" data-hx="banask" data-id="'+esc(x.id)+'" data-n="'+esc(x.username)+'">Ban</button>'))+'</div></span></div>'}).join(''):'<p class="mu">No users found.</p>')+'</div>';
+    return h;
+  }
+  if(t=='apps'){
+    h+='<div style="display:flex;gap:10px"><input type="text" data-k="aq" placeholder="Search app or developer" value="'+esc(S.aq)+'" style="flex:1"><button class="btn" data-hx="asearch" style="height:52px;padding:0 18px">Search</button></div>';
+    if(!S.mapps)return h+'<p class="mu" style="margin-top:16px">Loading…</p>';
+    var cls={published:'grn',pending:'amb',suspended:'red',rejected:'red',draft:''};
+    h+='<div class="mcard" style="margin-top:14px">'+(S.mapps.length?S.mapps.map(function(x){
+      return '<div class="mrow" style="align-items:flex-start"><span style="flex:1;min-width:0"><b>'+esc(x.name)+'</b><span class="chipx '+(cls[x.status]||'')+'">'+esc(x.status.toUpperCase())+'</span><br><span class="msub">by '+esc(x.owner)+' · ⤓ '+fmtN(x.downloads)+'</span>'+(x.status=='suspended'&&x.reject_reason?'<br><span class="msub" style="color:#ff9aa0">Reason: '+esc(x.reject_reason)+'</span>':'')+
+        '<div class="mbtns"><button class="btn o" data-open="'+esc(x.id)+'">View</button>'+(x.status=='published'?'<button class="btn o" style="color:#f2555a" data-hx="suspask" data-id="'+esc(x.id)+'" data-n="'+esc(x.name)+'">Suspend</button>':'')+(x.status=='suspended'?'<button class="btn" data-hx="unsusp" data-id="'+esc(x.id)+'">Restore</button>':'')+'</div></span></div>'}).join(''):'<p class="mu">No apps found.</p>')+'</div>';
+    return h;
+  }
+  if(t=='broadcast'){
+    h+='<div class="mcard"><h2 style="margin:0 0 4px;font-size:20px">📣 Send a broadcast</h2><p class="mu" style="margin:0;font-size:15px">Shows in every selected user’s notifications. Only you can do this.</p><label class="l">Title</label><input type="text" maxlength="80" data-k="bct" placeholder="e.g. New feature is live" value="'+esc(S.bct)+'"><label class="l">Message</label><textarea maxlength="500" data-k="bcb" placeholder="Write your message…" style="min-height:110px">'+esc(S.bcb)+'</textarea><label class="l">Send to</label><select data-k="bca"><option value="all"'+(S.bca=='all'?' selected':'')+'>Everyone</option><option value="devs"'+(S.bca=='devs'?' selected':'')+'>Developers only (people with apps)</option></select><button class="btn gold f" data-hx="bcask" style="margin-top:14px">Send broadcast</button></div>';
+    h+='<h2 style="margin-top:24px;font-size:20px">Sent broadcasts</h2><div class="mcard">'+(S.bcs&&S.bcs.length?S.bcs.map(function(b){return '<div class="mrow" style="align-items:flex-start"><span style="flex:1;min-width:0"><b>'+esc(b.title)+'</b><br><span style="white-space:pre-wrap">'+esc(b.body)+'</span><br><span class="msub">'+fd(b.created_at)+' · '+(b.audience=='devs'?'Developers':'Everyone')+' · '+fmtN(b.recipients)+' reached</span></span></div>'}).join(''):'<p class="mu">Nothing sent yet.</p>')+'</div>';
+    return h;
+  }
+  if(t=='settings'){
+    return '<div class="mcard"><h2 style="margin:0 0 4px;font-size:20px">WhatsApp support number</h2><p class="mu" style="margin:0;font-size:15px">Used by the “WhatsApp support” button for Hex key requests. Users never see it in the app or code.'+(S.set&&S.set.via_secret?' A Cloudflare secret is also set and takes priority.':'')+'</p><label class="l">Number with country code</label><input type="tel" inputmode="numeric" data-k="wa" placeholder="2349018841424" value="'+esc(S.wa)+'"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"><button class="btn f" data-hx="savewa">Save</button><a class="btn o f" target="_blank" rel="noopener" style="text-decoration:none" href="/go/whatsapp">Test link</a></div></div>';
+  }
+  return '';
+}
+function modLoad(){
+  var t=S.modTab;
+  if(t=='users')api('/api/admin/users?q='+encodeURIComponent(S.uq||'')).then(function(j){S.users=j;if(S.modTab=='users')draw()},function(e){toast(e.message)});
+  if(t=='apps')api('/api/admin/apps?q='+encodeURIComponent(S.aq||'')).then(function(j){S.mapps=j.apps;if(S.modTab=='apps')draw()},function(e){toast(e.message)});
+  if(t=='broadcast')api('/api/admin/broadcasts').then(function(j){S.bcs=j.broadcasts;if(S.modTab=='broadcast')draw()},function(e){toast(e.message)});
+  if(t=='settings')api('/api/admin/settings').then(function(j){S.set=j;S.wa=j.whatsapp||'';if(S.modTab=='settings')draw()},function(e){toast(e.message)});
+}
+function reasonSheet(title,hint,id,ok,n){
+  showSheet('<div class="sheet-bar"></div><h2 style="font-size:24px;margin:0 0 6px">'+title+'</h2><p class="mu" style="margin:0 0 8px">'+esc(n||'')+'</p><textarea id="rsn" placeholder="'+hint+'" style="min-height:90px"></textarea><div style="display:grid;gap:10px;margin-top:14px"><button class="btn gold f" data-hx="'+ok+'" data-id="'+esc(id)+'">Confirm</button><button class="btn o f" data-sheetclose>Cancel</button></div>');
+}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-hx]');if(!t||!S.user||!S.user.is_admin)return;
+  var a=t.dataset.hx,d=t.dataset;
+  var post=function(url,body,msg,after){if(S.busy)return;S.busy=1;api(url,{method:'POST',body:body||{}}).then(function(j){S.busy=0;hideSheet();toast(typeof msg=='function'?msg(j):msg);if(after)after()},function(er){S.busy=0;toast(er.message)})};
+  if(a=='modtab'){S.modTab=d.id;draw();modLoad();return}
+  if(a=='usearch'){S.users=null;draw();modLoad();return}
+  if(a=='asearch'){S.mapps=null;draw();modLoad();return}
+  if(a=='banask'){reasonSheet('Ban this user?','Reason (shown to the user when they try to sign in)',d.id,'banok',d.n);return}
+  if(a=='banok'){post('/api/admin/users/'+d.id+'/ban',{reason:($('#rsn')||{}).value},'User banned. Their live apps were suspended.',modLoad);return}
+  if(a=='unban'){post('/api/admin/users/'+d.id+'/unban',{},'User unbanned.',modLoad);return}
+  if(a=='suspask'){reasonSheet('Suspend this app?','Reason (the developer will see it)',d.id,'suspok',d.n);return}
+  if(a=='suspok'){post('/api/admin/apps/'+d.id+'/suspend',{reason:($('#rsn')||{}).value},'App suspended.',function(){CACHE_DET={};modLoad()});return}
+  if(a=='unsusp'){post('/api/admin/apps/'+d.id+'/unsuspend',{},'App restored.',function(){CACHE_DET={};modLoad()});return}
+  if(a=='bcask'){
+    if(!(S.bct||'').trim()||!(S.bcb||'').trim())return toast('Write a title and a message first');
+    showSheet('<div class="sheet-bar"></div><h2 style="font-size:24px;margin:0 0 6px">Send broadcast?</h2><p class="mu">It goes to '+(S.bca=='devs'?'all developers':'every user')+' right now and cannot be undone.</p><div class="paybox"><b>'+esc(S.bct)+'</b><br>'+esc(S.bcb)+'</div><div style="display:grid;gap:10px;margin-top:14px"><button class="btn gold f" data-hx="bcok">Send now</button><button class="btn o f" data-sheetclose>Cancel</button></div>');return}
+  if(a=='bcok'){post('/api/admin/broadcast',{title:S.bct,body:S.bcb,audience:S.bca},function(j){return 'Sent to '+j.recipients+' users 📣'},function(){S.bct='';S.bcb='';modLoad()});return}
+  if(a=='savewa'){post('/api/admin/settings',{whatsapp:S.wa},function(j){return j.whatsapp?'WhatsApp number saved ✓':'WhatsApp number removed'},modLoad);return}
+});
 
 startSplashAndGuide(false);
 setInterval(function(){if(!document.hidden)poll()},30000);document.addEventListener('visibilitychange',function(){if(!document.hidden)poll()});
