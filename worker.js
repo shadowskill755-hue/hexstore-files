@@ -41,7 +41,8 @@ async function who(env,req){
     if(!await crypto.subtle.verify('HMAC',await hkey(env),unb64u(s),enc.encode(p)))return null;
     const d=JSON.parse(dec.decode(unb64u(p)));
     if(d.e<Date.now())return null;
-    return await q(env,'select id,email,username,bio,is_admin,avatar_key,tos_at,email_alerts,coins,welcome_at,cash_enabled,payout_details,hex_id from users where id=?',d.u).first();
+    const row=await q(env,'select id,email,username,bio,is_admin,avatar_key,tos_at,email_alerts,coins,welcome_at,cash_enabled,payout_details,hex_id,banned_at from users where id=?',d.u).first();
+    return row&&row.banned_at?null:row;
   }catch(e){return null}
 }
 
@@ -118,7 +119,7 @@ async function announce(env,ctx,base,a,ver){
 // ======================================================================
 //  HEX COINS · PAID APPS · CASH KEYS · SHOP
 // ======================================================================
-const WELCOME_COINS=300,REFER_COINS=100,SCHEMA_V=2;
+const WELCOME_COINS=300,REFER_COINS=100,SCHEMA_V=3;
 const CURRENCIES=['USD','EUR','GBP','NGN','GHS','KES','ZAR','INR','CAD','AUD','BRL','AED'];
 const jp=(s,d)=>{try{const v=JSON.parse(s||'');return v==null?d:v}catch(e){return d}};
 const HEXC=/^#[0-9a-fA-F]{6}$/;
@@ -177,7 +178,9 @@ async function migrate(env){
     'alter table apps add column price integer not null default 0',
     "alter table apps add column currency text not null default 'USD'",
     'alter table users add column hex_id text',
-    'alter table users add column referred_by text'
+    'alter table users add column referred_by text',
+    'alter table users add column banned_at integer',
+    'alter table users add column ban_reason text'
   ];
   for(const s of alters){try{await run(s)}catch(e){if(!/duplicate column/i.test(String(e.message)))throw e}}
   const st=[
@@ -202,7 +205,8 @@ async function migrate(env){
     'create index if not exists idx_users_ref on users(referred_by)',
     "create table if not exists dm_msgs(id text primary key,sender_id text not null,recipient_id text not null,body text not null default '',img_key text,order_id text,kind text not null default 'text',created_at integer not null,read_at integer)",
     'create index if not exists idx_dm_to on dm_msgs(recipient_id,read_at)',
-    'create index if not exists idx_dm_pair on dm_msgs(sender_id,recipient_id,created_at)'
+    'create index if not exists idx_dm_pair on dm_msgs(sender_id,recipient_id,created_at)',
+    'create table if not exists broadcasts(id text primary key,title text not null,body text not null,audience text not null,recipients integer not null default 0,created_by text,created_at integer not null)'
   ];
   await env.DB.batch(st.map(s=>env.DB.prepare(s)));
   // give every existing account a Hex ID
@@ -280,7 +284,7 @@ const priceLabel=a=>!a.price_mode||a.price_mode==='free'?'Free':a.price_mode==='
 
 const KA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const hexClean=v=>String(v==null?'':v).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12);
-const waNum=env=>String(env.WHATSAPP_NUMBER||'').replace(/\D/g,'');
+const waNum=async env=>{const e=String(env.WHATSAPP_NUMBER||'').replace(/\D/g,'');if(e)return e;const r=await q(env,"select v from hx_meta where k='wa_number'").first();return r?String(r.v).replace(/\D/g,''):''};
 function genHexId(){const b=crypto.getRandomValues(new Uint8Array(6));return 'HX'+[...b].map(x=>KA[x%32]).join('')}
 async function ensureHex(env,id){
   const cur=await q(env,'select hex_id from users where id=?',id).first();
@@ -476,7 +480,7 @@ async function apiX(req,env,url,path,ctx,me,body,m,base,now){
       q(env,"select coalesce(sum(amount),0) n from coin_tx where user_id=? and kind='referral'",me.id).first(),
       q(env,'select username,created_at from users where referred_by=? order by created_at desc limit 10',me.id).all(),
       q(env,'select id,username from users where is_admin=1 order by created_at asc limit 1').first()]);
-    return J({hex_id:hid,referrals:cnt.n,earned:earn.n,recent:recent.results,refer_coins:REFER_COINS,admin:adm?{id:adm.id,username:adm.username}:null,whatsapp:Boolean(waNum(env)),is_admin:Boolean(me.is_admin)});
+    return J({hex_id:hid,referrals:cnt.n,earned:earn.n,recent:recent.results,refer_coins:REFER_COINS,admin:adm?{id:adm.id,username:adm.username}:null,whatsapp:Boolean(await waNum(env)),is_admin:Boolean(me.is_admin)});
   }
   if(path==='/api/coins/lookup'&&m==='GET'){
     need();
@@ -588,7 +592,7 @@ export default{
       if(miss.length)throw new E(500,'Setup incomplete. Missing: '+miss.join(', '));
       await ensureSchema(env);
       if(path==='/go/whatsapp'){
-        const n=waNum(env);
+        await ensureSchema(env);const n=await waNum(env);
         if(!n)return new Response('WhatsApp support is not set up yet. Please send a message inside the app instead.',{status:503,headers:{'Content-Type':'text/plain'}});
         const hid=hexClean(url.searchParams.get('h')),nm=String(url.searchParams.get('n')||'').replace(/[^\w .-]/g,'').slice(0,30);
         const text='Hello HEXSTORE, I need a Hex key so I can sell my apps.'+(nm?' My username: '+nm+'.':'')+(hid?' My Hex ID: '+hid+'.':'');
@@ -692,6 +696,7 @@ async function api(req,env,url,path,ctx){
     if(!u){await hashPw(String(body.password||''),'00'.repeat(16));await fail()}
     const [salt,h]=u.pass_hash.split(':');
     if(await hashPw(String(body.password||''),salt)!==h)await fail();
+    if(u.banned_at)throw new E(403,'This account has been banned.'+(u.ban_reason?' Reason: '+u.ban_reason:''));
     await clearKey(env,kE);
     const gift=await welcome(env,u.id,now);if(gift)u.coins=(+u.coins||0)+WELCOME_COINS;
     return J({token:await mint(env,u.id),welcome:gift,user:pub(u,base)});
@@ -925,7 +930,7 @@ async function api(req,env,url,path,ctx){
       if(Array.isArray(body.shots)){const ns=body.shots.filter(k=>mine(k,a.owner_id)).slice(0,8);for(const k of jp(a.shots,[]))if(!ns.includes(k))await delFile(env,k);f.shots=JSON.stringify(ns)}
       if(body.status!==undefined){
         if(admin&&['draft','pending','published','rejected'].includes(body.status))f.status=body.status;
-        else if(owner&&['draft','pending'].includes(body.status)&&a.status!=='published')f.status=(body.status==='pending'&&admin)?'published':body.status;
+        else if(owner&&['draft','pending'].includes(body.status)&&a.status!=='published'&&a.status!=='suspended')f.status=(body.status==='pending'&&admin)?'published':body.status;
       }
       if(f.status&&f.status!==a.status&&['pending','published'].includes(f.status)){
         const nowShots=f.shots!==undefined?JSON.parse(f.shots):jp(a.shots,[]);
@@ -1095,6 +1100,88 @@ async function api(req,env,url,path,ctx){
     }else throw new E(400,'Unknown item.');
     return J({ok:true});
   }
+  // ---------- ADMIN: ANALYTICS · USERS · APPS · BROADCAST · SETTINGS ----------
+  if(path.startsWith('/api/admin/')&&['/api/admin/stats','/api/admin/users','/api/admin/apps','/api/admin/broadcast','/api/admin/broadcasts','/api/admin/settings'].some(p=>path===p||path.startsWith(p+'/'))){
+    need();if(!me.is_admin)throw new E(403,'Admins only.');
+    const D=864e5,like=()=>'%'+clip(url.searchParams.get('q'),40).toLowerCase()+'%';
+    if(path==='/api/admin/stats'&&m==='GET'){
+      const [u,a,t,top,recent,ser]=await Promise.all([
+        q(env,'select count(*) total,coalesce(sum(case when created_at>?1 then 1 else 0 end),0) d1,coalesce(sum(case when created_at>?2 then 1 else 0 end),0) d7,coalesce(sum(case when created_at>?3 then 1 else 0 end),0) d30,coalesce(sum(case when banned_at is not null then 1 else 0 end),0) banned,coalesce(sum(case when cash_enabled=1 then 1 else 0 end),0) sellers,coalesce(sum(case when is_admin=0 then coins else 0 end),0) coins,coalesce(sum(case when referred_by is not null then 1 else 0 end),0) referred from users',now-D,now-7*D,now-30*D).first(),
+        q(env,"select count(*) total,coalesce(sum(status='published'),0) published,coalesce(sum(status='pending'),0) pending,coalesce(sum(status='rejected'),0) rejected,coalesce(sum(status='suspended'),0) suspended,coalesce(sum(status='draft'),0) draft,coalesce(sum(downloads),0) downloads from apps").first(),
+        q(env,"select (select count(*) from purchases) purchases,(select count(*) from cash_orders where status='confirmed') cash_done,(select count(*) from cash_orders where status='pending') cash_pending,(select count(*) from dm_msgs) msgs,(select count(*) from support_tickets where status='open') tickets,(select count(*) from cash_keys where used_by is null) keys_free").first(),
+        q(env,"select a.id,a.name,a.downloads,u.username owner from apps a join users u on u.id=a.owner_id where a.status='published' order by a.downloads desc limit 5").all(),
+        q(env,'select id,username,email,created_at from users order by created_at desc limit 6').all(),
+        q(env,'select cast(created_at/86400000 as integer) d,count(*) n from users where created_at>? group by d',now-14*D).all()]);
+      const byDay={};for(const r of ser.results)byDay[r.d]=r.n;
+      const today=Math.floor(now/D),series=[];
+      for(let i=13;i>=0;i--){const d=today-i;series.push({day:d*D,n:byDay[d]||0})}
+      return J({users:u,apps:a,activity:t,top:top.results,recent:recent.results,series});
+    }
+    if(path==='/api/admin/users'&&m==='GET'){
+      const off=Math.max(0,Math.floor(+url.searchParams.get('offset'))||0),L=like();
+      const rows=(await q(env,'select u.id,u.username,u.email,u.hex_id,u.created_at,u.coins,u.is_admin,u.banned_at,u.ban_reason,(select count(*) from apps where owner_id=u.id) apps from users u where lower(u.username) like ?1 or lower(u.email) like ?1 or lower(coalesce(u.hex_id,\'\')) like ?1 order by u.created_at desc limit 31 offset ?2',L,off).all()).results;
+      return J({users:rows.slice(0,30),more:rows.length>30});
+    }
+    if((r=path.match(/^\/api\/admin\/users\/([\w-]+)\/(ban|unban)$/))&&m==='POST'){
+      const t=await q(env,'select id,username,is_admin from users where id=?',r[1]).first();
+      if(!t)throw new E(404,'User not found');
+      if(r[2]==='ban'){
+        if(t.is_admin||t.id===me.id)throw new E(400,'You cannot ban an admin.');
+        const reason=clip(body.reason,300);
+        if(!reason)throw new E(400,'Write a reason for the ban.');
+        await q(env,'update users set banned_at=?,ban_reason=? where id=?',now,reason,t.id).run();
+        await q(env,"update apps set status='suspended',reject_reason='Developer account banned',updated_at=? where owner_id=? and status='published'",now,t.id).run();
+      }else{
+        await q(env,'update users set banned_at=null,ban_reason=null where id=?',t.id).run();
+        await q(env,"update apps set status='published',reject_reason=null,updated_at=? where owner_id=? and status='suspended' and reject_reason='Developer account banned'",now,t.id).run();
+      }
+      return J({ok:true});
+    }
+    if(path==='/api/admin/apps'&&m==='GET'){
+      const L=like();
+      const rows=(await q(env,'select a.id,a.name,a.status,a.downloads,a.reject_reason,a.owner_id,u.username owner from apps a join users u on u.id=a.owner_id where lower(a.name) like ?1 or lower(u.username) like ?1 order by a.updated_at desc limit 30',L).all()).results;
+      return J({apps:rows});
+    }
+    if((r=path.match(/^\/api\/admin\/apps\/([\w-]+)\/(suspend|unsuspend)$/))&&m==='POST'){
+      const a=await q(env,'select id,name,owner_id,status from apps where id=?',r[1]).first();
+      if(!a)throw new E(404,'App not found');
+      if(r[2]==='suspend'){
+        if(a.status!=='published')throw new E(400,'Only live apps can be suspended.');
+        const reason=clip(body.reason,300);
+        if(!reason)throw new E(400,'Write a reason so the developer knows why.');
+        await q(env,"update apps set status='suspended',reject_reason=?,updated_at=? where id=?",reason,now,a.id).run();
+        await tell(env,a.owner_id,a.id,null,'⛔ '+a.name+' was suspended','Reason: '+reason);
+      }else{
+        if(a.status!=='suspended')throw new E(400,'This app is not suspended.');
+        await q(env,"update apps set status='published',reject_reason=null,updated_at=? where id=?",now,a.id).run();
+        await tell(env,a.owner_id,a.id,null,'✅ '+a.name+' is live again','The suspension was lifted.');
+      }
+      return J({ok:true});
+    }
+    if(path==='/api/admin/broadcast'&&m==='POST'){
+      const title=clip(body.title,80),text=clip(body.body,500),aud=body.audience==='devs'?'devs':'all';
+      if(!title||!text)throw new E(400,'Write a title and a message.');
+      const where=aud==='devs'?'where banned_at is null and id in (select distinct owner_id from apps)':'where banned_at is null';
+      const ins=await q(env,'insert into notifications(id,user_id,app_id,version_id,title,body,created_at) select lower(hex(randomblob(16))),id,null,null,?1,?2,?3 from users '+where,'📣 '+title,text,now).run();
+      const n=(ins.meta&&ins.meta.changes)||0;
+      await q(env,'insert into broadcasts(id,title,body,audience,recipients,created_by,created_at) values(?,?,?,?,?,?,?)',uid(),title,text,aud,n,me.id,now).run();
+      return J({ok:true,recipients:n});
+    }
+    if(path==='/api/admin/broadcasts'&&m==='GET'){
+      return J({broadcasts:(await q(env,'select id,title,body,audience,recipients,created_at from broadcasts order by created_at desc limit 20').all()).results});
+    }
+    if(path==='/api/admin/settings'&&m==='GET'){
+      const w=await q(env,"select v from hx_meta where k='wa_number'").first();
+      return J({whatsapp:w?w.v:'',via_secret:Boolean(String(env.WHATSAPP_NUMBER||'').replace(/\D/g,''))});
+    }
+    if(path==='/api/admin/settings'&&m==='POST'){
+      const n=String(body.whatsapp==null?'':body.whatsapp).replace(/\D/g,'');
+      if(n&&(n.length<8||n.length>15))throw new E(400,'Enter the number with country code, like 2349018841424.');
+      await q(env,"insert into hx_meta(k,v) values('wa_number',?1) on conflict(k) do update set v=?1",n).run();
+      return J({ok:true,whatsapp:n});
+    }
+  }
+
   if(path==='/api/notifications'&&m==='GET'){
     need();
     const rows=(await q(env,'select * from notifications where user_id=? order by created_at desc limit ?',me.id,url.searchParams.get('peek')?1:50).all()).results;
