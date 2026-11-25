@@ -635,13 +635,16 @@ async function file(req,env,key,url){
   if(!f)throw new E(404,'File not found');
   let priv=false;
   if(/\.apk$/i.test(key)){
-    const g=await q(env,'select a.id,a.owner_id,a.price_mode from versions v join apps a on a.id=v.app_id where v.apk_key=? limit 1',key).first();
-    if(g&&g.price_mode&&g.price_mode!=='free'){
-      let ok=await checkTicket(env,url.searchParams.get('t'),key);
-      if(!ok)ok=await owns(env,await who(env,req),g);
-      if(!ok)throw new E(402,'This is a paid app. Buy it to download.');
-      priv=true;
+    const g=await q(env,'select a.id,a.name,a.owner_id,a.price_mode from versions v join apps a on a.id=v.app_id where v.apk_key=? limit 1',key).first();
+    const paid=Boolean(g&&g.price_mode&&g.price_mode!=='free');
+    const isStore=Boolean(g&&String(g.name).toLowerCase().replace(/[\s-]/g,'')==='hexstore');
+    let ok=await checkTicket(env,url.searchParams.get('t'),key);
+    if(!ok&&!isStore){
+      const u=await who(env,req);
+      if(!u)throw new E(401,'Create a free HEXSTORE account to install apps.');
+      if(paid){ok=await owns(env,u,g);if(!ok)throw new E(402,'This is a paid app. Buy it to download.')}
     }
+    if(paid)priv=true;
   }
   const target='https://github.com/'+env.GITHUB_OWNER+'/'+env.GITHUB_REPO+'/releases/download/'+f.tag+'/'+encodeURIComponent(f.asset);
   if(!priv&&url.searchParams.get('dl')!=='1')return new Response(null,{status:302,headers:{...CORS,'Location':target,'Cache-Control':'public, max-age=3600'}});
@@ -1058,7 +1061,7 @@ async function api(req,env,url,path,ctx){
       ids.length?q(env,SEL+' where a.id in ('+ids.map(()=>'?').join(',')+')',...ids).all():{results:[]}]);
     const latest={};for(const v of lv.results)if(!latest[v.app_id])latest[v.app_id]=v;
     const byId={};for(const a of pvApps.results)byId[a.id]=a;
-    const vurl=async(v,a)=>!v?null:{...v,apk_url:base+'/files/'+v.apk_key+(a.price_mode&&a.price_mode!=='free'?'?dl=1&t='+await signTicket(env,v.apk_key,3600e3):'')};
+    const vurl=async(v,a)=>!v?null:{...v,apk_url:base+'/files/'+v.apk_key+'?dl=1&t='+await signTicket(env,v.apk_key,3600e3)};
     const items=[];
     for(const a of pa.results)items.push({type:'app',app:shape(a,base),version:await vurl(latest[a.id],a),uploader:{username:a.owner_name,email:(await q(env,'select email from users where id=?',a.owner_id).first()||{}).email||''}});
     for(const v of pv.results){const a=byId[v.app_id];if(!a)continue;items.push({type:'version',app:shape(a,base),version:await vurl(v,a),uploader:{username:a.owner_name,email:(await q(env,'select email from users where id=?',a.owner_id).first()||{}).email||''}})}
