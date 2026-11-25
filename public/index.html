@@ -612,22 +612,22 @@ function dlBox(a,v){
  if(!v)return '<button class="btn" style="flex:1" disabled>No APK yet</button>';
  if(isLocked(a))return buyBox(a);
  if(d&&d.st=='dl'){var s=dlStat(d);
-  return '<div class="dlb"><div class="prog'+(d.upd?' upd':'')+'"><i style="width:'+s.w+'%"></i><span>'+s.txt+'</span></div><div class="ds">'+s.sub+'</div></div>'}
+  return '<div class="dlb"><div class="prog'+(d.upd?' upd':'')+'"><i style="width:'+s.w+'%"></i><span>'+s.txt+'</span></div><div class="ds">'+s.sub+'</div><button class="btn o f" data-hx="dlcancel" data-id="'+a.id+'" style="margin-top:10px;height:44px">✕ Cancel download</button></div>'}
  if(d&&(d.st=='ready'||d.st=='ask')){
-  return '<div class="dlb"><button class="btn g f pulse" data-openinstall="'+a.id+'">'+ic('box')+(d.upd?'Install update':'Install')+'</button>'+(d.st=='ready'?'<div class="ds" style="font-size:14px;color:var(--mu);margin-top:4px">'+(d.upd?'Android will ask “Do you want to update this app?” Tap Update.':'Android will ask you to install it. If it doesn\'t, tap Install again.')+'</div>':'')+'</div>'}
+  return '<div class="dlb"><button class="btn g f pulse" data-openinstall="'+a.id+'">'+ic('box')+(d.upd?'Install update':'Install')+'</button>'+(d.st=='ready'?'<div class="ds" style="font-size:14px;color:var(--mu);margin-top:4px">'+(d.upd?'Android will ask “Do you want to update this app?” Tap Update.':'Android will ask you to install it. If it doesn\'t, tap Install again.')+'</div>':'')+'<button class="ulk" data-hx="dlcancel" data-id="'+a.id+'">Cancel</button></div>'}
  if(ins&&ins.c>=v.version_code)return '<div class="dlb"><button class="btn ok f" disabled>Installed ✅</button><button class="ulk" data-reinst="'+a.id+'">Not installed? Download again</button></div>';
  if(pe&&pe.vc>=v.version_code&&Date.now()-(pe.t||0)<2592e5)return '<div class="dlb"><button class="btn ok f" data-installed="'+a.id+'">I installed it ✅</button><button class="ulk" data-reinst="'+a.id+'">Not installed? Download again</button></div>';
  if(ins)return '<button class="btn g" style="flex:1;padding:0 12px" data-dl="'+v.id+'">'+ic('dl')+'Update</button>';
- return '<button class="btn" style="flex:1;padding:0 12px" data-dl="'+v.id+'"><span class="dl-i">'+ic('dl')+'</span>Download APK</button>'}
+ return '<button class="btn" style="flex:1;padding:0 12px" data-dl="'+v.id+'"><span class="dl-i">'+ic('dl')+'</span>'+(S.user?'Download APK':'Sign up to install')+'</button>'}
 function paintDl(id){var b=$('#dlbox');if(b&&S.page=='detail'&&S.det&&S.det.app.id==id){var d=DL[id],pr=b.querySelector('.prog');if(d&&d.st=='dl'&&pr&&pr.firstChild){var s=dlStat(d);pr.firstChild.style.width=s.w+'%';pr.querySelector('span').textContent=s.txt;var ds=b.querySelector('.ds');if(ds)ds.textContent=s.sub;return}b.innerHTML=dlBox(S.det.app,latestV())}}
 function startDl(a,v){
  var id=a.id;if(DL[id]&&DL[id].st=='dl')return;
- var d=DL[id]={st:'dl',loaded:0,total:+v.size||0,speed:0,vid:v.id,vk:v.apk_key,vc:v.version_code,vn:v.version_name,name:a.name,upd:!!INST[id],tl:Date.now(),ll:0};
+ if(!S.user){S.reg=1;S.after='detail';S.afterId=id;toast('Create a free account to install apps');go('login');return}
+ var d=DL[id]={st:'dl',loaded:0,total:+v.size||0,speed:0,vid:v.id,vk:v.apk_key,vc:v.version_code,vn:v.version_name,name:a.name,upd:!!INST[id],tl:Date.now(),ll:0,ac:(window.AbortController?new AbortController():null)};
  paintDl(id);fxBurst();
- api('/api/versions/'+v.id+'/download',{method:'POST'}).catch(function(){});
- if(S.user&&S.det&&S.det.app.id==id&&!S.det.following&&!S.det.is_owner)api('/api/apps/'+id+'/follow',{method:'POST',body:{on:true}}).then(function(){if(S.det)S.det.following=true},function(){});
- fetch(API+'/files/'+v.apk_key+'?dl=1',{headers:dlHeaders()}).then(function(r){
+ fetch(API+'/files/'+v.apk_key+'?dl=1',{headers:dlHeaders(),signal:d.ac?d.ac.signal:undefined}).then(function(r){
   if(r.status==402)throw new Error('Buy this app to download it.');
+  if(r.status==401){S.reg=1;throw new Error('Create a free account to install apps.')}
   if(!r.ok)throw new Error('Download failed ('+r.status+')');
   var cl=+r.headers.get('Content-Length');if(cl)d.total=cl;
   if(!r.body||!r.body.getReader)return r.blob().then(function(b){d.loaded=b.size;return b});
@@ -638,8 +638,10 @@ function startDl(a,v){
    var n=Date.now();if(n-d.tl>250){d.speed=(d.loaded-d.ll)/((n-d.tl)/1000);d.tl=n;d.ll=d.loaded;paintDl(id)}
    return pump()})};
   return pump()})
- .then(function(b){d.blob=b;d.st='ready';d.loaded=b.size;d.total=b.size;paintDl(id);toast('Download complete ✓ Tap Install')},
-  function(e){DL[id]=null;paintDl(id);toast(/Failed to fetch|NetworkError|Load failed/i.test(e.message)?'Download interrupted. Check your internet and try again.':e.message)})}
+ .then(function(b){if(DL[id]!==d)return;d.blob=b;d.st='ready';d.loaded=b.size;d.total=b.size;paintDl(id);toast('Download complete ✓ Tap Install');
+  api('/api/versions/'+v.id+'/download',{method:'POST'}).catch(function(){});
+  if(S.user&&S.det&&S.det.app.id==id&&!S.det.following&&!S.det.is_owner)api('/api/apps/'+id+'/follow',{method:'POST',body:{on:true}}).then(function(){if(S.det)S.det.following=true},function(){})},
+  function(e){if(DL[id]!==d)return;DL[id]=null;paintDl(id);if(e&&e.name=='AbortError'){toast('Download cancelled');return}toast(/Failed to fetch|NetworkError|Load failed/i.test(e.message)?'Download interrupted. Check your internet and try again.':e.message)})}
 
 var DLINTS=[
  'intent:#Intent;action=android.intent.action.VIEW_DOWNLOADS;package=com.google.android.apps.nbu.files;end',
@@ -848,7 +850,7 @@ function go(p,id,np){if((p=='profile'||p=='upload'||p=='notif'||p=='newver'||p==
 
 function logout(){store.del('hx');store.del('hxu');store.del('hx_lastn');S.user=null;S.me=S.mine=S.fav=S.wal=S.ord=S.shop=S.queue=null;S.unread=0;CACHE_DET={};go('home')}
 function auth(){var em=$('#em').value.trim(),pw=$('#pw').value,m=$('#lm'),b=$('#go');m.textContent='';b.disabled=true;
-  api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:'',ref:S.reg?(($('#rf')||{}).value||'').trim():''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;CACHE_DET={};var n=S.after||'home';S.after='';go(n);poll();syncInstalls();if(j.welcome)welcomeSheet()},function(e){m.textContent=e.message;b.disabled=false})}
+  api(S.reg?'/api/register':'/api/login',{method:'POST',body:{email:em,password:pw,username:S.reg?$('#un').value:'',ref:S.reg?(($('#rf')||{}).value||'').trim():''}}).then(function(j){store.set('hx',j.token);store.set('hxu',JSON.stringify(j.user));S.user=j.user;CACHE_DET={};var n=S.after||'home',nid=S.afterId;S.after='';S.afterId=null;go(n,nid);poll();syncInstalls();if(j.welcome)welcomeSheet()},function(e){m.textContent=e.message;b.disabled=false})}
 function submit(status){if(S.busy)return;if(!ready())return toast('Add an APK and an icon first');
   if(!S.cat)return toast('Choose a category');if(!S.ver.trim())return toast('Enter a version, for example 1.0');
   if(status!='draft'){if(S.desc.trim().length<100)return toast('Description needs 100+ characters (now '+S.desc.trim().length+')');if(!S.origin)return toast('Choose Original or Mod');if(!S.shots.length)return toast('Add at least 1 screenshot')}
@@ -1664,6 +1666,7 @@ document.addEventListener('change',function(e){
 document.addEventListener('click',function(e){
   var t=e.target.closest('[data-hx]');if(!t)return;
   var a=t.dataset.hx,d=t.dataset;
+  if(a=='dlcancel'){var dd=DL[d.id];if(dd&&dd.st=='dl'&&dd.ac){dd.ac.abort()}else{DL[d.id]=null;delete PEND[d.id];savePend();paintDl(d.id);toast('Cancelled')}return}
   if(a=='copyid'){if(S.hx)copyTxt(S.hx.hex_id,'Hex ID copied');return}
   if(a=='shareref'){if(!S.hx)return;var link=location.origin+'/?ref='+S.hx.hex_id,tx='Join HEXSTORE with my Hex ID '+S.hx.hex_id+' and get 300 free coins.';
     if(navigator.share)navigator.share({title:'Join HEXSTORE',text:tx,url:link}).catch(function(){});else copyTxt(tx+' '+link,'Invite copied');return}
@@ -1736,7 +1739,7 @@ function modPanel(t){
     if(!S.users)return h+'<p class="mu" style="margin-top:16px">Loading…</p>';
     h+='<div class="mcard" style="margin-top:14px">'+(S.users.users.length?S.users.users.map(function(x){
       return '<div class="mrow" style="align-items:flex-start"><span style="flex:1;min-width:0"><b>'+esc(x.username)+'</b>'+(x.is_admin?'<span class="chipx grn">ADMIN</span>':'')+(x.banned_at?'<span class="chipx red">BANNED</span>':'')+'<br><span class="msub">'+esc(x.email)+'</span><br><span class="msub">'+esc(x.hex_id||'')+' · 🪙 '+fmtN(x.coins)+' · '+x.apps+' apps · joined '+fd(x.created_at)+'</span>'+(x.banned_at&&x.ban_reason?'<br><span class="msub" style="color:#ff9aa0">Reason: '+esc(x.ban_reason)+'</span>':'')+
-        '<div class="mbtns"><button class="btn o" data-hx="openchat" data-id="'+esc(x.id)+'">💬 Message</button>'+(x.is_admin?'':(x.banned_at?'<button class="btn" data-hx="unban" data-id="'+esc(x.id)+'">Unban</button>':'<button class="btn o" style="color:#f2555a" data-hx="banask" data-id="'+esc(x.id)+'" data-n="'+esc(x.username)+'">Ban</button>'))+'</div></span></div>'}).join(''):'<p class="mu">No users found.</p>')+'</div>';
+        '<div class="mbtns"><button class="btn o" data-hx="openchat" data-id="'+esc(x.id)+'">💬 Message</button>'+(x.is_admin?'':(x.banned_at?'<button class="btn" data-hx="unban" data-id="'+esc(x.id)+'">Unban</button>':'<button class="btn o" style="color:#f2555a" data-hx="banask" data-id="'+esc(x.id)+'" data-n="'+esc(x.username)+'">Ban</button>'))+'</div></span></div>'}).join(''):'<p class="mu">No users found.</p>')+'</div>'+(S.users.more?'<button class="btn o f" data-hx="umore" style="margin-top:12px">Load more</button>':'');
     return h;
   }
   if(t=='apps'){
@@ -1774,6 +1777,7 @@ document.addEventListener('click',function(e){
   var post=function(url,body,msg,after){if(S.busy)return;S.busy=1;api(url,{method:'POST',body:body||{}}).then(function(j){S.busy=0;hideSheet();toast(typeof msg=='function'?msg(j):msg);if(after)after()},function(er){S.busy=0;toast(er.message)})};
   if(a=='modtab'){S.modTab=d.id;draw();modLoad();return}
   if(a=='usearch'){S.users=null;draw();modLoad();return}
+  if(a=='umore'){if(S.busy||!S.users)return;S.busy=1;api('/api/admin/users?q='+encodeURIComponent(S.uq||'')+'&offset='+S.users.users.length).then(function(j){S.busy=0;S.users.users=S.users.users.concat(j.users);S.users.more=j.more;draw()},function(er){S.busy=0;toast(er.message)});return}
   if(a=='asearch'){S.mapps=null;draw();modLoad();return}
   if(a=='banask'){reasonSheet('Ban this user?','Reason (shown to the user when they try to sign in)',d.id,'banok',d.n);return}
   if(a=='banok'){post('/api/admin/users/'+d.id+'/ban',{reason:($('#rsn')||{}).value},'User banned. Their live apps were suspended.',modLoad);return}
